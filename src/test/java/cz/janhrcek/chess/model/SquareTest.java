@@ -1,5 +1,6 @@
 package cz.janhrcek.chess.model;
 
+import cz.janhrcek.chess.rules.Bitboard;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
@@ -12,16 +13,21 @@ public class SquareTest {
 
     @Test
     public void testIsLight() {
-        String light = "The square should be light!";
-        assertTrue(Square.A8.isLight(), light);
-        assertTrue(Square.C4.isLight(), light);
-        assertTrue(Square.G2.isLight(), light);
-        assertTrue(Square.H1.isLight(), light);
-        
-        String dark = "The square should be dark!";
-        assertFalse(Square.A1.isLight(), dark);
-        assertFalse(Square.B6.isLight(), dark);
-        assertFalse(Square.G5.isLight(), dark);
-        assertFalse(Square.H8.isLight(), dark);
+        String light = "The square should be light: ";
+        long lightSquares =
+                Bitboard.parseString("1010101001010101101010100101010110101010010101011010101001010101");
+
+        for (Square s : Square.getSquares(lightSquares)) {
+            assertTrue(s.isLight(), light + s);
+        }
+
+        String dark = "The square should be dark: ";
+        long darkSquares =
+                Bitboard.parseString("0101010110101010010101011010101001010101101010100101010110101010");
+
+        for (Square s : Square.getSquares(darkSquares)) {
+            assertFalse(s.isLight(), dark + s);
+        }
+
     }
 }

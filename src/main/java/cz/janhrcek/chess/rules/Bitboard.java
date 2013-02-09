@@ -1,5 +1,5 @@
 package cz.janhrcek.chess.rules;
-
+import java.math.BigInteger;
 /**
  *
  * @author jhrcek
@@ -18,6 +18,6 @@ public class Bitboard {
                     + " long string consisting of only 1s and 0s, but was "
                     + bitboardAsString + "(length = " + bitboardAsString.length() + ")");
         }
-        return Long.parseLong(bitboardAsString, 2);
+        return new BigInteger(bitboardAsString, 2).longValue();
     }
 }
