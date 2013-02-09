@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.Chessboard;
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.MoveInfo;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -29,7 +29,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * The Game object which this class encapsulates for teh representation of
      * the gamestae.
      */
-    private Game gameState;
+    private BrowsableGame gameState;
     /**
      * Enables us to control the legality of the moves.
      */
@@ -46,7 +46,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param state The game object which will be encapsulated for the
      * representation of the games tate
      */
-    public MyGameModel(Game state) {
+    public MyGameModel(BrowsableGame state) {
         this.gameState = state;
         ruleChecker = new FIDERules();
     }
@@ -57,7 +57,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param g the game to represent the state of the game
      */
-    public void setGame(Game g) {
+    public void setGame(BrowsableGame g) {
         if (g == null) {
             throw new NullPointerException("g can't be null!");
         }
@@ -71,7 +71,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @return the game which this implementation of GameModel encapsulates for
      * representation of the game state.
      */
-    public Game getGame() {
+    public BrowsableGame getGame() {
         return gameState;
     }
 

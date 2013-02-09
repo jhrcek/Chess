@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.MoveInfo;
 
 /**
@@ -21,5 +21,5 @@ public interface RuleChecker {
      * @return MoveType object carrying information about the legality of the
      * move.
      */
-    MoveType checkMove(Game state, MoveInfo move);
+    MoveType checkMove(BrowsableGame state, MoveInfo move);
 }

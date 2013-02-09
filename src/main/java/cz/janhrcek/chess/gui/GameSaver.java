@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -34,7 +34,7 @@ public class GameSaver extends JDialog {
      * @param gameToWrite the game, which we want to save to file
      * @param outputFile the file in which we want to save te game
      */
-    public GameSaver(JFrame owner, Game gameToWrite, File outputFile) {
+    public GameSaver(JFrame owner, BrowsableGame gameToWrite, File outputFile) {
         super(owner, "Saving game ...");
         if (gameToWrite == null) {
             throw new NullPointerException("gameToWrite can't be null!");
@@ -104,7 +104,7 @@ public class GameSaver extends JDialog {
      * @return true if filling header went OK, false otherwise
      */
     private boolean fillInHeader() {
-        Game.GameHeader header = gameToWrite.getGameHeader();
+        BrowsableGame.GameHeader header = gameToWrite.getGameHeader();
         //extract values from the fields...
         header.setEvent(jTextField1.getText());
         header.setSite(jTextField2.getText());
@@ -294,6 +294,6 @@ public class GameSaver extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
     // End of variables declaration
-    private Game gameToWrite;
+    private BrowsableGame gameToWrite;
     private File outputFile;
 }

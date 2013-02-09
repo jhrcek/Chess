@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -12,7 +12,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class GamesTableModel extends AbstractTableModel {
 
-    private List<Game> games;
+    private List<BrowsableGame> games;
     private int NUM_OF_TAGS = 7;
     private String[] columnNames = {"White", "Black", "Result", "Event",
         "Site", "Date", "Round"};
@@ -23,7 +23,7 @@ public class GamesTableModel extends AbstractTableModel {
      * @param games The list of games about which the information in this table
      * will be displayed.
      */
-    public GamesTableModel(List<Game> games) {
+    public GamesTableModel(List<BrowsableGame> games) {
         if (games == null) {
             throw new NullPointerException("Games can't be null");
         }
@@ -80,7 +80,7 @@ public class GamesTableModel extends AbstractTableModel {
             throw new IllegalArgumentException("Number of colums must be"
                     + " between 0 and " + NUM_OF_TAGS);
         }
-        Game.GameHeader header = games.get(rowIndex).getGameHeader();
+        BrowsableGame.GameHeader header = games.get(rowIndex).getGameHeader();
 
         switch (columnIndex) {
             case 0:

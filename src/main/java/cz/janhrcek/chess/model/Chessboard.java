@@ -6,8 +6,7 @@ package cz.janhrcek.chess.model;
  * the pieces on the board arbitrarily (that is the manipulation with the pieces
  * does not have to be according to chess rules).
  *
- * @author Jan Hr�ek
- * @version 6.3.2006
+ * @author Jan Hrcek
  */
 public class Chessboard {
 
@@ -60,7 +59,7 @@ public class Chessboard {
      *             WHITE PLAYER
      * </pre>
      */
-    public void setStartingPosition() {
+    public void setInitialPosition() {
         //put white pieces on the board
         putPiece(Piece.WHITE_ROOK, Square.A1);  //rooks
         putPiece(Piece.WHITE_ROOK, Square.H1);

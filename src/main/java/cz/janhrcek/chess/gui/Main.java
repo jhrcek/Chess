@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.PGN.PGNReader;
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -108,7 +108,7 @@ public class Main extends JFrame implements ActionListener {
             chessboardComponent.setClickable(true);
             cancelLastAction.setEnabled(true);
 
-            currentlyWiewedGame = new Game();
+            currentlyWiewedGame = new BrowsableGame();
             stateModel.setGame(currentlyWiewedGame);
             chessboardComponent.addMoveSelectedEventListener(stateModel);
             chessboardComponent.setModel(stateModel);
@@ -313,7 +313,7 @@ public class Main extends JFrame implements ActionListener {
         initButtons();
 
         //create representation of gamestate
-        currentlyWiewedGame = new Game();
+        currentlyWiewedGame = new BrowsableGame();
         stateModel = new MyGameModel(currentlyWiewedGame);
         chessboardComponent = new ChessboardComponent(stateModel);
         chessboardComponent.addMoveSelectedEventListener(stateModel);
@@ -516,7 +516,7 @@ public class Main extends JFrame implements ActionListener {
     /**
      * The game whose state is displayed on the gui chessboard.
      */
-    private Game currentlyWiewedGame;
+    private BrowsableGame currentlyWiewedGame;
     /**
      * The model (encapsulating currently wieved game) from which the
      * chessboardcomponent gets all the information it displays.
@@ -541,7 +541,7 @@ public class Main extends JFrame implements ActionListener {
     /**
      * List of games loaded form some pgn file (if any is opened).
      */
-    private List<Game> parsedGames;
+    private List<BrowsableGame> parsedGames;
     private ListSelectionModel rowSelectionModel;
     private MyListSelectionListener myLSListener;
     /**

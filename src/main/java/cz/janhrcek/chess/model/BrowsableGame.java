@@ -16,25 +16,25 @@ import java.util.ListIterator;
  * which player is on the move (white or black)</li> <li>information about the
  * moves played since the beginning</li> <li>the pieces, that were captured
  * since the beginning</li> <li>information about castling availabilities</li>
- * <li>fullmove number (number of full moves played since the beginning)</li>
- * <li>halfmove clock (for the purpose of "50 move draw" rule)</li> </ul>
+ * <li>full-move number (number of full moves played since the beginning)</li>
+ * <li>half-move clock (for the purpose of "50 move draw" rule)</li> </ul>
  *
  * This class also contains several methods to manipulate (change) the game
  * (move, setNewGame) and also methods for traversing through the moves of given
  * game (setFirst/Previous/Next/LastPosition).
  *
  *
- * @author Jan Hr�ek
+ * @author Jan Hrcek
  * @version 8.3.2006
  */
-public class Game {
+public class BrowsableGame {
 
     /**
      * Creates new instance of Game.
      */
-    public Game() {
+    public BrowsableGame() {
         currentlyViewedPosition = new Chessboard();
-        currentlyViewedPosition.setStartingPosition();
+        currentlyViewedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
         movesPlayed = new LinkedList<MoveInfo>();
         capturedPieces = new LinkedList<Piece>();
@@ -56,7 +56,7 @@ public class Game {
      * played from the beginning.
      */
     public void setNewGame() {
-        currentlyViewedPosition.setStartingPosition();
+        currentlyViewedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
         isWhiteToMove = true;
         castlingAvailabilities.clear();
@@ -73,8 +73,9 @@ public class Game {
     }
 
     /**
-     * Sets all neccesary state information so that this game state corresponds
-     * to game state represented by the FENString argument.
+     * TODO: Implement this method Sets all necessary state information so that
+     * this game state corresponds to game state represented by the FENString
+     * argument.
      *
      * @param FENString the string in the FEN (Forsythe-Edwards Notation)
      * representing some state of the game
@@ -85,7 +86,7 @@ public class Game {
         if (FENString == null) {
             throw new NullPointerException("FENString can't be null");
         }
-        if (false) { ///////////////////DODELAT
+        if (false) {
             throw new IllegalArgumentException("FENString must be"
                     + " legal FEN String");
         }
@@ -334,7 +335,7 @@ public class Game {
      * two squares forward from its starting position on the second rank. In
      * that case his opponent can capture that pawn if his pawn is on the fifth
      * rank on the file directly adjacent to advanced pawn's file by moving to
-     * enpassant target square.
+     * en passant target square.
      *
      * @return EnPassant Target Square if there is such a square<br> null
      * otherwise
@@ -362,21 +363,21 @@ public class Game {
     }
 
     /**
-     * returns the Fullmove number. At the beginning of the game it is 1, and it
-     * is incremented after Black's move.
+     * returns the full-move number. At the beginning of the game it is 1, and
+     * it is incremented after black's move.
      *
-     * @return fullmove number;
+     * @return full-move number;
      */
     public int getFullmoveNumber() {
         return 1 + movesPlayed.size() / 2;
     }
 
     /**
-     * Returns Halfmove clock: This is the number of halfmoves since the last
+     * Returns half-move clock: This is the number of half-moves since the last
      * pawn advance or capture. This is used to determine if a draw can be
      * claimed under the fifty move rule.
      *
-     * @return number of halfmoves since the last pawn advance or capture
+     * @return number of half-moves since the last pawn advance or capture
      */
     public int getHalfmoveClock() {
         int numberOfHalfMovesSinceLastCapture = 0;
@@ -553,10 +554,10 @@ public class Game {
     }
 
     /**
-     * Returns the number representing which halfmove is currently displayed on
+     * Returns the number representing which half-move is currently displayed on
      * the chessboard.
      *
-     * @return number representing which halfmove is currently displayed on the
+     * @return number representing which half-move is currently displayed on the
      * chessboard.
      */
     public int getCurrentlyViewedHalfmove() {
@@ -967,7 +968,7 @@ public class Game {
     }
 
     /**
-     * Sets information about when (which halfmove from the beginning of the
+     * Sets information about when (which half-move from the beginning of the
      * game) the en passant capture occured, so that we can eventually take that
      * move back. This method should only be called after making en passant pawn
      * capture!!
@@ -1021,13 +1022,13 @@ public class Game {
     }
 
     /**
-     * Returns position after given halfmove from the beginning of the game (for
-     * example getPositionAfter(0) returns starting position and
+     * Returns position after given half-move from the beginning of the game
+     * (for example getPositionAfter(0) returns starting position and
      * getPositionAfter(2) returns position after white and black have both made
      * one move)
      *
-     * @param halfmove the number of the halfmove after which we want to display
-     * the position of pieces on the board. It must be 0 <= halfmove <=
+     * @param halfmove the number of the half-move after which we want to
+     * display the position of pieces on the board. It must be 0 <= halfmove <=
      * getMovesPlayed().size()
      */
     private void setPositionAfter(int halfmove) {
@@ -1035,7 +1036,7 @@ public class Game {
             throw new IllegalArgumentException("halfmove must be between 0"
                     + " and movesPlayed.size()");
         }
-        currentlyViewedPosition.setStartingPosition();
+        currentlyViewedPosition.setInitialPosition();
         for (int i = 0; i < halfmove; i++) {
             try {
                 currentlyViewedPosition.move(movesPlayed.get(i));
@@ -1063,7 +1064,7 @@ public class Game {
      */
     public String getMovetextSectionString(boolean highligtCurrentMove) {
         StringBuilder sb = new StringBuilder();
-        iteratingGame = new Game();
+        iteratingGame = new BrowsableGame();
 
         for (int i = 0; i < movesPlayed.size(); i++) {
 
@@ -1220,7 +1221,7 @@ public class Game {
      */
     private Chessboard currentlyViewedPosition;
     /**
-     * The number of halfmove after which the position on the board is
+     * The number of half-move after which the position on the board is
      * displayed.
      */
     private int currentlyViewedHalfmove;
@@ -1274,11 +1275,11 @@ public class Game {
     private final LinkedList<Integer> castlingAvailabilities;
     /**
      * To keep track of When players castled, so that we can take back that move
-     * eventually. The info is stored as number of halfmove, when they castled.
+     * eventually. The info is stored as number of half-move, when they castled.
      */
     private int whenWhiteCastled = 0;
     /**
-     * The number of the halfmove which in which black player castled.
+     * The number of the half-move which in which black player castled.
      */
     private int whenBlackCastled = 0;
     /**
@@ -1291,13 +1292,13 @@ public class Game {
      * Other non-state related information about the game.
      */
     private GameHeader gameHeader;
-    private Game iteratingGame;
+    private BrowsableGame iteratingGame;
 
     /**
      * Returns information about which moves were captures.
      *
      * @return information about which moves were captures. getCaptures().get(i)
-     * is true <=> i-th mve was capture.
+     * is true <=> i-th move was capture.
      */
     LinkedList<Boolean> getCaptures() {
         return captures;

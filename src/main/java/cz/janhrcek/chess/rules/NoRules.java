@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.Game;
+import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.MoveInfo;
 
 /**
@@ -22,7 +22,7 @@ public class NoRules implements RuleChecker {
      * @return MoveType.LEGAL
      *
      */
-    public final MoveType checkMove(final Game state,
+    public final MoveType checkMove(final BrowsableGame state,
             final MoveInfo move) {
         if (state == null) {
             throw new IllegalArgumentException("state can't be null!");

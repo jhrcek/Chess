@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.PGN;
 
 import cz.janhrcek.chess.model.Chessboard;
-import cz.janhrcek.chess.model.Game;
-import cz.janhrcek.chess.model.Game.GameHeader;
+import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.BrowsableGame.GameHeader;
 import cz.janhrcek.chess.model.MoveInfo;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -37,7 +37,7 @@ public class PGNReader {
     /**
      * The game which is currently being reconstructed from parsed pgn file.
      */
-    private static Game currentGame;
+    private static BrowsableGame currentGame;
     /**
      * We need rule checker to find ambiguous SAN moves.
      */
@@ -49,7 +49,7 @@ public class PGNReader {
      * @param f the pgn file to be parsed.
      * @return The list of games stored in the file.
      */
-    public static List<Game> parseFile(File f) {
+    public static List<BrowsableGame> parseFile(File f) {
         if (f == null) {
             throw new NullPointerException("File can't be null!");
         }
@@ -61,7 +61,7 @@ public class PGNReader {
             throw new IllegalArgumentException("File must end with \".pgn\"");
         }
 
-        ArrayList<Game> listOfGames = new ArrayList<Game>();
+        ArrayList<BrowsableGame> listOfGames = new ArrayList<BrowsableGame>();
         BufferedReader input = null;
         parsingTagpairs = true;
 
@@ -69,8 +69,8 @@ public class PGNReader {
             input = new BufferedReader(new FileReader(f));
             String line = null;
 
-            currentGame = new Game();
-            Game.GameHeader currentGameHeader = currentGame.getGameHeader();
+            currentGame = new BrowsableGame();
+            BrowsableGame.GameHeader currentGameHeader = currentGame.getGameHeader();
             StringBuilder moveText = new StringBuilder();
 
             //po radcich precteme cely pgn file
@@ -98,7 +98,7 @@ public class PGNReader {
                         //a vytvor novou hru, jez zacnes parsovat
                         if (line.startsWith("[")) {
                             parsingTagpairs = true;
-                            currentGame = new Game();
+                            currentGame = new BrowsableGame();
                             currentGameHeader = currentGame.getGameHeader();
                             String[] pole = line.split("\"");
                             setAttribute(currentGameHeader,

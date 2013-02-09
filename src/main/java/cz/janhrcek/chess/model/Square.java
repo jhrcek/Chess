@@ -4,11 +4,11 @@ package cz.janhrcek.chess.model;
  * Represents NAMES of the squares on the standard 8*8 chessboard. Names are
  * given in the standard algebraic notation: <ul> <li>The first character of a
  * square identifier is the file of the square; a file is a column of eight
- * squares designated by a single lower case letter from "a" (leftmost on
- * queenside) up to and including "h" (rightmost on kingside).</li> <li>The
- * second character of a square identifier is the rank of the square; a rank is
- * a row of eight squares designated by a single digit from "1" (bottom side
- * [White's first rank]) up to and including "8" (top side [Black's first
+ * squares designated by a single lower case letter from "a" (leftmost on queen
+ * side) up to and including "h" (rightmost on kingside).</li> <li>The second
+ * character of a square identifier is the rank of the square; a rank is a row
+ * of eight squares designated by a single digit from "1" (bottom side [White's
+ * first rank]) up to and including "8" (top side [Black's first
  * rank]).</li></ul>
  * <pre>
  *             BLACK PLAYER
