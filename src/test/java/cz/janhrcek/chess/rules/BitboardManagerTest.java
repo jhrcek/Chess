@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
 import org.testng.annotations.Test;
-
+ //TODO - implement BitboardManagerTest
 /**
  *
  * @author jhrcek
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class BitboardManagerTest {
 
     @Test
-    public void testParseString() { //TODO - finish this test
+    public void testParseString() {
         BitboardManager.parseString("1111111111111111111111111111111111111111111111111111111111111111");
     }
 }

@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
 import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.Chessboard;
+import cz.janhrcek.chess.model.Position;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -34,7 +34,7 @@ public class FIDERules implements RuleChecker {
             throw new NullPointerException("move can't be null!");
         }
 
-        Chessboard position = state.getChessboard();
+        Position position = state.getChessboard();
         Piece piece = move.getPiece();
         Square from = move.getFrom();
         Square to = move.getTo();
@@ -120,7 +120,7 @@ public class FIDERules implements RuleChecker {
      * @return true, if the path of movement of some piece is blocked on the
      * given position by some piece, false otherwise
      */
-    private static boolean isPathOfMoveBlocked(final Chessboard position,
+    private static boolean isPathOfMoveBlocked(final Position position,
             final Square from,
             final Square to) {
         if (position == null) {
@@ -315,7 +315,7 @@ public class FIDERules implements RuleChecker {
      * @param to the square to which we want to move the piece
      * @return MoveType object representing legality type of checked move
      */
-    private static MoveType canGeometricallyMove(final Chessboard position,
+    private static MoveType canGeometricallyMove(final Position position,
             final Piece piece,
             final Square from,
             final Square to) {
@@ -384,7 +384,7 @@ public class FIDERules implements RuleChecker {
      * no such piece, this method returns null
      */
     private static Square findCheckingPiece(final boolean youMeanWhite,
-            final Chessboard position) {
+            final Position position) {
         //nejprv si najdem krale
         Square kingsSquare = findKing(youMeanWhite, position);
         Piece tmpPiece = null;
@@ -474,7 +474,7 @@ public class FIDERules implements RuleChecker {
     private static boolean givesMate(final Move move,
             final BrowsableGame state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame
-        Chessboard position = state.getChessboard();
+        Position position = state.getChessboard();
 
         //najdeme krale, pro ktereho zjistujeme, jestli je v matu
         Piece king = //jde o cerneho nebo bileho?
@@ -585,7 +585,7 @@ public class FIDERules implements RuleChecker {
      * @return the square on which given king sits
      */
     private static Square findKing(final boolean youMeanWhite,
-            final Chessboard position) {
+            final Position position) {
         Piece king = //jde o cerneho nebo bileho?
                 youMeanWhite ? Piece.WHITE_KING : Piece.BLACK_KING;
         Piece tmpPiece = null;
@@ -636,7 +636,7 @@ public class FIDERules implements RuleChecker {
         }
         //2. kral nesmi pri rosade prejit pres ohrozen pole
         //(nejdeme piece nepratelsy pis, ktery ohrozuje inkriminovane pole
-        Chessboard position = state.getChessboard();
+        Position position = state.getChessboard();
         Piece tmpPiece;
         Square squareOnKingsCastlingPath =
                 getSquareOnKingsCastlingPath(kingsTargetSquare);
@@ -667,7 +667,7 @@ public class FIDERules implements RuleChecker {
      * the rook
      * @param kingsTargetSquare the square to which king castles
      */
-    private static void moveCastlingRook(Chessboard board, Square kingsTargetSquare) {
+    private static void moveCastlingRook(Position board, Square kingsTargetSquare) {
         switch (kingsTargetSquare) {
             case C8:
                 board.removePiece(Square.A8);

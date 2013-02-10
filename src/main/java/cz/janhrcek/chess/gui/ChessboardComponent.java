@@ -2,6 +2,7 @@ package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
+import cz.janhrcek.chess.model.Promotion;
 import cz.janhrcek.chess.model.Square;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -414,8 +415,8 @@ public class ChessboardComponent extends JComponent {
     }
 
     /**
-     * For given piece and two squares creates Move object which represents
-     * the move of the piece from one square to the other square. This method
+     * For given piece and two squares creates Move object which represents the
+     * move of the piece from one square to the other square. This method
      * handles the promotion-piece selection in the case that the three
      * parameters represent pawn promotion.
      *
@@ -475,7 +476,7 @@ public class ChessboardComponent extends JComponent {
                     throw new IllegalStateException("toWhatPromote"
                             + " wasn't 0, 1, 2 or 3");
             }
-            return new Move(piece, from, to, promoPiece);
+            return new Promotion(piece, from, to, promoPiece);
         } else { //neni to pawn promotion
             return new Move(piece, from, to);
         }

@@ -5,7 +5,7 @@ package cz.janhrcek.chess.model;
  * example when someone is trying to move a piece from a square, on which the
  * piece is not present.
  *
- * @author Jan Hr�ek
+ * @author Jan Hrcek
  * @version 6.3.2006
  */
 public class ChessboardException extends Exception {

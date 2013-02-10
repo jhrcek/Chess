@@ -2,9 +2,10 @@ package cz.janhrcek.chess.PGN;
 
 import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.BrowsableGame.GameHeader;
-import cz.janhrcek.chess.model.Chessboard;
+import cz.janhrcek.chess.model.Position;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
+import cz.janhrcek.chess.model.Promotion;
 import cz.janhrcek.chess.model.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERules;
@@ -248,7 +249,7 @@ public class PGNReader {
         if (toWhatPromote == null) {
             return new Move(piece, from, to);
         } else {
-            return new Move(piece, from, to, toWhatPromote);
+            return new Promotion(piece, from, to, toWhatPromote);
         }
     }
 
@@ -391,7 +392,7 @@ public class PGNReader {
         Square[] potentFromSquares = Square.getSquares(
                 BitboardManager.getReachableSquaresBB(piece, to));
 
-        Chessboard currBoard = currentGame.getChessboard();
+        Position currBoard = currentGame.getChessboard();
 
         if (piece.equals(Piece.WHITE_PAWN) || piece.equals(Piece.BLACK_PAWN)) {
             int fileIdx = (int) sanMove.charAt(0) - 97;

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Chessboard;
+import cz.janhrcek.chess.model.Position;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import java.util.LinkedList;
@@ -78,7 +78,7 @@ public interface GameModel {
      *
      * @return the chessboard representing position of pieces on the board.
      */
-    Chessboard getChessboard();
+    Position getChessboard();
 
     /**
      * Returns true if it is white to move, false otherwise.

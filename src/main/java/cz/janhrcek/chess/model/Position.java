@@ -1,14 +1,14 @@
 package cz.janhrcek.chess.model;
 
 /**
- * Represents standard 8*8 chess board. Each square of the board may contain
- * either one piece or no piece. This class offers methods to manipulate with
+ * Represents piece placement on the standard 8x8 chess board. This is basically
+ * the visible component of given game state. This class offers methods to manipulate with
  * the pieces on the board arbitrarily (that is the manipulation with the pieces
  * does not have to be according to chess rules).
  *
  * @author Jan Hrcek
  */
-public class Chessboard {
+public class Position {
 
     /**
      * Number of files on the chessboard.
@@ -28,7 +28,7 @@ public class Chessboard {
     /**
      * Creates new Instance of the chessboard.
      */
-    public Chessboard() {
+    public Position() {
         board = new Piece[NUMBER_OF_FILES][NUMBER_OF_RANKS];
     }
 
@@ -154,7 +154,7 @@ public class Chessboard {
      * make on th board (which pice, form where, to where)
      * @return the piece, that were formerly on the destination square, or null,
      * if there was nothing on that square
-     * @throws ChessboardException if the piece to move is not on the square you
+     * @throws PieceNotOnFromSquareException if the piece to move is not on the square you
      * want to move it from
      */
     public Piece makeMove(Move move) throws ChessboardException {
@@ -175,10 +175,11 @@ public class Chessboard {
 
         Piece capturedPiece = getPiece(to);
         removePiece(from);
-        // je-li to povyseni pesaka poloz tam na co se povysuje
-        if (move.getToWhatPromote() != null) {
-            putPiece(move.getToWhatPromote(), to);
-        } else { //jinak tam poloz ten moving piece
+        //In case it's promotion put PromoPiece on "to" square
+        if (move instanceof Promotion) {
+            Piece promoPiece = ((Promotion) move).getPromoPiece();
+            putPiece(promoPiece, to);
+        } else { //else just put there the moving piece
             putPiece(piece, to);
         }
         return capturedPiece;
@@ -203,61 +204,25 @@ public class Chessboard {
     }
 
     /**
-     * returns the string which represents pseudo-graphically the row of the
+     * Returns the string which pseudo-graphically represents the row of the
      * chessboard.
      *
-     * @param index the index of the row
+     * @param rowIndex the index of the row
      * @return pseudo-graphical representation of the row
      */
-    private String getRowString(int index) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(index + 1).append(" |");
-        for (int i = 0; i < 8; i++) {
-            if (board[i][index] == null) {
-                sb.append("   ");
+    private String getRowString(int rowIndex) {
+        StringBuilder result = new StringBuilder();
+        result.append(rowIndex + 1).append(" |");
+        for (int colIndex = 0; colIndex < 8; colIndex++) {
+            Piece piece = board[colIndex][rowIndex];
+            if (piece == null) {
+                result.append("  ");
             } else {
-                switch (board[i][index]) {
-                    case WHITE_PAWN:
-                        sb.append(" P ");
-                        break;
-                    case BLACK_PAWN:
-                        sb.append(" p ");
-                        break;
-                    case WHITE_KNIGHT:
-                        sb.append(" N ");
-                        break;
-                    case BLACK_KNIGHT:
-                        sb.append(" n ");
-                        break;
-                    case WHITE_BISHOP:
-                        sb.append(" B ");
-                        break;
-                    case BLACK_BISHOP:
-                        sb.append(" b ");
-                        break;
-                    case WHITE_ROOK:
-                        sb.append(" R ");
-                        break;
-                    case BLACK_ROOK:
-                        sb.append(" r ");
-                        break;
-                    case WHITE_QUEEN:
-                        sb.append(" Q ");
-                        break;
-                    case BLACK_QUEEN:
-                        sb.append(" q ");
-                        break;
-                    case WHITE_KING:
-                        sb.append(" K ");
-                        break;
-                    case BLACK_KING:
-                        sb.append(" k ");
-                        break;
-                }
+                result.append(" ").append(piece.getFenName());
             }
-            sb.append("|");
+            result.append(" |");
         }
-        sb.append("\n");
-        return sb.toString();
+        result.append("\n");
+        return result.toString();
     }
 }

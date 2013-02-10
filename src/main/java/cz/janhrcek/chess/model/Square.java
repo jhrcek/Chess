@@ -36,16 +36,15 @@ package cz.janhrcek.chess.model;
  * getFile() and int getRank(). These methods return indices of file and rank
  * respectively, on which the square lies.
  *
- * @author Jan Hr�ek
- * @version 3.3.2006
+ * @author Jan Hrcek
  */
 public enum Square {
 
     /**
      * Names of the squares on the chessboard. Names are given in the standard
      * algebraic notation. They are declared in order as they appear on the
-     * chessboard, from the poin of wiew of white player left to right - line
-     * after line from top to bottom (to provide intuitive way of iterating ove
+     * chessboard, from the point of view of white player left to right - line
+     * after line from top to bottom (to provide intuitive way of iterating over
      * the values with for cycle).
      */
     A8(0, 7), B8(1, 7), C8(2, 7), D8(3, 7), E8(4, 7), F8(5, 7), G8(6, 7), H8(7, 7),

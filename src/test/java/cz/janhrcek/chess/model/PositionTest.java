@@ -10,20 +10,20 @@ import cz.janhrcek.chess.rules.BitboardManager;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.ExpectedExceptions;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author jhrcek
  */
-public class ChessboardTest {
+public class PositionTest {
 
-    private Chessboard board;
+    private Position board;
 
     @BeforeClass
     public void init() {
-        board = new Chessboard();
+        board = new Position();
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ChessboardTest {
     @Test
     public void testPutAndGetPiece() {
         board.setInitialPosition();
-        
+
         String msg = "The piece we put on the square is not the same we got from that square!";
         board.putPiece(WHITE_PAWN, A8);
         assertEquals(board.getPiece(A8), WHITE_PAWN, msg);
@@ -98,13 +98,20 @@ public class ChessboardTest {
         assertEquals(board.getPiece(C5), BLACK_ROOK, msg);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void testPutPieceWithNull() {
-        board.putPiece(null, A8);
-        board.putPiece(WHITE_PAWN, null);
-        board.putPiece(null, null);
+    @Test(dataProvider = "put-piece-parameters", expectedExceptions = NullPointerException.class)
+    public void testPutPieceWithNull(Piece p, Square s) {
+        board.putPiece(p, s);
     }
-    
+
+    @DataProvider(name = "put-piece-parameters")
+    private Object[][] putPieceParameterProvider() {
+        return new Object[][]{
+                    {null, A8},
+                    {WHITE_PAWN, null},
+                    {null, null}
+                };
+    }
+
     @Test
     public void testRemovePiece() {
         board.setInitialPosition();
@@ -114,12 +121,12 @@ public class ChessboardTest {
         board.removePiece(D4);
         board.putPiece(WHITE_KING, H8);
         board.removePiece(H8);
-        
+
         String empty = "There must be null on squares from which we remove piece!";
-        assertNull(board.getPiece(A1),empty);
-        assertNull(board.getPiece(B2),empty);
-        assertNull(board.getPiece(C3),empty);
-        assertNull(board.getPiece(D4),empty);
-        assertNull(board.getPiece(H8),empty);        
+        assertNull(board.getPiece(A1), empty);
+        assertNull(board.getPiece(B2), empty);
+        assertNull(board.getPiece(C3), empty);
+        assertNull(board.getPiece(D4), empty);
+        assertNull(board.getPiece(H8), empty);
     }
 }

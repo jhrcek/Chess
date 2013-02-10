@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.Chessboard;
+import cz.janhrcek.chess.model.Position;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -133,7 +133,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return the chessboard representing position of pieces on the board.
      */
-    public Chessboard getChessboard() {
+    public Position getChessboard() {
         return gameState.getChessboard();
     }
 
