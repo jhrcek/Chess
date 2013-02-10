@@ -1,15 +1,15 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
 
 /**
  * This implementation of Rule checker encapsulates the international standard
- * rules of chess, that is the rules of the FIDE (F�d�ration Internationale des
- * �checs - World Chess Federation).
+ * rules of chess, that is the rules of the FIDE (Federation Internationale des
+ * echecs - World Chess Federation).
  *
  * @author Jan Hrcek
  * @version 0.9
@@ -26,8 +26,7 @@ public class FIDERules implements RuleChecker {
      * @return MoveType object representing information about the legality of
      * the move.
      */
-    public final MoveType checkMove(final BrowsableGame state,
-            final Move move) {
+    public final MoveType checkMove(final BrowsableGame state, final Move move) {
         if (state == null) {
             throw new NullPointerException("state can't be null!");
         }
@@ -417,7 +416,7 @@ public class FIDERules implements RuleChecker {
      * @param move the move we want to check if it leaves the kin in check
      * @param state the sate of game in which we want to check it
      * @return MoveType.ILLEGAL_LEAVES_KING_IN_CHECK if given move would leave
-     * the kingin check MoveType.LEGAL otherwise
+     * the king in check MoveType.LEGAL otherwise
      */
     private static MoveType leavesKingInCheck(final Move move,
             final BrowsableGame state) {
@@ -464,16 +463,14 @@ public class FIDERules implements RuleChecker {
 
     /**
      * This method checks, whether given move in given state of game gives mate.
-     * It only makes swnse to call this method when we KNOW that given move
+     * It only makes sense to call this method when we KNOW that given move
      * gives check!
      *
-     * @param state state of game in which we checkg given move
+     * @param state state of game in which we check given move
      * @param move move we check whether it gives mate in given state of game
      * @return true if given move gives mate in given state of game <br> false
      * otherwise
      */
-//ZATIM TU SOU NECHANE LADICI TISKY PRO SNADNEJSI ODHALOVANI CHYB
-//TYKAJICICH SE DETEKCE MATU. PAK TO SMAZ !!!!!!!!!!!!!!!!!!!!!!!!
     private static boolean givesMate(final Move move,
             final BrowsableGame state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame

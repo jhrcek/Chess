@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.PGN;
 
-import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.BrowsableGame.GameHeader;
+import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -173,7 +173,7 @@ public class PGNReader {
         for (String sanMove : sanMoves) {
             if (isSanMove(sanMove)) { //v movetextu muze byt i vysledek hry.
                 //System.out.println("Parsuju tah " + sanMove + " ...");
-                Move nextMove = san2MoveInfo(sanMove);
+                Move nextMove = san2Move(sanMove);
                 //System.out.print("vysledny tah je -> " + nextMove + "\n");
                 currentGame.move(nextMove);
                 changeSideToMove();
@@ -231,7 +231,7 @@ public class PGNReader {
      * This method converts SAN (Short Algebraic Notation) String representation
      * of the move into MoveInfo Object.
      */
-    private static Move san2MoveInfo(String sanMove) {
+    private static Move san2Move(String sanMove) {
         if (sanMove == null) {
             throw new NullPointerException("sanMove can't be null!");
         }

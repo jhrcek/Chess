@@ -9,7 +9,8 @@ package cz.janhrcek.chess.model;
  * class is legal.
  *
  * @author Jan Hrcek
- * @version 14.3.2006
+ * 
+ * TODO: refactor: promotionPiece to subclass Promotion
  */
 public class Move {
 

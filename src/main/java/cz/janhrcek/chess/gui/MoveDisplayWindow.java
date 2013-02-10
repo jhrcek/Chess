@@ -6,7 +6,7 @@ import javax.swing.JTextArea;
 
 /**
  * This component serves for displaying the short-algebraic representation of
- * moves of the game currently displayed in the gui.
+ * moves of the game currently displayed in the GUI.
  *
  * @author xhrcek
  */

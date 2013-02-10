@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
@@ -26,8 +26,8 @@ import javax.swing.JOptionPane;
 public class MyGameModel implements GameModel, MoveSelectedEventListener {
 
     /**
-     * The Game object which this class encapsulates for teh representation of
-     * the gamestae.
+     * The Game object which this class encapsulates for the representation of
+     * the gamestate.
      */
     private BrowsableGame gameState;
     /**
@@ -158,10 +158,10 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     /**
      * Makes the move in the current gamestate.
      *
-     * @param moveInfo the object representing information about the move
+     * @param move the object representing information about the move
      */
-    public void move(final Move moveInfo) {
-        gameState.move(moveInfo);
+    public void makeMove(final Move move) {
+        gameState.move(move);
     }
 
     /**
@@ -214,7 +214,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
 
         //only legal moves should get here!!
         Move selectedMove = event.getSelectedMove();
-        move(selectedMove);
+        makeMove(selectedMove);
 
         //dojdeme-li tady, pak tah je legalni a vsem posluchacum muzem
         // rict, ze udalost nastala
@@ -328,9 +328,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     }
 
     /**
-     * This method handles illegam moves carried by MoveSelectedEvent. It
-     * displays error message in the gui containing the chessboard component
-     * thhrough which the illegal move was selected.
+     * This method handles illegal moves carried by MoveSelectedEvent. It
+     * displays error message in the GUI containing the chessboard component
+     * through which the illegal move was selected.
      *
      * @return true if move was legal false otherwise
      * @param event The event carrying information about the move which was

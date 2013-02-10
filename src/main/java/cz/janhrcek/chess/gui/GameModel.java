@@ -98,9 +98,9 @@ public interface GameModel {
     /**
      * Makes the move in the current gamestate.
      *
-     * @param moveInfo the object representing information about the move
+     * @param move the object representing information about the move
      */
-    void move(final Move moveInfo);
+    void makeMove(final Move move);
 
     /**
      * Erases all information about the current gamestate, so that new game can

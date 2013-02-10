@@ -414,14 +414,14 @@ public class ChessboardComponent extends JComponent {
     }
 
     /**
-     * For given piece and two squares creates MoveInfo object which represents
+     * For given piece and two squares creates Move object which represents
      * the move of the piece from one square to the other square. This method
      * handles the promotion-piece selection in the case that the three
      * parameters represent pawn promotion.
      *
      * @param piece the piece that moves
      * @param from the square from which it moves
-     * @param to the square to whic hit moves
+     * @param to the square to which hit moves
      * @return MoveInfo object representing move of given piece from given
      * square to given square
      */

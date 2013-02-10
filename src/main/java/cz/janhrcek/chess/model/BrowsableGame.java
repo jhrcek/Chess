@@ -94,17 +94,17 @@ public class BrowsableGame {
     }
 
     /**
-     * Moves the piece from given square to given sqare, the move is made, side
+     * Moves the piece from given square to given square, the move is made, side
      * to move is changed (Black -> White and vice versa) and if some piece is
      * captured it is stored as captured piece in the list of captured pieces.
      * This method does not check the legality of the move. If parameter
-     * represents illegal move it is made nontheless.
+     * represents illegal move it is made nonetheless.
      *
-     * @param moveInfo object of class MoveInfo, that holds the information
+     * @param move object of class MoveInfo, that holds the information
      * about move to be made.
      */
-    public void move(final Move moveInfo) {
-        if (moveInfo == null) {
+    public void move(final Move move) {
+        if (move == null) {
             throw new NullPointerException("moveInfo can't be null!");
         }
 
@@ -118,32 +118,32 @@ public class BrowsableGame {
             return;
         }
 
-        MoveType mt = ruleChecker.checkMove(this, moveInfo);
+        MoveType mt = ruleChecker.checkMove(this, move);
         try {///prozatimni reseni
-            switchOnMoveType(moveInfo, mt);
+            switchOnMoveType(move, mt);
         } catch (IllegalStateException ise) {
             ise.printStackTrace();
         }
 
         try {
-            if (wasEnPassant(moveInfo)) {
+            if (wasEnPassant(move)) {
                 setEnPassantInfo();
-                removeEnPassanPawn(moveInfo.getTo());
+                removeEnPassanPawn(move.getTo());
             }
-            Piece capturedPiece = currentlyViewedPosition.makeMove(moveInfo);
+            Piece capturedPiece = currentlyViewedPosition.makeMove(move);
             if (capturedPiece != null) {
                 capturedPieces.add(capturedPiece);
                 captures.add(Boolean.valueOf("TRUE"));
             } else {
                 captures.add(Boolean.valueOf("FALSE"));
             }
-            movesPlayed.add(moveInfo);
-            changeCastlingAvailability(moveInfo);
+            movesPlayed.add(move);
+            changeCastlingAvailability(move);
             castlingAvailabilities.add(castlingAvailabilityTracker);
             changeSideToMove();
-            if (wasCastling(moveInfo)) {
-                setCastlingInfo(moveInfo);
-                moveCastlingRook(moveInfo.getTo()); //kings target square
+            if (wasCastling(move)) {
+                setCastlingInfo(move);
+                moveCastlingRook(move.getTo()); //kings target square
             }
             currentlyViewedHalfmove++;
         } catch (ChessboardException cbe) { //throwed if the moving piece was
@@ -157,21 +157,21 @@ public class BrowsableGame {
      * Makes the move on the chessboard without checking all rule-related
      * problems.
      *
-     * @param moveInfo the move to be made
+     * @param move the move to be made
      */
-    public void makeUncheckedMove(final Move moveInfo) {
-        if (moveInfo == null) {
+    public void makeUncheckedMove(final Move move) {
+        if (move == null) {
             throw new NullPointerException("moveInfo can't be null!");
         }
         setLastPosition(); //make the chessboard contain state after last move!
 
         try {
-            if (wasEnPassant(moveInfo)) {
+            if (wasEnPassant(move)) {
                 setEnPassantInfo();
-                removeEnPassanPawn(moveInfo.getTo());
+                removeEnPassanPawn(move.getTo());
             }
             castlingAvailabilities.add(castlingAvailabilityTracker);
-            Piece capturedPiece = currentlyViewedPosition.makeMove(moveInfo);
+            Piece capturedPiece = currentlyViewedPosition.makeMove(move);
             if (capturedPiece != null) {
                 capturedPieces.add(capturedPiece);
                 captures.add(Boolean.valueOf("TRUE"));
@@ -179,7 +179,7 @@ public class BrowsableGame {
                 captures.add(Boolean.valueOf("FALSE"));
             }
             checks.add(Boolean.valueOf("FALSE"));
-            movesPlayed.add(moveInfo);
+            movesPlayed.add(move);
             changeSideToMove();
         } catch (ChessboardException cbe) {
             cbe.printStackTrace();
@@ -428,7 +428,7 @@ public class BrowsableGame {
     /**
      * Turns rule checking on/of. If turned on legality of each move is checked
      * against international FIDE chess rules. If turned on any move made is
-     * considired legal.
+     * considered legal.
      *
      * @param flag true if you want to set rule checking ON false if you want to
      * set rule checking OFF
@@ -791,8 +791,8 @@ public class BrowsableGame {
     }
 
     /**
-     * If given move changes the canstling availability, then this method makes
-     * approproate changes to this Game's castlingAvailability representation.
+     * If given move changes the castling availability, then this method makes
+     * appropriate changes to this Game's castlingAvailability representation.
      *
      * @param move any move
      */
@@ -845,12 +845,12 @@ public class BrowsableGame {
      * attempt. This method is ONLY called in move(MoveInfo moveInfo) method.
      *
      * @return true if given move was castling attempt, false otherwise
-     * @param moveInfo the move to check, whether it can represent castling
+     * @param move the move to check, whether it can represent castling
      */
-    private boolean wasCastling(Move moveInfo) {
-        Piece piece = moveInfo.getPiece();
-        Square from = moveInfo.getFrom();
-        Square to = moveInfo.getTo();
+    private boolean wasCastling(Move move) {
+        Piece piece = move.getPiece();
+        Square from = move.getFrom();
+        Square to = move.getTo();
 
         if (((piece.equals(Piece.WHITE_KING) && from.equals(Square.E1))
                 && (to.equals(Square.G1) || to.equals(Square.C1)))
@@ -863,13 +863,13 @@ public class BrowsableGame {
     }
 
     /**
-     * Sets info about when the castling occured so that we can eventually take
+     * Sets info about when the castling occurred so that we can eventually take
      * it back.
      *
-     * @param moveInfo the castling move
+     * @param move the castling move
      */
-    private void setCastlingInfo(Move moveInfo) {
-        if (moveInfo.getPiece().equals(Piece.WHITE_KING)) {
+    private void setCastlingInfo(Move move) {
+        if (move.getPiece().equals(Piece.WHITE_KING)) {
             whenWhiteCastled = movesPlayed.size();
         } else {
             whenBlackCastled = movesPlayed.size();
@@ -948,16 +948,16 @@ public class BrowsableGame {
     /**
      * Checks whether given move could have been en passant pawn capture try.
      *
-     * @param moveInfo the move about which we want to check if it is en passant
+     * @param move the move about which we want to check if it is en passant
      * capture try
      * @return true if move info represents en passant capture try (its pawn
      * move from its fifth rank to adjacent file on its sixth rank, and there is
      * nothing on move's destination square), false otherwise
      */
-    private boolean wasEnPassant(Move moveInfo) {
-        Piece piece = moveInfo.getPiece();
-        Square from = moveInfo.getFrom();
-        Square to = moveInfo.getTo();
+    private boolean wasEnPassant(Move move) {
+        Piece piece = move.getPiece();
+        Square from = move.getFrom();
+        Square to = move.getTo();
         if ((currentlyViewedPosition.getPiece(to) == null)
                 && ((piece.equals(Piece.WHITE_PAWN) && from.getRank() == 4 && (to.getFile() != from.getFile()))
                 || (piece.equals(Piece.BLACK_PAWN) && from.getRank() == 3 && (to.getFile() != from.getFile())))) {
@@ -1001,11 +1001,11 @@ public class BrowsableGame {
 
     /**
      * When we are canceling last move and the last move was en-passant capture
-     * we can't use the seame captured-piece-returning mechanism as with normal
+     * we can't use the same captured-piece-returning mechanism as with normal
      * capture (return the piece to a last move's "to" square), so we must
      * return the pawn manually with this method.
      *
-     * @param lastMove the move which was en-passan pawn capture (the behaviour
+     * @param lastMove the move which was en-passant pawn capture (the behavior
      * is not defined if the last move was not en passant capture!!)
      */
     private void returnEnPassantPawn(Move lastMove) {
