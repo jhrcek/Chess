@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.model;
 
-import cz.janhrcek.chess.rules.BitboardDatabase;
+import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERules;
 import cz.janhrcek.chess.rules.MoveType;
 import cz.janhrcek.chess.rules.NoRules;
@@ -36,7 +36,7 @@ public class BrowsableGame {
         currentlyViewedPosition = new Chessboard();
         currentlyViewedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
-        movesPlayed = new LinkedList<MoveInfo>();
+        movesPlayed = new LinkedList<Move>();
         capturedPieces = new LinkedList<Piece>();
         captures = new LinkedList<Boolean>();
         checks = new LinkedList<Boolean>();
@@ -103,7 +103,7 @@ public class BrowsableGame {
      * @param moveInfo object of class MoveInfo, that holds the information
      * about move to be made.
      */
-    public void move(final MoveInfo moveInfo) {
+    public void move(final Move moveInfo) {
         if (moveInfo == null) {
             throw new NullPointerException("moveInfo can't be null!");
         }
@@ -130,7 +130,7 @@ public class BrowsableGame {
                 setEnPassantInfo();
                 removeEnPassanPawn(moveInfo.getTo());
             }
-            Piece capturedPiece = currentlyViewedPosition.move(moveInfo);
+            Piece capturedPiece = currentlyViewedPosition.makeMove(moveInfo);
             if (capturedPiece != null) {
                 capturedPieces.add(capturedPiece);
                 captures.add(Boolean.valueOf("TRUE"));
@@ -159,7 +159,7 @@ public class BrowsableGame {
      *
      * @param moveInfo the move to be made
      */
-    public void makeUncheckedMove(final MoveInfo moveInfo) {
+    public void makeUncheckedMove(final Move moveInfo) {
         if (moveInfo == null) {
             throw new NullPointerException("moveInfo can't be null!");
         }
@@ -171,7 +171,7 @@ public class BrowsableGame {
                 removeEnPassanPawn(moveInfo.getTo());
             }
             castlingAvailabilities.add(castlingAvailabilityTracker);
-            Piece capturedPiece = currentlyViewedPosition.move(moveInfo);
+            Piece capturedPiece = currentlyViewedPosition.makeMove(moveInfo);
             if (capturedPiece != null) {
                 capturedPieces.add(capturedPiece);
                 captures.add(Boolean.valueOf("TRUE"));
@@ -197,7 +197,7 @@ public class BrowsableGame {
             return;                   //no move was played
         }
 
-        MoveInfo lastMove = movesPlayed.getLast();
+        Move lastMove = movesPlayed.getLast();
 
         //pokud byl posledni tah rosada musime vratit nejen KINGA ale i ROOK
         if (numberOfLastHalfmove == whenWhiteCastled) {
@@ -283,7 +283,7 @@ public class BrowsableGame {
      *
      * @return list of moves played since the beginning of the game
      */
-    public LinkedList<MoveInfo> getMovesPlayed() {
+    public LinkedList<Move> getMovesPlayed() {
         return movesPlayed;
     }
 
@@ -344,7 +344,7 @@ public class BrowsableGame {
         if (movesPlayed.isEmpty()) { //zadny tah nebyl odehran
             return null;
         } else {
-            MoveInfo lastMove = movesPlayed.getLast();
+            Move lastMove = movesPlayed.getLast();
 
             if (lastMove.getPiece().equals(Piece.WHITE_PAWN)
                     && lastMove.getFrom().getFile() == lastMove.getTo().getFile()
@@ -394,7 +394,7 @@ public class BrowsableGame {
         }
 
         //spoctem kolik pultahu uplynulo od posledni pawn advance
-        ListIterator<MoveInfo> moveIt = movesPlayed.listIterator(movesPlayed.size());
+        ListIterator<Move> moveIt = movesPlayed.listIterator(movesPlayed.size());
         while (moveIt.hasPrevious()) {
             Piece tmpPiece = moveIt.previous().getPiece();
             if (tmpPiece.equals(Piece.WHITE_PAWN)
@@ -441,7 +441,7 @@ public class BrowsableGame {
         }
     }
 
-    private void switchOnMoveType(MoveInfo move, MoveType mt) {
+    private void switchOnMoveType(Move move, MoveType mt) {
         switch (mt) {
             case LEGAL_MATE:
                 checks.add(Boolean.valueOf("TRUE"));
@@ -796,7 +796,7 @@ public class BrowsableGame {
      *
      * @param move any move
      */
-    private void changeCastlingAvailability(MoveInfo move) {
+    private void changeCastlingAvailability(Move move) {
         if (move == null) {
             throw new IllegalArgumentException("move can't be null!");
         }
@@ -847,7 +847,7 @@ public class BrowsableGame {
      * @return true if given move was castling attempt, false otherwise
      * @param moveInfo the move to check, whether it can represent castling
      */
-    private boolean wasCastling(MoveInfo moveInfo) {
+    private boolean wasCastling(Move moveInfo) {
         Piece piece = moveInfo.getPiece();
         Square from = moveInfo.getFrom();
         Square to = moveInfo.getTo();
@@ -868,7 +868,7 @@ public class BrowsableGame {
      *
      * @param moveInfo the castling move
      */
-    private void setCastlingInfo(MoveInfo moveInfo) {
+    private void setCastlingInfo(Move moveInfo) {
         if (moveInfo.getPiece().equals(Piece.WHITE_KING)) {
             whenWhiteCastled = movesPlayed.size();
         } else {
@@ -886,19 +886,19 @@ public class BrowsableGame {
         try {
             switch (kingsDestinationSquare) {
                 case C8:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.BLACK_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.BLACK_ROOK,
                             Square.A8, Square.D8));
                     break;
                 case G8:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.BLACK_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.BLACK_ROOK,
                             Square.H8, Square.F8));
                     break;
                 case C1:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.WHITE_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.WHITE_ROOK,
                             Square.A1, Square.D1));
                     break;
                 case G1:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.WHITE_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.WHITE_ROOK,
                             Square.H1, Square.F1));
                     break;
                 default:
@@ -921,19 +921,19 @@ public class BrowsableGame {
         try {
             switch (kingsDestinationSquare) {
                 case C8:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.BLACK_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.BLACK_ROOK,
                             Square.D8, Square.A8));
                     break;
                 case G8:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.BLACK_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.BLACK_ROOK,
                             Square.F8, Square.H8));
                     break;
                 case C1:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.WHITE_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.WHITE_ROOK,
                             Square.D1, Square.A1));
                     break;
                 case G1:
-                    currentlyViewedPosition.move(new MoveInfo(Piece.WHITE_ROOK,
+                    currentlyViewedPosition.makeMove(new Move(Piece.WHITE_ROOK,
                             Square.F1, Square.H1));
                     break;
                 default:
@@ -954,7 +954,7 @@ public class BrowsableGame {
      * move from its fifth rank to adjacent file on its sixth rank, and there is
      * nothing on move's destination square), false otherwise
      */
-    private boolean wasEnPassant(MoveInfo moveInfo) {
+    private boolean wasEnPassant(Move moveInfo) {
         Piece piece = moveInfo.getPiece();
         Square from = moveInfo.getFrom();
         Square to = moveInfo.getTo();
@@ -1008,7 +1008,7 @@ public class BrowsableGame {
      * @param lastMove the move which was en-passan pawn capture (the behaviour
      * is not defined if the last move was not en passant capture!!)
      */
-    private void returnEnPassantPawn(MoveInfo lastMove) {
+    private void returnEnPassantPawn(Move lastMove) {
         Square to = lastMove.getTo();
         capturedPieces.removeLast();
         if (to.getRank() == 5) {
@@ -1039,7 +1039,7 @@ public class BrowsableGame {
         currentlyViewedPosition.setInitialPosition();
         for (int i = 0; i < halfmove; i++) {
             try {
-                currentlyViewedPosition.move(movesPlayed.get(i));
+                currentlyViewedPosition.makeMove(movesPlayed.get(i));
             } catch (ChessboardException ex) {
                 ex.printStackTrace();
             }
@@ -1100,7 +1100,7 @@ public class BrowsableGame {
         return sb.toString();
     }
 
-    private String desambigMove(MoveInfo move) {
+    private String desambigMove(Move move) {
         //System.out.println("desambiguace tahu " + move);
         StringBuilder resultStr = new StringBuilder();
         Piece piece = move.getPiece();
@@ -1158,13 +1158,13 @@ public class BrowsableGame {
 
             ArrayList<Square> squaresWithPiece = new ArrayList<Square>();
             Square[] potentFromSquares = Square.getSquares(
-                    BitboardDatabase.getReachableSquaresBB(piece, to));
+                    BitboardManager.getReachableSquaresBB(piece, to));
 
             for (Square s : potentFromSquares) { //najdem vsechny vyskyty piecu
                 if (piece.equals(iteratingGame.getChessboard().getPiece(s)) //je-li na nem dany piece
 
                         //a pritom ten piece muze v tom stavy hry legalne tahnou na "to"
-                        && ruleChecker.checkMove(iteratingGame, new MoveInfo(piece, s, to)).isLegal()) {
+                        && ruleChecker.checkMove(iteratingGame, new Move(piece, s, to)).isLegal()) {
                     //System.out.println("..mam jednoho na " + s);
                     squaresWithPiece.add(s);
                 }
@@ -1232,7 +1232,7 @@ public class BrowsableGame {
     /**
      * Stores the moves played since the beginning of the game.
      */
-    private final LinkedList<MoveInfo> movesPlayed;
+    private final LinkedList<Move> movesPlayed;
     /**
      * Stores information about who is to move.
      */

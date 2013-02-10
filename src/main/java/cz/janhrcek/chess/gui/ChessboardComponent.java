@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
 import java.awt.Component;
@@ -134,7 +134,7 @@ public class ChessboardComponent extends JComponent {
                 //vybran "from" i "to" -> vytvorime MoveInfo reprezentujici ten tah
                 Piece movingPiece =
                         model.getChessboard().getPiece(selectedFromSquare);
-                MoveInfo selectedMove =
+                Move selectedMove =
                         createSelectedMove(movingPiece,
                         selectedFromSquare, //from
                         clickedSquare); //to
@@ -425,7 +425,7 @@ public class ChessboardComponent extends JComponent {
      * @return MoveInfo object representing move of given piece from given
      * square to given square
      */
-    private MoveInfo createSelectedMove(Piece piece, Square from, Square to) {
+    private Move createSelectedMove(Piece piece, Square from, Square to) {
         //je-li to pawn promotion dame vybrat na co ho chce promotnout
         if ((piece.equals(Piece.WHITE_PAWN) && from.getRank() == 6 && to.getRank() == 7)
                 || (piece.equals(Piece.BLACK_PAWN) && from.getRank() == 1 && to.getRank() == 0)) {
@@ -475,9 +475,9 @@ public class ChessboardComponent extends JComponent {
                     throw new IllegalStateException("toWhatPromote"
                             + " wasn't 0, 1, 2 or 3");
             }
-            return new MoveInfo(piece, from, to, promoPiece);
+            return new Move(piece, from, to, promoPiece);
         } else { //neni to pawn promotion
-            return new MoveInfo(piece, from, to);
+            return new Move(piece, from, to);
         }
     }
 }

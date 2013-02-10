@@ -3,10 +3,10 @@ package cz.janhrcek.chess.PGN;
 import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
 import cz.janhrcek.chess.model.BrowsableGame.GameHeader;
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
-import cz.janhrcek.chess.rules.BitboardDatabase;
+import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERules;
 import cz.janhrcek.chess.rules.RuleChecker;
 import java.io.BufferedReader;
@@ -173,7 +173,7 @@ public class PGNReader {
         for (String sanMove : sanMoves) {
             if (isSanMove(sanMove)) { //v movetextu muze byt i vysledek hry.
                 //System.out.println("Parsuju tah " + sanMove + " ...");
-                MoveInfo nextMove = san2MoveInfo(sanMove);
+                Move nextMove = san2MoveInfo(sanMove);
                 //System.out.print("vysledny tah je -> " + nextMove + "\n");
                 currentGame.move(nextMove);
                 changeSideToMove();
@@ -231,7 +231,7 @@ public class PGNReader {
      * This method converts SAN (Short Algebraic Notation) String representation
      * of the move into MoveInfo Object.
      */
-    private static MoveInfo san2MoveInfo(String sanMove) {
+    private static Move san2MoveInfo(String sanMove) {
         if (sanMove == null) {
             throw new NullPointerException("sanMove can't be null!");
         }
@@ -246,9 +246,9 @@ public class PGNReader {
         Piece toWhatPromote = determinePromoPiece(sanMove, piece);
 
         if (toWhatPromote == null) {
-            return new MoveInfo(piece, from, to);
+            return new Move(piece, from, to);
         } else {
-            return new MoveInfo(piece, from, to, toWhatPromote);
+            return new Move(piece, from, to, toWhatPromote);
         }
     }
 
@@ -389,7 +389,7 @@ public class PGNReader {
         Square from = null;
         ArrayList<Square> squaresWithPiece = new ArrayList<Square>();
         Square[] potentFromSquares = Square.getSquares(
-                BitboardDatabase.getReachableSquaresBB(piece, to));
+                BitboardManager.getReachableSquaresBB(piece, to));
 
         Chessboard currBoard = currentGame.getChessboard();
 
@@ -398,7 +398,7 @@ public class PGNReader {
             for (Square s : Square.values()) {
                 if (s.getFile() == fileIdx) {
                     if (piece.equals(currBoard.getPiece(s))
-                            && ruleChecker.checkMove(currentGame, new MoveInfo(piece, s, to)).isLegal()) {
+                            && ruleChecker.checkMove(currentGame, new Move(piece, s, to)).isLegal()) {
                         from = s;
                         break;
                     }
@@ -408,7 +408,7 @@ public class PGNReader {
             for (Square s : potentFromSquares) { //najdem vsechny vyskyty piecu
                 if (piece.equals(currBoard.getPiece(s)) //je-li na nem dany piece
                         //a pritom ten piece muze v tom stavy hry legalne tahnou na "to"
-                        && ruleChecker.checkMove(currentGame, new MoveInfo(piece, s, to)).isLegal()) {
+                        && ruleChecker.checkMove(currentGame, new Move(piece, s, to)).isLegal()) {
                     //System.out.println("Piece: " + piece + " potent from " + s + " to " + to);
                     squaresWithPiece.add(s);
                 }

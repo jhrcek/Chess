@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
 import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 
 /**
  * Implementation of the Rule checker, that does not control the legality of the
@@ -23,7 +23,7 @@ public class NoRules implements RuleChecker {
      *
      */
     public final MoveType checkMove(final BrowsableGame state,
-            final MoveInfo move) {
+            final Move move) {
         if (state == null) {
             throw new IllegalArgumentException("state can't be null!");
         }

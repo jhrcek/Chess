@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.Chessboard;
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import java.util.LinkedList;
 
@@ -63,7 +63,7 @@ public interface GameModel {
      *
      * @return list of moves played since the beginning of the game.
      */
-    LinkedList<MoveInfo> getMovesPlayed();
+    LinkedList<Move> getMovesPlayed();
 
     /**
      * Return list of Boolean values representing which moves were checks.
@@ -100,7 +100,7 @@ public interface GameModel {
      *
      * @param moveInfo the object representing information about the move
      */
-    void move(final MoveInfo moveInfo);
+    void move(final Move moveInfo);
 
     /**
      * Erases all information about the current gamestate, so that new game can

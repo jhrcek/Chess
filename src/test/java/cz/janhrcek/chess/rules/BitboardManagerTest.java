@@ -6,10 +6,10 @@ import org.testng.annotations.Test;
  *
  * @author jhrcek
  */
-public class BitboardTest {
+public class BitboardManagerTest {
 
     @Test
     public void testParseString() { //TODO - finish this test
-        Bitboard.parseString("1111111111111111111111111111111111111111111111111111111111111111");
+        BitboardManager.parseString("1111111111111111111111111111111111111111111111111111111111111111");
     }
 }

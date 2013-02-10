@@ -8,10 +8,10 @@ package cz.janhrcek.chess.model;
  * Here we don't care, whether the move represented by the instance of this
  * class is legal.
  *
- * @author Jan Hr�ek
+ * @author Jan Hrcek
  * @version 14.3.2006
  */
-public class MoveInfo {
+public class Move {
 
     /**
      * The piece that moved.
@@ -39,7 +39,7 @@ public class MoveInfo {
      * @param f the square, from which the piece moved
      * @param t the square to which the piece moved
      */
-    public MoveInfo(final Piece p, final Square f, final Square t) {
+    public Move(final Piece p, final Square f, final Square t) {
         if (p == null) {
             throw new NullPointerException("piece can't be null!");
         }
@@ -65,7 +65,7 @@ public class MoveInfo {
      * @param toWhatPromote piece to which we want to promote that pawn (it must
      * be Queen, Rook, Bishop or Knight of the same color as the moving pawn)
      */
-    public MoveInfo(Piece p, Square f, Square t, Piece toWhatPromote) {
+    public Move(Piece p, Square f, Square t, Piece toWhatPromote) {
         this(p, f, t);
 
         if (toWhatPromote == null) {

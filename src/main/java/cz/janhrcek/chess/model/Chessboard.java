@@ -124,11 +124,8 @@ public class Chessboard {
      * @param square square on the chessboard, on which we want to put the piece
      */
     public void putPiece(final Piece piece, final Square square) {
-        if (piece == null) {
-            throw new NullPointerException("piece can't be null!");
-        }
-        if (square == null) {
-            throw new NullPointerException("square can't be null!");
+        if (piece == null || square == null) {
+            throw new NullPointerException("Piece or square can not be null!");
         }
         board[square.getFile()][square.getRank()] = piece;
     }
@@ -148,27 +145,26 @@ public class Chessboard {
 
     /**
      * Moves the piece from one square on the chessboard to another square on
-     * the same board. If there is allready a piece on the destination square,
+     * the same board. If there is already a piece on the destination square,
      * the new piece takes its place (captures it) and the old piece is returned
      * as a return value of the method (and removed away from the chessboard).
      * If there is no piece on the destination square, the method returns null.
      *
-     * @param moveInfo object that holds information about the move we want to
+     * @param move object that holds information about the move we want to
      * make on th board (which pice, form where, to where)
      * @return the piece, that were formerly on the destination square, or null,
      * if there was nothing on that square
      * @throws ChessboardException if the piece to move is not on the square you
      * want to move it from
      */
-    public Piece move(MoveInfo moveInfo)
-            throws ChessboardException {
-        if (moveInfo == null) {
-            throw new NullPointerException("moveInfo can't be null!");
+    public Piece makeMove(Move move) throws ChessboardException {
+        if (move == null) {
+            throw new NullPointerException("move can't be null!");
         }
 
-        Piece piece = moveInfo.getPiece();
-        Square from = moveInfo.getFrom();
-        Square to = moveInfo.getTo();
+        Piece piece = move.getPiece();
+        Square from = move.getFrom();
+        Square to = move.getTo();
 
         //is piece from MoveInfo on the square from which I want to move it?
         if (!piece.equals(getPiece(from))) {
@@ -180,8 +176,8 @@ public class Chessboard {
         Piece capturedPiece = getPiece(to);
         removePiece(from);
         // je-li to povyseni pesaka poloz tam na co se povysuje
-        if (moveInfo.getToWhatPromote() != null) {
-            putPiece(moveInfo.getToWhatPromote(), to);
+        if (move.getToWhatPromote() != null) {
+            putPiece(move.getToWhatPromote(), to);
         } else { //jinak tam poloz ten moving piece
             putPiece(piece, to);
         }
@@ -195,25 +191,14 @@ public class Chessboard {
      */
     @Override
     public String toString() {
-        java.lang.StringBuilder sb = new java.lang.StringBuilder();
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(7));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(6));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(5));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(4));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(3));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(2));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(1));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append(getRowString(0));
-        sb.append("  +--+--+--+--+--+--+--+--+\n");
-        sb.append("   A  B  C  D  E  F  G  H\n");
+        StringBuilder sb = new StringBuilder();
+        final String BETWEEN_ROWS = "  +---+---+---+---+---+---+---+---+\n";
+        sb.append(BETWEEN_ROWS);
+        for (int i = 7; i >= 0; i--) {
+            sb.append(getRowString(i));
+            sb.append(BETWEEN_ROWS);
+        }
+        sb.append("    A   B   C   D   E   F   G   H\n");
         return sb.toString();
     }
 
@@ -225,49 +210,48 @@ public class Chessboard {
      * @return pseudo-graphical representation of the row
      */
     private String getRowString(int index) {
-        java.lang.StringBuilder sb = new StringBuilder();
-        sb.append(index + 1);
-        sb.append(" |");
+        StringBuilder sb = new StringBuilder();
+        sb.append(index + 1).append(" |");
         for (int i = 0; i < 8; i++) {
             if (board[i][index] == null) {
-                sb.append("  ");
+                sb.append("   ");
             } else {
                 switch (board[i][index]) {
                     case WHITE_PAWN:
-                        sb.append("P ");
+                        sb.append(" P ");
                         break;
                     case BLACK_PAWN:
-                        sb.append("p ");
+                        sb.append(" p ");
                         break;
                     case WHITE_KNIGHT:
-                        sb.append("N ");
+                        sb.append(" N ");
                         break;
                     case BLACK_KNIGHT:
-                        sb.append("n ");
+                        sb.append(" n ");
                         break;
                     case WHITE_BISHOP:
-                        sb.append("B ");
+                        sb.append(" B ");
                         break;
                     case BLACK_BISHOP:
-                        sb.append("b ");
+                        sb.append(" b ");
                         break;
                     case WHITE_ROOK:
-                        sb.append("R ");
+                        sb.append(" R ");
                         break;
                     case BLACK_ROOK:
-                        sb.append("r ");
+                        sb.append(" r ");
                         break;
                     case WHITE_QUEEN:
-                        sb.append("Q ");
+                        sb.append(" Q ");
                         break;
                     case BLACK_QUEEN:
-                        sb.append("q ");
+                        sb.append(" q ");
                         break;
                     case WHITE_KING:
-                        sb.append("K ");
+                        sb.append(" K ");
                         break;
                     case BLACK_KING:
-                        sb.append("k ");
+                        sb.append(" k ");
                         break;
                 }
             }

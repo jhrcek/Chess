@@ -2,13 +2,34 @@ package cz.janhrcek.chess.rules;
 
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
+import java.math.BigInteger;
 
 /**
- * Class gives user the most important bitboard at disposal.
+ * This class enables retrieval of various bitboards, represented as values of
+ * primitive long. Bitboard is useful data structure used for representing
+ * chessboard-related information. It is 64-bit long vector, enabling to store
+ * yes/no information for each square on the chessboard.
  *
  * @author Jan Hrcek
  */
-public final class BitboardDatabase {
+public final class BitboardManager {
+    /**
+     * Utility method for parsing string representation of bitboards into long.
+     *
+     * @param bitboardAsString 64-character string consisting of only 0s and 1s
+     * @return long representation of the bitboard
+     */
+    public static long parseString(String bitboardAsString) {
+        if (bitboardAsString == null) {
+            throw new NullPointerException("bitboardAsString must not be null!");
+        }
+        if (bitboardAsString.length() != 64) {
+            throw new IllegalArgumentException("The input must be 64 character"
+                    + " long string consisting of only 1s and 0s, but was "
+                    + bitboardAsString + "(length = " + bitboardAsString.length() + ")");
+        }
+        return new BigInteger(bitboardAsString, 2).longValue();
+    }
 
     /**
      * This method tells whether given piece can go from given square to another
@@ -95,9 +116,9 @@ public final class BitboardDatabase {
 
 ////////////PRIVATE IMPLEMENTATION
     /**
-     * This is utility class, and shoud not be instantiated.
+     * This is utility class, and should not be instantiated.
      */
-    private BitboardDatabase() {
+    private BitboardManager() {
     }
 
     /**

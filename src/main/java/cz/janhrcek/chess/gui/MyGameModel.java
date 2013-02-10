@@ -2,7 +2,7 @@ package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
 import cz.janhrcek.chess.rules.FIDERules;
@@ -114,7 +114,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return list of moves played since the beginning of the game.
      */
-    public LinkedList<MoveInfo> getMovesPlayed() {
+    public LinkedList<Move> getMovesPlayed() {
         return gameState.getMovesPlayed();
     }
 
@@ -160,7 +160,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param moveInfo the object representing information about the move
      */
-    public void move(final MoveInfo moveInfo) {
+    public void move(final Move moveInfo) {
         gameState.move(moveInfo);
     }
 
@@ -186,7 +186,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
             System.out.println("No more moves to take back!");
             return;
         }
-        MoveInfo lastMove = gameState.getMovesPlayed().getLast();
+        Move lastMove = gameState.getMovesPlayed().getLast();
         gameState.cancelLastMove();
         //doslo ke zmene tahu -> dame vedet posluchacum zmeny stavu
         ArrayList<Square> squaresThatChanged =
@@ -213,7 +213,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
         }
 
         //only legal moves should get here!!
-        MoveInfo selectedMove = event.getSelectedMove();
+        Move selectedMove = event.getSelectedMove();
         move(selectedMove);
 
         //dojdeme-li tady, pak tah je legalni a vsem posluchacum muzem
@@ -235,7 +235,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @return the squares of the chessboard which were changed since the last
      * call of this method.
      */
-    private ArrayList<Square> getSquaresThatChanged(MoveInfo selectedMove) {
+    private ArrayList<Square> getSquaresThatChanged(Move selectedMove) {
         ArrayList<Square> changedSquares = new ArrayList<Square>();
         Piece piece = selectedMove.getPiece();
         Square from = selectedMove.getFrom();
@@ -337,7 +337,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * selected
      */
     private boolean handleIllegalMoves(MoveSelectedEvent event) {
-        MoveInfo selectedMove = event.getSelectedMove();
+        Move selectedMove = event.getSelectedMove();
         MoveType legalityTestResult = ruleChecker.checkMove(gameState, selectedMove);
         String errorMessage = "";
 

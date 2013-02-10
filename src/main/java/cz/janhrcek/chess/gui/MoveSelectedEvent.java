@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import java.util.EventObject;
 
 /**
@@ -10,7 +10,7 @@ import java.util.EventObject;
  */
 public class MoveSelectedEvent extends EventObject {
 
-    private MoveInfo selectedMove;
+    private Move selectedMove;
 
     /**
      * Creates new instance of MoveSelectedEvent.
@@ -18,7 +18,7 @@ public class MoveSelectedEvent extends EventObject {
      * @param source the source of the event
      * @param selectedMove the move whose selection this event represents
      */
-    public MoveSelectedEvent(Object source, MoveInfo selectedMove) {
+    public MoveSelectedEvent(Object source, Move selectedMove) {
         super(source);
         this.selectedMove = selectedMove;
     }
@@ -28,7 +28,7 @@ public class MoveSelectedEvent extends EventObject {
      *
      * @return The move that was selected
      */
-    public MoveInfo getSelectedMove() {
+    public Move getSelectedMove() {
         return selectedMove;
     }
 

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import java.util.LinkedList;
 import javax.swing.JTextArea;
 
@@ -51,7 +51,7 @@ public class MoveDisplayWindow extends JTextArea {
      * is represented by the GameMovel.
      */
     public void writeOutMoves() {
-        LinkedList<MoveInfo> movesPlayed = model.getMovesPlayed();
+        LinkedList<Move> movesPlayed = model.getMovesPlayed();
         LinkedList<Boolean> checks = model.getChecks();
         int currentMove = model.getCurrentlyViewedHalfMove();
         setText("");

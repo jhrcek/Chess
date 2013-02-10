@@ -2,7 +2,7 @@ package cz.janhrcek.chess.rules;
 
 import cz.janhrcek.chess.model.Chessboard;
 import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.MoveInfo;
+import cz.janhrcek.chess.model.Move;
 import cz.janhrcek.chess.model.Piece;
 import cz.janhrcek.chess.model.Square;
 
@@ -27,7 +27,7 @@ public class FIDERules implements RuleChecker {
      * the move.
      */
     public final MoveType checkMove(final BrowsableGame state,
-            final MoveInfo move) {
+            final Move move) {
         if (state == null) {
             throw new NullPointerException("state can't be null!");
         }
@@ -321,7 +321,7 @@ public class FIDERules implements RuleChecker {
             final Square from,
             final Square to) {
         // i) muze tam ta figura jit na prazdne sachovnici?
-        if (!BitboardDatabase.canGo(piece, from, to)) {
+        if (!BitboardManager.canGo(piece, from, to)) {
             return MoveType.ILLEGAL_PIECE_MOVE;
         }
 
@@ -419,7 +419,7 @@ public class FIDERules implements RuleChecker {
      * @return MoveType.ILLEGAL_LEAVES_KING_IN_CHECK if given move would leave
      * the kingin check MoveType.LEGAL otherwise
      */
-    private static MoveType leavesKingInCheck(final MoveInfo move,
+    private static MoveType leavesKingInCheck(final Move move,
             final BrowsableGame state) {
         MoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame ...
@@ -447,7 +447,7 @@ public class FIDERules implements RuleChecker {
      * @return MoveType.LEGAL_CHECK if given move gives check when made in given
      * state of game<br> MoveType.LEGAL otherwise.
      */
-    private static MoveType givesCheck(final MoveInfo move,
+    private static MoveType givesCheck(final Move move,
             final BrowsableGame state) {
         MoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame
@@ -474,7 +474,7 @@ public class FIDERules implements RuleChecker {
      */
 //ZATIM TU SOU NECHANE LADICI TISKY PRO SNADNEJSI ODHALOVANI CHYB
 //TYKAJICICH SE DETEKCE MATU. PAK TO SMAZ !!!!!!!!!!!!!!!!!!!!!!!!
-    private static boolean givesMate(final MoveInfo move,
+    private static boolean givesMate(final Move move,
             final BrowsableGame state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame
         Chessboard position = state.getChessboard();
@@ -506,7 +506,7 @@ public class FIDERules implements RuleChecker {
                     continue; //tam king nemuze bo je tam pratelska figura
                 } else {
                     if (leavesKingInCheck(
-                            new MoveInfo(king, kingsSquare, potentFlightSq),
+                            new Move(king, kingsSquare, potentFlightSq),
                             state).isLegal()) {
 //System.out.println("King can escape to " + potentFlightSq + " from check.");
                         state.cancelLastMove(); //A:A pak ho vezmem z5
@@ -527,7 +527,7 @@ public class FIDERules implements RuleChecker {
                 if (canGeometricallyMove(//muze li ho vzit
                         position, tmpPiece, s, sqOfCheckingPiece).isLegal()) {
                     if (leavesKingInCheck(//a nenecha pritom krale v sachu
-                            new MoveInfo(tmpPiece, s, sqOfCheckingPiece),
+                            new Move(tmpPiece, s, sqOfCheckingPiece),
                             state).isLegal()) {
                         //jakmile najdeme piece, ktery muze sachujici
                         // figuru vzit, je jasne, ze to neni mat.
@@ -562,7 +562,7 @@ public class FIDERules implements RuleChecker {
                     if (canGeometricallyMove(position, tmpPiece, s, sqOnPath)
                             .isLegal()) { //muze li tam jit
                         if (leavesKingInCheck(//a nenecha pritom krale v sachu
-                                new MoveInfo(tmpPiece, s, sqOnPath),
+                                new Move(tmpPiece, s, sqOnPath),
                                 state).isLegal()) {
                             //jakmile najdeme tah blokujici sach,
                             //je jasne, ze to neni mat.
@@ -729,7 +729,7 @@ public class FIDERules implements RuleChecker {
         }
     }
 
-    private MoveType checkEnPassantCapture(MoveInfo move, BrowsableGame state) {
+    private MoveType checkEnPassantCapture(Move move, BrowsableGame state) {
         Square enPassantTargetSquare = state.getEnPassantTargetSquare();
         if (enPassantTargetSquare != null
                 && move.getTo().equals(enPassantTargetSquare)) {
