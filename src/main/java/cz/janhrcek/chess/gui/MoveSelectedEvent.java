@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Move;
+import cz.janhrcek.chess.model.api.Move;
 import java.util.EventObject;
 
 /**

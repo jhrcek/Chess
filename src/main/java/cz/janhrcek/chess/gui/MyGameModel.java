@@ -1,10 +1,10 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.Position;
-import cz.janhrcek.chess.model.Move;
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.api.Square;
 import cz.janhrcek.chess.rules.FIDERules;
 import cz.janhrcek.chess.rules.MoveType;
 import cz.janhrcek.chess.rules.NoRules;
@@ -29,7 +29,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * The Game object which this class encapsulates for the representation of
      * the gamestate.
      */
-    private BrowsableGame gameState;
+    private BrowsableGameOld gameState;
     /**
      * Enables us to control the legality of the moves.
      */
@@ -46,7 +46,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param state The game object which will be encapsulated for the
      * representation of the games tate
      */
-    public MyGameModel(BrowsableGame state) {
+    public MyGameModel(BrowsableGameOld state) {
         this.gameState = state;
         ruleChecker = new FIDERules();
     }
@@ -57,7 +57,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param g the game to represent the state of the game
      */
-    public void setGame(BrowsableGame g) {
+    public void setGame(BrowsableGameOld g) {
         if (g == null) {
             throw new NullPointerException("g can't be null!");
         }
@@ -71,7 +71,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @return the game which this implementation of GameModel encapsulates for
      * representation of the game state.
      */
-    public BrowsableGame getGame() {
+    public BrowsableGameOld getGame() {
         return gameState;
     }
 
@@ -80,6 +80,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param listener the listener to register
      */
+    @Override
     public void addGameModelListener(GameModelListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
@@ -93,6 +94,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param listener the listener to unregister
      */
+    @Override
     public void removeGameModelListener(GameModelListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
@@ -105,6 +107,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return list of pieces captured since the beginning of the game.
      */
+    @Override
     public LinkedList<Piece> getCapturedPieces() {
         return gameState.getCapturedPieces();
     }
@@ -114,6 +117,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return list of moves played since the beginning of the game.
      */
+    @Override
     public LinkedList<Move> getMovesPlayed() {
         return gameState.getMovesPlayed();
     }
@@ -124,6 +128,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @return list of Boolean values representing which moves were checks
      * list.get(i) is true <=> i-th move was check
      */
+    @Override
     public LinkedList<Boolean> getChecks() {
         return gameState.getChecks();
     }
@@ -133,6 +138,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return the chessboard representing position of pieces on the board.
      */
+    @Override
     public Position getChessboard() {
         return gameState.getChessboard();
     }
@@ -142,6 +148,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return true if it is white to move, false otherwise.
      */
+    @Override
     public boolean isWhiteToMove() {
         return gameState.isWhiteToMove();
     }
@@ -151,6 +158,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @return true if the last move of the game was mate, false otherwise
      */
+    @Override
     public boolean isMate() {
         return gameState.isMate();
     }
@@ -160,6 +168,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param move the object representing information about the move
      */
+    @Override
     public void makeMove(final Move move) {
         gameState.move(move);
     }
@@ -168,6 +177,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * Erases all information about the current gamestate, so that new game can
      * be played.
      */
+    @Override
     public void setNewGame() {
         gameState.setNewGame();
         GameModelEvent gSMEvent =
@@ -181,6 +191,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * Returns the game state one move before the last move, as if the last move
      * was not played at all.
      */
+    @Override
     public void cancelLastMove() {
         if (gameState.getMovesPlayed().size() == 0) {
             System.out.println("No more moves to take back!");
@@ -205,6 +216,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      *
      * @param event the event which represents event, that the move was selected
      */
+    @Override
     public void moveSelected(MoveSelectedEvent event) {
         //check the legality of selected move in given game state
         //and handle illegal moves
@@ -236,7 +248,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * call of this method.
      */
     private ArrayList<Square> getSquaresThatChanged(Move selectedMove) {
-        ArrayList<Square> changedSquares = new ArrayList<Square>();
+        ArrayList<Square> changedSquares = new ArrayList<>();
         Piece piece = selectedMove.getPiece();
         Square from = selectedMove.getFrom();
         Square to = selectedMove.getTo();
@@ -266,6 +278,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     /**
      * Makes the chessboard display the first position of the game.
      */
+    @Override
     public void setFirstPosition() {
         gameState.setFirstPosition();
         GameModelEvent gSMEvent =
@@ -279,6 +292,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * Makes the chessboard display one move before surrent move (if it allready
      * does not contain starting position).
      */
+    @Override
     public void setPreviousPosition() {
         gameState.setPreviousPosition();
         GameModelEvent gSMEvent =
@@ -292,6 +306,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * Makes chessboard display one move after the current move (if it allready
      * does not contain position after last move).
      */
+    @Override
     public void setNextPosition() {
         gameState.setNextPosition();
         GameModelEvent gSMEvent =
@@ -304,6 +319,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     /**
      * Makes the Chessboard display the position after the last move.
      */
+    @Override
     public void setLastPositon() {
         gameState.setLastPosition();
         GameModelEvent gSMEvent =
@@ -482,6 +498,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @return the halfmove after which the state is displayed on the chessboard
      *
      */
+    @Override
     public int getCurrentlyViewedHalfMove() {
         return gameState.getCurrentlyViewedHalfmove();
     }
@@ -506,6 +523,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * highlighted, false otherwise.
      * @return text representation of played moves
      */
+    @Override
     public String getMovetextString(boolean highlightCurrentMove) {
         return gameState.getMovetextSectionString(highlightCurrentMove);
     }

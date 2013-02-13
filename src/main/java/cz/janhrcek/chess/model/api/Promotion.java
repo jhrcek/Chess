@@ -1,6 +1,8 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.api;
 
-import static cz.janhrcek.chess.model.Piece.*;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.Move;
+import static cz.janhrcek.chess.model.api.Piece.*;
 
 /**
  * Is a specific case of Move, in which pawn reaches the opponent's first rank

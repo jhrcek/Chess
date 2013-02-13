@@ -1,10 +1,10 @@
 package cz.janhrcek.chess.FEN;
 
-import cz.janhrcek.chess.model.CastlingAvailability;
-import cz.janhrcek.chess.model.GameStateImpl;
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Position;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.api.CastlingAvailability;
+import cz.janhrcek.chess.model.impl.GameStateImpl;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.api.Square;
 import static java.lang.String.format;
 import java.util.EnumSet;
 import java.util.regex.Pattern;

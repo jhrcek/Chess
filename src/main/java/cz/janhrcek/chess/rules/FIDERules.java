@@ -1,10 +1,10 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.Position;
-import cz.janhrcek.chess.model.Move;
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.impl.Position;
 
 /**
  * This implementation of Rule checker encapsulates the international standard
@@ -26,7 +26,8 @@ public class FIDERules implements RuleChecker {
      * @return MoveType object representing information about the legality of
      * the move.
      */
-    public final MoveType checkMove(final BrowsableGame state, final Move move) {
+    @Override
+    public final MoveType checkMove(final BrowsableGameOld state, final Move move) {
         if (state == null) {
             throw new NullPointerException("state can't be null!");
         }
@@ -419,7 +420,7 @@ public class FIDERules implements RuleChecker {
      * the king in check MoveType.LEGAL otherwise
      */
     private static MoveType leavesKingInCheck(final Move move,
-            final BrowsableGame state) {
+            final BrowsableGameOld state) {
         MoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame ...
         //a zjistime, zda existuje pole, na kterem je figura davajici sach
@@ -447,7 +448,7 @@ public class FIDERules implements RuleChecker {
      * state of game<br> MoveType.LEGAL otherwise.
      */
     private static MoveType givesCheck(final Move move,
-            final BrowsableGame state) {
+            final BrowsableGameOld state) {
         MoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame
         //existuje pole, na kterem je figura davajici sach?
@@ -472,7 +473,7 @@ public class FIDERules implements RuleChecker {
      * otherwise
      */
     private static boolean givesMate(final Move move,
-            final BrowsableGame state) {
+            final BrowsableGameOld state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame
         Position position = state.getChessboard();
 
@@ -601,7 +602,7 @@ public class FIDERules implements RuleChecker {
                 + " on the board!");
     }
 
-    private static MoveType checkCastlingLegality(BrowsableGame state,
+    private static MoveType checkCastlingLegality(BrowsableGameOld state,
             Square kingsTargetSquare) {
         String caString = state.getCastlingAvailability();
         switch (kingsTargetSquare) {//testneme dostupnost rosady v danem stavu hry
@@ -717,7 +718,7 @@ public class FIDERules implements RuleChecker {
      * @return true <=> it's white to move and the piece is white<br \> OR it's
      * black to move and the piece is black
      */
-    private static boolean isRightColor(final BrowsableGame state,
+    private static boolean isRightColor(final BrowsableGameOld state,
             final Piece piece) {
         if (state.isWhiteToMove() == piece.isWhite()) {
             return true;
@@ -726,7 +727,7 @@ public class FIDERules implements RuleChecker {
         }
     }
 
-    private MoveType checkEnPassantCapture(Move move, BrowsableGame state) {
+    private MoveType checkEnPassantCapture(Move move, BrowsableGameOld state) {
         Square enPassantTargetSquare = state.getEnPassantTargetSquare();
         if (enPassantTargetSquare != null
                 && move.getTo().equals(enPassantTargetSquare)) {
@@ -736,7 +737,7 @@ public class FIDERules implements RuleChecker {
         }
     }
 
-    private void removeEnPassantPawn(BrowsableGame state) {
+    private void removeEnPassantPawn(BrowsableGameOld state) {
         Square epTargetSq = state.getEnPassantTargetSquare();
         Square pawnsSquare;
 

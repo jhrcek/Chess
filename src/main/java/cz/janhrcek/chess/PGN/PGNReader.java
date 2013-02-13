@@ -1,12 +1,12 @@
 package cz.janhrcek.chess.PGN;
 
-import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.BrowsableGame.GameHeader;
-import cz.janhrcek.chess.model.Position;
-import cz.janhrcek.chess.model.Move;
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Promotion;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld.GameHeader;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERules;
 import cz.janhrcek.chess.rules.RuleChecker;
@@ -38,7 +38,7 @@ public class PGNReader {
     /**
      * The game which is currently being reconstructed from parsed pgn file.
      */
-    private static BrowsableGame currentGame;
+    private static BrowsableGameOld currentGame;
     /**
      * We need rule checker to find ambiguous SAN moves.
      */
@@ -50,7 +50,7 @@ public class PGNReader {
      * @param f the pgn file to be parsed.
      * @return The list of games stored in the file.
      */
-    public static List<BrowsableGame> parseFile(File f) {
+    public static List<BrowsableGameOld> parseFile(File f) {
         if (f == null) {
             throw new NullPointerException("File can't be null!");
         }
@@ -62,7 +62,7 @@ public class PGNReader {
             throw new IllegalArgumentException("File must end with \".pgn\"");
         }
 
-        ArrayList<BrowsableGame> listOfGames = new ArrayList<BrowsableGame>();
+        ArrayList<BrowsableGameOld> listOfGames = new ArrayList<BrowsableGameOld>();
         BufferedReader input = null;
         parsingTagpairs = true;
 
@@ -70,8 +70,8 @@ public class PGNReader {
             input = new BufferedReader(new FileReader(f));
             String line = null;
 
-            currentGame = new BrowsableGame();
-            BrowsableGame.GameHeader currentGameHeader = currentGame.getGameHeader();
+            currentGame = new BrowsableGameOld();
+            BrowsableGameOld.GameHeader currentGameHeader = currentGame.getGameHeader();
             StringBuilder moveText = new StringBuilder();
 
             //po radcich precteme cely pgn file
@@ -99,7 +99,7 @@ public class PGNReader {
                         //a vytvor novou hru, jez zacnes parsovat
                         if (line.startsWith("[")) {
                             parsingTagpairs = true;
-                            currentGame = new BrowsableGame();
+                            currentGame = new BrowsableGameOld();
                             currentGameHeader = currentGame.getGameHeader();
                             String[] pole = line.split("\"");
                             setAttribute(currentGameHeader,
@@ -142,21 +142,29 @@ public class PGNReader {
     private static void setAttribute(GameHeader header, String attrName,
             String attrValue) {
         attrName = attrName.toLowerCase();
-        if (attrName.equals("event")) {
-            header.setEvent(attrValue);
-        } else if (attrName.equals("site")) {
-            header.setSite(attrValue);
-        } else if (attrName.equals("date")) {
-            header.setDate(attrValue);
-        } else if (attrName.equals("round")) {
-            header.setRound(attrValue);
-        } else if (attrName.equals("white")) {
-            header.setWhite(attrValue);
-        } else if (attrName.equals("black")) {
-            header.setBlack(attrValue);
-        } else if (attrName.equals("result")) {
-            header.setResult(attrValue);
-        } //ostatni atribute name tu vubec neresime
+        switch (attrName) {
+            case "event":
+                header.setEvent(attrValue);
+                break;
+            case "site":
+                header.setSite(attrValue);
+                break;
+            case "date":
+                header.setDate(attrValue);
+                break;
+            case "round":
+                header.setRound(attrValue);
+                break;
+            case "white":
+                header.setWhite(attrValue);
+                break;
+            case "black":
+                header.setBlack(attrValue);
+                break;
+            case "result":
+                header.setResult(attrValue);
+                break;
+        }
     }
 
     /**
@@ -361,13 +369,16 @@ public class PGNReader {
             case BLACK_BISHOP:
             case WHITE_KNIGHT:
             case BLACK_KNIGHT:
-                if (sanMove.equals("O-O")) {
-                    to = (piece.isWhite() ? Square.G1 : Square.G8);
-                } else if (sanMove.equals("O-O-O")) {
-                    to = (piece.isWhite() ? Square.C1 : Square.C8);
-                } else {
-                    to = Square.valueOf(
-                            sanMove.substring(sanMove.length() - 2).toUpperCase());
+                switch (sanMove) {
+                    case "O-O":
+                        to = (piece.isWhite() ? Square.G1 : Square.G8);
+                        break;
+                    case "O-O-O":
+                        to = (piece.isWhite() ? Square.C1 : Square.C8);
+                        break;
+                    default:
+                        to = Square.valueOf(sanMove.substring(sanMove.length() - 2).toUpperCase());
+                        break;
                 }
                 break;
             default:

@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.impl;
 
 /**
  * Signals, that error has occurred during the manipulation with chessboard. For

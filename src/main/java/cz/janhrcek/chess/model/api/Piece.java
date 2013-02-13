@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.api;
 
 import java.util.HashMap;
 import java.util.Map;

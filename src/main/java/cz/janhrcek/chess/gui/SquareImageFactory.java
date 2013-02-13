@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Piece;
+import cz.janhrcek.chess.model.api.Piece;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

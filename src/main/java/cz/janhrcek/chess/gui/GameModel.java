@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Position;
-import cz.janhrcek.chess.model.Move;
-import cz.janhrcek.chess.model.Piece;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.impl.Position;
 import java.util.LinkedList;
 
 /**

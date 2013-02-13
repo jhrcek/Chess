@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.api;
 
 /**
  * Carries information about the move in chess, i.e. the information necessary

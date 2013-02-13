@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.api;
 
 import java.util.EnumSet;
 import java.util.HashMap;

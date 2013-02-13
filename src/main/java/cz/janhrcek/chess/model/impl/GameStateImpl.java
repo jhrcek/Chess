@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.impl;
 
+import cz.janhrcek.chess.model.api.CastlingAvailability;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.GameState;
 import java.util.EnumSet;
 
 /**

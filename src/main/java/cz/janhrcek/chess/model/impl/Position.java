@@ -1,4 +1,9 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.impl;
+
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.Move;
 
 /**
  * Represents piece placement on the standard 8x8 chess board. This is basically

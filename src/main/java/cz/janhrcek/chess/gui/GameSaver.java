@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -34,7 +34,7 @@ public class GameSaver extends JDialog {
      * @param gameToWrite the game, which we want to save to file
      * @param outputFile the file in which we want to save te game
      */
-    public GameSaver(JFrame owner, BrowsableGame gameToWrite, File outputFile) {
+    public GameSaver(JFrame owner, BrowsableGameOld gameToWrite, File outputFile) {
         super(owner, "Saving game ...");
         if (gameToWrite == null) {
             throw new NullPointerException("gameToWrite can't be null!");
@@ -50,6 +50,7 @@ public class GameSaver extends JDialog {
         cancelButton.addActionListener(myActionListener);
     }
     private ActionListener myActionListener = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(okButton)) {
                 //after pressing ok button extract information about the game
@@ -104,7 +105,7 @@ public class GameSaver extends JDialog {
      * @return true if filling header went OK, false otherwise
      */
     private boolean fillInHeader() {
-        BrowsableGame.GameHeader header = gameToWrite.getGameHeader();
+        BrowsableGameOld.GameHeader header = gameToWrite.getGameHeader();
         //extract values from the fields...
         header.setEvent(jTextField1.getText());
         header.setSite(jTextField2.getText());
@@ -265,14 +266,15 @@ public class GameSaver extends JDialog {
     }
 
     private String getResult(String result) {
-        if ("White won".equals(result)) {
-            return "1-0";
-        } else if ("Black won".equals(result)) {
-            return "0-1";
-        } else if ("Draw".equals(result)) {
-            return "1/2-1/2";
-        } else {
-            return "*";
+        switch (result) {
+            case "White won":
+                return "1-0";
+            case "Black won":
+                return "0-1";
+            case "Draw":
+                return "1/2-1/2";
+            default:
+                return "*";
         }
     }
     // Variables declaration - do not modify
@@ -294,6 +296,6 @@ public class GameSaver extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
     // End of variables declaration
-    private BrowsableGame gameToWrite;
+    private BrowsableGameOld gameToWrite;
     private File outputFile;
 }

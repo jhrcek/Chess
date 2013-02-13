@@ -24,6 +24,7 @@ public class PGNFileFilter extends FileFilter {
      * sensitive), false otherwise.
      * @param f The file about which we want to know if it should be accepted.
      */
+    @Override
     public boolean accept(File f) {
         String fileName = f.getName();
         if (f.isDirectory() || fileName.toLowerCase().endsWith(".pgn")) {
@@ -38,6 +39,7 @@ public class PGNFileFilter extends FileFilter {
      *
      * @return the string "PGN files"
      */
+    @Override
     public String getDescription() {
         return "PGN files";
     }

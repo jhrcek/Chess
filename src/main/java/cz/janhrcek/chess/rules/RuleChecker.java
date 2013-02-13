@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.BrowsableGame;
-import cz.janhrcek.chess.model.Move;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.api.Move;
 
 /**
  * Provides methods, which allows user to control legality of moves in the given
@@ -21,5 +21,5 @@ public interface RuleChecker {
      * @return MoveType object carrying information about the legality of the
      * move.
      */
-    MoveType checkMove(BrowsableGame state, Move move);
+    MoveType checkMove(BrowsableGameOld state, Move move);
 }

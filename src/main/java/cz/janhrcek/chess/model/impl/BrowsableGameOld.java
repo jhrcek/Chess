@@ -1,5 +1,9 @@
-package cz.janhrcek.chess.model;
+package cz.janhrcek.chess.model.impl;
 
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERules;
 import cz.janhrcek.chess.rules.MoveType;
@@ -26,13 +30,13 @@ import java.util.ListIterator;
  *
  * @author Jan Hrcek
  */
-public class BrowsableGame {
+public class BrowsableGameOld {
 
     /**
-     * Creates new instance of BrowsableGame, whose initial GameState is 
+     * Creates new instance of BrowsableGameOld, whose initial GameState is 
      * standard Initial Position of the chess game described by Fide Rules.
      */
-    public BrowsableGame() {
+    public BrowsableGameOld() {
         currentlyFocusedPosition = new Position();
         currentlyFocusedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
@@ -1064,7 +1068,7 @@ public class BrowsableGame {
      */
     public String getMovetextSectionString(boolean highligtCurrentMove) {
         StringBuilder sb = new StringBuilder();
-        iteratingGame = new BrowsableGame();
+        iteratingGame = new BrowsableGameOld();
 
         for (int i = 0; i < movesPlayed.size(); i++) {
 
@@ -1291,7 +1295,7 @@ public class BrowsableGame {
      * Other non-state related information about the game.
      */
     private GameHeader gameHeader;
-    private BrowsableGame iteratingGame;
+    private BrowsableGameOld iteratingGame;
 
     /**
      * Returns information about which moves were captures.

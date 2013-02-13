@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Move;
+import cz.janhrcek.chess.model.api.Move;
 import java.util.LinkedList;
 import javax.swing.JTextArea;
 
@@ -60,6 +60,7 @@ public class MoveDisplayWindow extends JTextArea {
     }
     private GameModelListener myGameStateModelListener =
             new GameModelListener() {
+                @Override
                 public void gameStateChanged(GameModelEvent event) {
                     //Kdyz se zmeni stav hry prepiseme text
                     writeOutMoves();

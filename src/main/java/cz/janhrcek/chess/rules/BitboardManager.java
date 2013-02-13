@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Square;
 import java.math.BigInteger;
 
 /**

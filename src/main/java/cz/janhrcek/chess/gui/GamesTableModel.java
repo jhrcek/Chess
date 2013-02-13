@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -12,7 +12,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class GamesTableModel extends AbstractTableModel {
 
-    private List<BrowsableGame> games;
+    private List<BrowsableGameOld> games;
     private int NUM_OF_TAGS = 7;
     private String[] columnNames = {"White", "Black", "Result", "Event",
         "Site", "Date", "Round"};
@@ -23,7 +23,7 @@ public class GamesTableModel extends AbstractTableModel {
      * @param games The list of games about which the information in this table
      * will be displayed.
      */
-    public GamesTableModel(List<BrowsableGame> games) {
+    public GamesTableModel(List<BrowsableGameOld> games) {
         if (games == null) {
             throw new NullPointerException("Games can't be null");
         }
@@ -50,6 +50,7 @@ public class GamesTableModel extends AbstractTableModel {
      *
      * @return the number of the rows in this table model.
      */
+    @Override
     public int getRowCount() {
         return games.size();
     }
@@ -59,6 +60,7 @@ public class GamesTableModel extends AbstractTableModel {
      *
      * @return the nuber of the columns in this table
      */
+    @Override
     public int getColumnCount() {
         return 7;
     }
@@ -71,6 +73,7 @@ public class GamesTableModel extends AbstractTableModel {
      * @return The object stored in the cell of the table contained in given row
      * and column.
      */
+    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (rowIndex < 0 || rowIndex >= games.size()) {
             throw new IllegalArgumentException("row index must be"
@@ -80,7 +83,7 @@ public class GamesTableModel extends AbstractTableModel {
             throw new IllegalArgumentException("Number of colums must be"
                     + " between 0 and " + NUM_OF_TAGS);
         }
-        BrowsableGame.GameHeader header = games.get(rowIndex).getGameHeader();
+        BrowsableGameOld.GameHeader header = games.get(rowIndex).getGameHeader();
 
         switch (columnIndex) {
             case 0:

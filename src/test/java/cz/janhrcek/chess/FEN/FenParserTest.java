@@ -4,7 +4,7 @@
  */
 package cz.janhrcek.chess.FEN;
 
-import cz.janhrcek.chess.model.GameStateImpl;
+import cz.janhrcek.chess.model.impl.GameStateImpl;
 import static org.testng.Assert.fail;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;

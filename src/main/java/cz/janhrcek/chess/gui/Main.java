@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.PGN.PGNReader;
-import cz.janhrcek.chess.model.BrowsableGame;
+import cz.janhrcek.chess.model.impl.BrowsableGameOld;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +48,7 @@ public class Main extends JFrame implements ActionListener {
      *
      * @param e The event fired by some menu item.
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loadFileItem) {
             int returnVal = myFileChooser.showOpenDialog(this);
@@ -103,12 +104,13 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             viewingMode = false;
             chessboardComponent.setClickable(true);
             cancelLastAction.setEnabled(true);
 
-            currentlyWiewedGame = new BrowsableGame();
+            currentlyWiewedGame = new BrowsableGameOld();
             stateModel.setGame(currentlyWiewedGame);
             chessboardComponent.addMoveSelectedEventListener(stateModel);
             chessboardComponent.setModel(stateModel);
@@ -145,6 +147,7 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             stateModel.cancelLastMove();
         }
@@ -178,6 +181,7 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             stateModel.setFirstPosition();
         }
@@ -212,6 +216,7 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             stateModel.setPreviousPosition();
         }
@@ -246,6 +251,7 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             stateModel.setNextPosition();
         }
@@ -279,6 +285,7 @@ public class Main extends JFrame implements ActionListener {
          * @param e Action event carrying information about the occurence of
          * this action.
          */
+        @Override
         public void actionPerformed(ActionEvent e) {
             stateModel.setLastPositon();
         }
@@ -294,6 +301,7 @@ public class Main extends JFrame implements ActionListener {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Main().setVisible(true);
 
@@ -313,7 +321,7 @@ public class Main extends JFrame implements ActionListener {
         initButtons();
 
         //create representation of gamestate
-        currentlyWiewedGame = new BrowsableGame();
+        currentlyWiewedGame = new BrowsableGameOld();
         stateModel = new MyGameModel(currentlyWiewedGame);
         chessboardComponent = new ChessboardComponent(stateModel);
         chessboardComponent.addMoveSelectedEventListener(stateModel);
@@ -451,6 +459,7 @@ public class Main extends JFrame implements ActionListener {
      */
     private class MyListSelectionListener implements ListSelectionListener {
 
+        @Override
         public void valueChanged(ListSelectionEvent e) {
             //Ignore extra messages.
             if (e.getValueIsAdjusting()) {
@@ -516,7 +525,7 @@ public class Main extends JFrame implements ActionListener {
     /**
      * The game whose state is displayed on the gui chessboard.
      */
-    private BrowsableGame currentlyWiewedGame;
+    private BrowsableGameOld currentlyWiewedGame;
     /**
      * The model (encapsulating currently wieved game) from which the
      * chessboardcomponent gets all the information it displays.
@@ -541,7 +550,7 @@ public class Main extends JFrame implements ActionListener {
     /**
      * List of games loaded form some pgn file (if any is opened).
      */
-    private List<BrowsableGame> parsedGames;
+    private List<BrowsableGameOld> parsedGames;
     private ListSelectionModel rowSelectionModel;
     private MyListSelectionListener myLSListener;
     /**

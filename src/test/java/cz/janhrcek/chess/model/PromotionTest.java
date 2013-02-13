@@ -1,7 +1,10 @@
 package cz.janhrcek.chess.model;
 
-import static cz.janhrcek.chess.model.Piece.*;
-import static cz.janhrcek.chess.model.Square.*;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Promotion;
+import static cz.janhrcek.chess.model.api.Piece.*;
+import static cz.janhrcek.chess.model.api.Square.*;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

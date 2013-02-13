@@ -4,8 +4,11 @@
  */
 package cz.janhrcek.chess.model;
 
-import static cz.janhrcek.chess.model.Piece.*;
-import static cz.janhrcek.chess.model.Square.*;
+import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.api.Piece;
+import static cz.janhrcek.chess.model.api.Piece.*;
+import static cz.janhrcek.chess.model.api.Square.*;
 import cz.janhrcek.chess.rules.BitboardManager;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;

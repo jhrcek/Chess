@@ -1,9 +1,9 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.Move;
-import cz.janhrcek.chess.model.Piece;
-import cz.janhrcek.chess.model.Promotion;
-import cz.janhrcek.chess.model.Square;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.Square;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
@@ -257,6 +257,7 @@ public class ChessboardComponent extends JComponent {
      */
     private GameModelListener myGameStateModelListener =
             new GameModelListener() {
+                @Override
                 public void gameStateChanged(GameModelEvent event) {
                     //prekreslime vsechny pole jejichz obsah se v posledni
                     //zmene stavu zmenil
