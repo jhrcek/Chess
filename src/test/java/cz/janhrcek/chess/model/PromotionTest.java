@@ -7,7 +7,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * TODO - implement promotion test
  *
  * @author jhrcek
  */

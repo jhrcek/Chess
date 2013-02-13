@@ -14,52 +14,52 @@ public enum Piece {
     /**
      * Represents White pawn.
      */
-    WHITE_PAWN(true, "P"), //pawns have empty names in SAN
+    WHITE_PAWN(true, 'P'), //pawns have empty names in SAN
 
     /**
      * Represents Black pawn.
      */
-    BLACK_PAWN(false, "p"),
+    BLACK_PAWN(false, 'p'),
     /**
      * Represents white knight.
      */
-    WHITE_KNIGHT(true, "N"),
+    WHITE_KNIGHT(true, 'N'),
     /**
      * Represents black knight.
      */
-    BLACK_KNIGHT(false, "n"),
+    BLACK_KNIGHT(false, 'n'),
     /**
      * Represents white bishop.
      */
-    WHITE_BISHOP(true, "B"),
+    WHITE_BISHOP(true, 'B'),
     /**
      * Represents black bishop.
      */
-    BLACK_BISHOP(false, "b"),
+    BLACK_BISHOP(false, 'b'),
     /**
      * Represents white rook.
      */
-    WHITE_ROOK(true, "R"),
+    WHITE_ROOK(true, 'R'),
     /**
      * Represents black rook.
      */
-    BLACK_ROOK(false, "r"),
+    BLACK_ROOK(false, 'r'),
     /**
      * Represents white queen.
      */
-    WHITE_QUEEN(true, "Q"),
+    WHITE_QUEEN(true, 'Q'),
     /**
      * Represents black queen.
      */
-    BLACK_QUEEN(false, "q"),
+    BLACK_QUEEN(false, 'q'),
     /**
      * Represents white king.
      */
-    WHITE_KING(true, "K"),
+    WHITE_KING(true, 'K'),
     /**
      * Represents black king.
      */
-    BLACK_KING(false, "k");
+    BLACK_KING(false, 'k');
     /**
      * Flag determining, whether the piece is white or black.
      */
@@ -68,17 +68,17 @@ public enum Piece {
      * String representing the piece letter used for denoting the piece in SAN -
      * Short Algebraic Notation
      */
-    private final String fenName;
+    private final char fenLetter;
 
     /**
      * Sets isWhite flag of the chess piece.
      *
      * @param isWhite determines whether the piece is white.
-     * @param fenName piece name in FEN - Forsythe Edwards Notation
+     * @param fenLetter piece name in FEN - Forsythe Edwards Notation
      */
-    private Piece(final boolean isWhite, String fenName) {
+    private Piece(final boolean isWhite, char fenLetter) {
         this.isWhite = isWhite;
-        this.fenName = fenName;
+        this.fenLetter = fenLetter;
     }
 
     /**
@@ -93,29 +93,29 @@ public enum Piece {
     /**
      * Returns a piece whose fenName is given name.
      *
-     * @param fenName the FEN name of the piece (one of: pbnrqkPBNRQK)
+     * @param fenLetter the FEN name of the piece (one of: pbnrqkPBNRQK)
      * @return the piece whose FEN name is given by the argument
      */
-    public Piece getPiece(String fenName) {
-        if (fenName == null || fenName.length() != 1 || !"pbnrqkPBNRQK".contains(fenName)) {
+    public static Piece getPiece(char fenLetter) {
+        if ("pbnrqkPBNRQK".indexOf(fenLetter) == -1) {
             throw new IllegalArgumentException("fenName must be non-null string "
                     + "that has length 1 and contains exactly 1 of the following "
-                    + "characters: pbnrqkPBNRQK; Your input: " + fenName);
+                    + "characters: pbnrqkPBNRQK; Your input: " + fenLetter);
         }
-        return fen2Piece.get(fenName);
+        return fen2Piece.get(fenLetter);
     }
 
     /**
      * @return string representing FEN name of the piece
      */
-    public String getFenName() {
-        return fenName;
+    public char getFenLetter() {
+        return fenLetter;
     }
-    private static final Map<String, Piece> fen2Piece = new HashMap<>();
+    private static final Map<Character, Piece> fen2Piece = new HashMap<>();
 
     static {
         for (Piece p : Piece.values()) {
-            fen2Piece.put(p.fenName, p);
+            fen2Piece.put(p.fenLetter, p);
         }
     }
 }

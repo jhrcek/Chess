@@ -218,7 +218,7 @@ public class Position {
             if (piece == null) {
                 result.append("  ");
             } else {
-                result.append(" ").append(piece.getFenName());
+                result.append(" ").append(piece.getFenLetter());
             }
             result.append(" |");
         }

@@ -7,36 +7,33 @@ package cz.janhrcek.chess.model;
 import java.util.EnumSet;
 
 /**
- * Represents state of the game. Provide all the necessary information to
- * restart a game from a particular position. The game state provides
- * information equivalent of FEN (Forsythe Edwards Notation) string used for
- * representing particular state of chess game.
  *
  * @author jhrcek
  */
-public class GameState {
+public interface GameState {
 
-    public Position getPosition() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    EnumSet<CastlingAvailability> getCastlingAvailabilities();
 
-    public boolean isWhiteToMove() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    Square getEnPassantTargetSquare();
 
-    public EnumSet<CastlingAvailability> getCastlingAvailability() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    int getFullmoveNumber();
 
-    public Square getEnPassantTargetSquare() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    int getHalfmoveClock();
 
-    public void getHalfmoveClock() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    Position getPosition();
 
-    public void getFullmoveNumber() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    boolean isWhiteToMove();
+
+    void setCastlingAvailabilities(EnumSet<CastlingAvailability> castlingAvailabilities);
+
+    void setEnPassantTargetSquare(Square enPassantTargetSquare);
+
+    void setFullmoveNumber(int fullmoveNumber);
+
+    void setHalfmoveClock(int halfmoveClock);
+
+    void setPosition(Position position);
+
+    void setWhiteToMove(boolean whiteToMove);
+    
 }

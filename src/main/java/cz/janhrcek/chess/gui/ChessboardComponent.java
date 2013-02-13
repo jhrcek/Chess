@@ -347,7 +347,7 @@ public class ChessboardComponent extends JComponent {
      * @param s the square which we want to repaint
      */
     private void repaintSquare(Square s) {
-        LOG.debug("Repaint square called for {}", s);
+        LOG.debug("Repaint square {}", s);
         Graphics g = getGraphics();
         Piece pieceOnSq = model.getChessboard().getPiece(s);
 

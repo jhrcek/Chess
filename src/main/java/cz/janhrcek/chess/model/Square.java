@@ -123,7 +123,7 @@ public enum Square {
     public static Square getSquare(int fileIdx, int rankIdx) {
         if (fileIdx < 0 || fileIdx > 7 || rankIdx < 0 || rankIdx > 7) {
             throw new IllegalArgumentException("file and rank indices must"
-                    + " be between 0 and 7");
+                    + " be between 0 and 7, but you had: file=" + fileIdx + ", rank=" + rankIdx);
         }
         return SQUARES[fileIdx][rankIdx];
     }
