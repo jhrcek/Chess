@@ -4,8 +4,8 @@
  */
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
 import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
 import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.EnumSet;
 

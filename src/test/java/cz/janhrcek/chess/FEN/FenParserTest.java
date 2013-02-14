@@ -5,6 +5,7 @@
 package cz.janhrcek.chess.FEN;
 
 import cz.janhrcek.chess.model.api.GameState;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -39,8 +40,9 @@ public class FenParserTest {
             "7K/8/k1P5/7p/8/8/8/8 w - - 0 1",};
         try {
             for (String s : fens) {
-                GameState gs = parser.parse(s);
-                System.out.println(parser.stateToFen(gs));
+                GameState gs = parser.fenToGameState(s); //String -> GameState
+                String fen = parser.gameStateToFen(gs); //GameState ->String
+                assertEquals(fen, s, "The parser-unparsed fen string is not the same as the original string");
             }
         } catch (InvalidFenException ife) {
             fail("Fen parser should not have thrown an exception, but did!", ife);
@@ -49,7 +51,7 @@ public class FenParserTest {
 
     @Test(dataProvider = "invalid-fens", expectedExceptions = InvalidFenException.class)
     public void testParsingInvalidFens(String fen) throws InvalidFenException {
-        parser.parse(fen);
+        parser.fenToGameState(fen);
     }
 
     @DataProvider(name = "invalid-fens")

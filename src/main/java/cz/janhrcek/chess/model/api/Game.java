@@ -10,13 +10,13 @@ package cz.janhrcek.chess.model.api;
  */
 public interface Game {
 
-    public GameState getInitialGameState(); //TODO should be immutable!
+    public GameState getInitialState();
 
-    public void setInitialGameState(GameState initial);
+    public void setInitialState(GameState initial);
 
     public void makeMove(Move m); //from currently focused state
 
-    public GameState getFocusedGameState();
+    public GameState getFocusedState();
 
-    public void focusPreviousGameState();
+    public void focusPreviousState();
 }
