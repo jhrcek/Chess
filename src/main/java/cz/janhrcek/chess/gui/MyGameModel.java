@@ -5,10 +5,10 @@ import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.impl.Position;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.rules.FIDERules;
+import cz.janhrcek.chess.rules.FIDERulesOld;
 import cz.janhrcek.chess.rules.MoveType;
 import cz.janhrcek.chess.rules.NoRules;
-import cz.janhrcek.chess.rules.RuleChecker;
+import cz.janhrcek.chess.rules.RuleCheckerOld;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     /**
      * Enables us to control the legality of the moves.
      */
-    private RuleChecker ruleChecker;
+    private RuleCheckerOld ruleChecker;
     /**
      * Listeners, which will be notified of the changes of the gamestate.
      */
@@ -48,7 +48,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      */
     public MyGameModel(BrowsableGameOld state) {
         this.gameState = state;
-        ruleChecker = new FIDERules();
+        ruleChecker = new FIDERulesOld();
     }
 
     /**
@@ -337,7 +337,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      */
     public void setRuleChecking(boolean turnOn) {
         if (turnOn) {
-            ruleChecker = new FIDERules();
+            ruleChecker = new FIDERulesOld();
         } else {
             ruleChecker = new NoRules();
         }

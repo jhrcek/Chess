@@ -5,10 +5,10 @@ import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.rules.BitboardManager;
-import cz.janhrcek.chess.rules.FIDERules;
+import cz.janhrcek.chess.rules.FIDERulesOld;
 import cz.janhrcek.chess.rules.MoveType;
 import cz.janhrcek.chess.rules.NoRules;
-import cz.janhrcek.chess.rules.RuleChecker;
+import cz.janhrcek.chess.rules.RuleCheckerOld;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -46,7 +46,7 @@ public class BrowsableGameOld {
         checks = new LinkedList<>();
         castlingAvailabilities = new LinkedList<>();
         isWhiteToMove = true;
-        ruleChecker = new FIDERules();
+        ruleChecker = new FIDERulesOld();
         castlingAvailabilityTracker = BLACK_KING_MASK + WHITE_KING_MASK
                 + BLACK_Q_ROOK_MASK + BLACK_K_ROOK_MASK + WHITE_Q_ROOK_MASK
                 + WHITE_K_ROOK_MASK;
@@ -439,7 +439,7 @@ public class BrowsableGameOld {
      */
     public void setRuleChecking(boolean flag) {
         if (flag == true) {
-            ruleChecker = new FIDERules();
+            ruleChecker = new FIDERulesOld();
         } else {
             ruleChecker = new NoRules();
         }
@@ -1242,7 +1242,7 @@ public class BrowsableGameOld {
     /**
      * Implementation of ruleChecker used to check the legality of moves.
      */
-    private RuleChecker ruleChecker;
+    private RuleCheckerOld ruleChecker;
     /**
      * Flag determining whether there is mate in the position (and therfore no
      * further moves are allowed).

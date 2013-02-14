@@ -9,7 +9,7 @@ import cz.janhrcek.chess.model.api.Move;
  *
  * @author Jan Hrcek
  */
-public class NoRules implements RuleChecker {
+public class NoRules implements RuleCheckerOld {
 
     /**
      * Since no control of legality is made, this implementation always returns

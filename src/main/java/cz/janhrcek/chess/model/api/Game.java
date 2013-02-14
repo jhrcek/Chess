@@ -14,7 +14,7 @@ public interface Game {
 
     public void setInitialState(GameState initial);
 
-    public void makeMove(Move m); //from currently focused state
+    public void makeMove(Move m);
 
     public GameState getFocusedState();
 

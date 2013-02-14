@@ -14,7 +14,7 @@ import cz.janhrcek.chess.model.impl.Position;
  * @author Jan Hrcek
  * @version 0.9
  */
-public class FIDERules implements RuleChecker {
+public class FIDERulesOld implements RuleCheckerOld {
 
     /**
      * Checks legality of the given move in the given state of the game.

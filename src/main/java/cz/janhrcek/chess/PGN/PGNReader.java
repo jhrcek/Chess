@@ -8,8 +8,8 @@ import cz.janhrcek.chess.model.impl.Position;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
-import cz.janhrcek.chess.rules.FIDERules;
-import cz.janhrcek.chess.rules.RuleChecker;
+import cz.janhrcek.chess.rules.FIDERulesOld;
+import cz.janhrcek.chess.rules.RuleCheckerOld;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,7 +42,7 @@ public class PGNReader {
     /**
      * We need rule checker to find ambiguous SAN moves.
      */
-    private static RuleChecker ruleChecker = new FIDERules();
+    private static RuleCheckerOld ruleChecker = new FIDERulesOld();
 
     /**
      * Given pgn file this method returns list of games contained in the file.

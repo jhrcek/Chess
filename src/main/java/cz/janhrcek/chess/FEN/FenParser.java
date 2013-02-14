@@ -100,7 +100,7 @@ public class FenParser {
             throw new NullPointerException("fenString must not be null!");
         }
         resetParserState();
-        LOG.info("Parsing FEN String: \"{}\"", fenString);
+        LOG.info("Parsing: \"{}\"", fenString);
 
         //0. It must have 6 fields separated by spaces
         String[] fields = fenString.split(" ");
