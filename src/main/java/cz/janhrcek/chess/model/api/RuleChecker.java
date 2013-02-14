@@ -4,11 +4,15 @@
  */
 package cz.janhrcek.chess.model.api;
 
+import java.util.List;
+
 /**
  *
  * @author jhrcek
  */
-public interface BrowsableGame {
- public GameState getInitialGameState();
- public GameState getFocusedGameState();
+public interface RuleChecker {
+
+    public boolean isLegal(Move m, GameState state);
+
+    public List<Move> generateLegal(GameState state);
 }

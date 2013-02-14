@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.EventObject;
 import java.util.List;
 

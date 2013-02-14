@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
-import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
 
 /**

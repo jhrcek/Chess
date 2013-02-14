@@ -4,8 +4,8 @@
  */
 package cz.janhrcek.chess.model;
 
-import cz.janhrcek.chess.model.api.CastlingAvailability;
-import static cz.janhrcek.chess.model.api.CastlingAvailability.*;
+import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
+import static cz.janhrcek.chess.model.api.enums.CastlingAvailability.*;
 import java.util.EnumSet;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.model;
 
-import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;

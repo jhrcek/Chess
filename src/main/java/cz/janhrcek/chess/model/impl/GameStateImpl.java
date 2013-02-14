@@ -4,9 +4,9 @@
  */
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.model.api.CastlingAvailability;
-import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
 import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.EnumSet;
 
 /**
@@ -28,7 +28,11 @@ public class GameStateImpl implements GameState {
 
     /**
      * Creates new instance of GameState which corresponds to initial state of
-     * the chess game, as described by FIDE rules.
+     * the chess game, as described by FIDE rules. This constructor is package
+     * friendly to disable instantiation by classes outside the package.
+     *
+     * The instances of this class are intended to be created by
+     * GameStateFactory.
      */
     public GameStateImpl() {
         position = new Position();
@@ -39,14 +43,26 @@ public class GameStateImpl implements GameState {
         fullmoveNumber = 1;
     }
 
-    @Override
-    public Position getPosition() {
-        return position;
+    /**
+     * Creates new instance of GameState which corresponds to state given by
+     * constructor parameters. This constructor is package friendly to disable
+     * instantiation by classes outside the package.
+     *
+     * The instances of this class are intended to be created by
+     * GameStateFactory.
+     */
+    public GameStateImpl(Position p, boolean wToMove, EnumSet<CastlingAvailability> ca, Square ep, int halfmove, int fullmove) {
+        position = p;
+        whiteToMove = wToMove;
+        castlingAvailabilities = ca;
+        enPassantTargetSquare = ep;
+        halfmoveClock = halfmove;
+        fullmoveNumber = fullmove;
     }
 
     @Override
-    public void setPosition(Position position) {
-        this.position = position;
+    public Position getPosition() {
+        return position;
     }
 
     @Override
@@ -55,18 +71,8 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public void setWhiteToMove(boolean whiteToMove) {
-        this.whiteToMove = whiteToMove;
-    }
-
-    @Override
     public EnumSet<CastlingAvailability> getCastlingAvailabilities() {
         return castlingAvailabilities;
-    }
-
-    @Override
-    public void setCastlingAvailabilities(EnumSet<CastlingAvailability> castlingAvailabilities) {
-        this.castlingAvailabilities = castlingAvailabilities;
     }
 
     @Override
@@ -75,27 +81,12 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public void setEnPassantTargetSquare(Square enPassantTargetSquare) {
-        this.enPassantTargetSquare = enPassantTargetSquare;
-    }
-
-    @Override
     public int getHalfmoveClock() {
         return halfmoveClock;
     }
 
     @Override
-    public void setHalfmoveClock(int halfmoveClock) {
-        this.halfmoveClock = halfmoveClock;
-    }
-
-    @Override
     public int getFullmoveNumber() {
         return fullmoveNumber;
-    }
-
-    @Override
-    public void setFullmoveNumber(int fullmoveNumber) {
-        this.fullmoveNumber = fullmoveNumber;
     }
 }

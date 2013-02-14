@@ -1,10 +1,10 @@
 package cz.janhrcek.chess.model;
 
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.Square;
-import cz.janhrcek.chess.model.api.Piece;
-import static cz.janhrcek.chess.model.api.Piece.*;
-import static cz.janhrcek.chess.model.api.Square.*;
+import cz.janhrcek.chess.model.api.enums.Square;
+import cz.janhrcek.chess.model.api.enums.Piece;
+import static cz.janhrcek.chess.model.api.enums.Piece.*;
+import static cz.janhrcek.chess.model.api.enums.Square.*;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

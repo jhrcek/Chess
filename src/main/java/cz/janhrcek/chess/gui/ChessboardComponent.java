@@ -1,9 +1,9 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.Piece;
+import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
-import cz.janhrcek.chess.model.api.Square;
+import cz.janhrcek.chess.model.api.enums.Square;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;

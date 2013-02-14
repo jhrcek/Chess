@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.model.api;
 
-import cz.janhrcek.chess.model.api.Square;
-import cz.janhrcek.chess.model.api.Move;
-import static cz.janhrcek.chess.model.api.Piece.*;
+import cz.janhrcek.chess.model.api.enums.Piece;
+import static cz.janhrcek.chess.model.api.enums.Piece.*;
+import cz.janhrcek.chess.model.api.enums.Square;
 
 /**
  * Is a specific case of Move, in which pawn reaches the opponent's first rank

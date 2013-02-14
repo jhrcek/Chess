@@ -4,7 +4,7 @@
  */
 package cz.janhrcek.chess.FEN;
 
-import cz.janhrcek.chess.model.impl.GameStateImpl;
+import cz.janhrcek.chess.model.api.GameState;
 import static org.testng.Assert.fail;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -39,7 +39,7 @@ public class FenParserTest {
             "7K/8/k1P5/7p/8/8/8/8 w - - 0 1",};
         try {
             for (String s : fens) {
-                GameStateImpl gs = parser.parse(s);
+                GameState gs = parser.parse(s);
                 System.out.println(parser.stateToFen(gs));
             }
         } catch (InvalidFenException ife) {

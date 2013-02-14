@@ -1,5 +1,8 @@
 package cz.janhrcek.chess.model.api;
 
+import cz.janhrcek.chess.model.api.enums.Piece;
+import cz.janhrcek.chess.model.api.enums.Square;
+
 /**
  * Carries information about the move in chess, i.e. the information necessary
  * for transition from one state of the game to another. It consists of

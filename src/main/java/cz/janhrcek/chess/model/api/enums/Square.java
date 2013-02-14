@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model.api;
+package cz.janhrcek.chess.model.api.enums;
 
 /**
  * Represents NAMES of the squares on the standard 8*8 chessboard. Names are

@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model.api;
+package cz.janhrcek.chess.model.api.enums;
 
 import java.util.HashMap;
 import java.util.Map;
