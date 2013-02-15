@@ -4,12 +4,13 @@ import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
+import java.util.Arrays;
 
 /**
  * Represents piece placement on the standard 8x8 chess board. This is basically
- * the visible component of given game state. This class offers methods to manipulate with
- * the pieces on the board arbitrarily (that is the manipulation with the pieces
- * does not have to be according to chess rules).
+ * the visible component of given game state. This class offers methods to
+ * manipulate with the pieces on the board arbitrarily (that is the manipulation
+ * with the pieces does not have to be according to chess rules).
  *
  * @author Jan Hrcek
  */
@@ -155,12 +156,12 @@ public class Position {
      * as a return value of the method (and removed away from the chessboard).
      * If there is no piece on the destination square, the method returns null.
      *
-     * @param move object that holds information about the move we want to
-     * make on th board (which pice, form where, to where)
+     * @param move object that holds information about the move we want to make
+     * on th board (which pice, form where, to where)
      * @return the piece, that were formerly on the destination square, or null,
      * if there was nothing on that square
-     * @throws PieceNotOnFromSquareException if the piece to move is not on the square you
-     * want to move it from
+     * @throws PieceNotOnFromSquareException if the piece to move is not on the
+     * square you want to move it from
      */
     public Piece makeMove(Move move) throws ChessboardException {
         if (move == null) {
@@ -229,5 +230,24 @@ public class Position {
         }
         result.append("\n");
         return result.toString();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Position)) {
+            return false;
+        }
+
+        Position that = (Position) other;
+        return Arrays.deepEquals(this.board, that.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(this.board);
     }
 }
