@@ -1,9 +1,9 @@
 package cz.janhrcek.chess.model;
 
-import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
+import cz.janhrcek.chess.model.api.enums.Square;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.DataProvider;
@@ -18,9 +18,9 @@ public class PromotionTest {
     @Test
     public void testToString() {
         assertEquals(new Promotion(WHITE_PAWN, A7, A8, WHITE_QUEEN).toString(),
-                "Move[WHITE_PAWN from A7 to A8 promoting to WHITE_QUEEN]");
+                "Promotion[WHITE_PAWN from A7 to A8 promoting to WHITE_QUEEN]");
         assertEquals(new Promotion(BLACK_PAWN, B2, C1, BLACK_KNIGHT).toString(),
-                "Move[BLACK_PAWN from B2 to C1 promoting to BLACK_KNIGHT]");
+                "Promotion[BLACK_PAWN from B2 to C1 promoting to BLACK_KNIGHT]");
     }
 
     @Test

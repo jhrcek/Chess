@@ -79,7 +79,7 @@ public class Promotion extends Move {
          || promoPiece.equals(BLACK_KNIGHT))
          ? 'N' : promoPiece.toString().charAt(6); //Q, B and R = 6th letter of piece name
          return super.toString() + "=" + promotionPieceLetter;*/
-        return new StringBuilder("Move[").append(getPiece())
+        return new StringBuilder("Promotion[").append(getPiece())
                 .append(" from ").append(getFrom())
                 .append(" to ").append(getTo())
                 .append(" promoting to ").append(promoPiece)

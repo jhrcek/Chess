@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * TODO OLD ChessboardComponent - remove
  * GUI component ChessboardComponent represents chessboard with pieces. This
  * component is resizable (resizing it will cause change of the size of the
  * chessboard). This component enables user to select moves by clicking on it.

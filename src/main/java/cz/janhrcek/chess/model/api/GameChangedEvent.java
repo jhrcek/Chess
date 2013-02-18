@@ -1,37 +1,35 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.janhrcek.chess.model.api;
 
 import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.List;
 
 /**
+ * This event represents change in the state of the game.
  *
  * @author jhrcek
  */
-public class GameEvent {
-        /**
-     * The list of squares on the chessboard, whose contents (pieces) changed
-     * since the last GameModelEvent was fired.
+public class GameChangedEvent {
+
+    /**
+     * The list of squares in the position, whose contents changed (either
+     * pieces were put on them or removed from them).
      */
     private List<Square> changedSquares;
 
     /**
-     * Creates the instance of the GameModelEvent.
+     * Creates the instance of the GameChangedEvent.
      *
      * @param source the GameModel which fired this event
      * @param changedSquares the squares on the board that changed since the
      * last GameModelEvent was fired.
      */
-    public GameEvent(List<Square> changedSquares) {
+    public GameChangedEvent(List<Square> changedSquares) {
         this.changedSquares = changedSquares;
     }
 
     /**
      * This method returns list of squares on the chessboard which changed
-     * during the last change of the state.
+     * (pieces were put on them or removed from them).
      *
      * @return the squares that changes since the last GameModelEvent was fired
      */

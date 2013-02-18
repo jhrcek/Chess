@@ -83,31 +83,6 @@ public class Move {
      */
     @Override
     public String toString() {
-        /*
-         //Castling is special case
-         if (piece.equals(WHITE_KING) || piece.equals(BLACK_KING)) {
-         if ((from.equals(E1) && to.equals(G1))
-         || (from.equals(E8) && to.equals(G8))) {
-         return "O-O";
-         } else if ((from.equals(E1) && to.equals(C1))
-         || (from.equals(E8) && to.equals(C8))) {
-         return "O-O-O";
-         }
-         }
-
-         StringBuilder result = new StringBuilder();
-         //the other cases just have piece name  ..
-
-         result.append(piece.getSanName());
-         //when capturing with the pawn use convention: "<from-file-letter>x"
-         if ((piece.equals(WHITE_PAWN) || piece.equals(BLACK_PAWN)) && from.getFile() != to.getFile()) {
-         result.append(from.toString().toLowerCase().charAt(0));
-         result.append("x");
-         }
-
-         //..to which we append the name of the destination square
-         result.append(to.toString().toLowerCase());
-         return result.toString(); */
         return new StringBuilder("Move[").append(piece)
                 .append(" from ").append(from)
                 .append(" to ").append(to)

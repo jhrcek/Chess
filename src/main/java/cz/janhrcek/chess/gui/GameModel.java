@@ -6,6 +6,7 @@ import cz.janhrcek.chess.model.impl.Position;
 import java.util.LinkedList;
 
 /**
+ * TODO: Old GameModel remove
  * The GameModel interface specifies the methods the ChessboardComponent will
  * use to get data from some class representing the state of the game to be
  * displayed.

@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.api.Game;
-import cz.janhrcek.chess.model.api.GameEvent;
+import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
@@ -265,7 +265,7 @@ public class NewChessboardComponent extends JComponent {
     private GameListener myGameListener =
             new GameListener() {
                 @Override
-                public void gameChangedChanged(GameEvent event) {
+                public void gameChanged(GameChangedEvent event) {
                     //prekreslime vsechny pole jejichz obsah se v posledni
                     //zmene stavu zmenil
                     for (Square changedSquare : event.getChangedSquares()) {

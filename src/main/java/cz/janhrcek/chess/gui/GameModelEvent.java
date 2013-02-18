@@ -5,6 +5,7 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
+ * TODO old GameModelEvent remove
  * This event indicates, that the state of game represented by the class
  * GameModel has changed. This event carries information which squares on
  * chessboard changed during the last change of the state of the game.
