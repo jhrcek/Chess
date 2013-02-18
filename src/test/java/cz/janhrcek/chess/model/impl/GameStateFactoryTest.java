@@ -3,6 +3,7 @@ package cz.janhrcek.chess.model.impl;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
 import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
@@ -80,7 +81,7 @@ public class GameStateFactoryTest {
             assertEquals(stateAfterE4.getEnPassantTargetSquare(), E3, "En-passant target square should be E3" + tail);
             assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
             assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
-        } catch (InvalidFenException | ChessboardException ex) {
+        } catch (InvalidFenException | ChessboardException | IllegalMoveException ex) {
             fail("Unexpected exception was thrown!", ex);
         }
     }

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface RuleChecker {
 
-    public boolean isLegal(Move m, GameState state);
+    public boolean checkLegality(Move m, GameState state) throws IllegalMoveException;
 
     public List<Move> generateLegal(GameState state);
 }

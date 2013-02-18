@@ -15,7 +15,7 @@ public interface GameStateFactory {
 
     public GameState create(String fen) throws InvalidFenException;
 
-    public GameState create(GameState from, Move move) throws ChessboardException;
+    public GameState create(GameState from, Move move) throws ChessboardException, IllegalMoveException;
 
     public void setRuleChecker(RuleChecker rc);
 }

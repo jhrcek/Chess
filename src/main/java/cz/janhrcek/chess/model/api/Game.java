@@ -14,7 +14,7 @@ public interface Game {
 
     public GameState getInitialState();
 
-    public void makeMove(Move m) throws ChessboardException;
+    public void makeMove(Move m) throws ChessboardException, IllegalMoveException;
 
     public GameState getFocusedState();
 

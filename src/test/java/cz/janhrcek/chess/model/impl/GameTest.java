@@ -8,6 +8,7 @@ import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
@@ -56,7 +57,7 @@ public class GameTest {
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
             assertEquals(state.getEnPassantTargetSquare(), E3);
-        } catch (InvalidFenException | ChessboardException ex) {
+        } catch (InvalidFenException | ChessboardException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
     }

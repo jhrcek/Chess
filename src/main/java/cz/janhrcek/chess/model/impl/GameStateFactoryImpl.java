@@ -8,6 +8,7 @@ import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
 import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
@@ -41,9 +42,9 @@ public class GameStateFactoryImpl implements GameStateFactory {
     }
 
     @Override
-    public GameState create(GameState originState, Move move) throws ChessboardException {
+    public GameState create(GameState originState, Move move) throws ChessboardException, IllegalMoveException {
         LOG.info("Creating new GameState using move {}", move);
-        ruleChecker.isLegal(move, originState);
+        ruleChecker.checkLegality(move, originState);
         Position p = Position.createFrom(originState.getPosition(), move); //create immutable position
         boolean wtm = !originState.isWhiteToMove(); //flip side to move
         EnumSet<CastlingAvailability> ca = determineCastlingAvailabilities(originState, move); //TODO determine clastling availability
@@ -155,9 +156,9 @@ public class GameStateFactoryImpl implements GameStateFactory {
                 break;
         }
         if (oldCa.equals(newCa)) {
-            LOG.info("    CA: Unchanged");
+            LOG.debug("    CA: Unchanged");
         } else {
-            LOG.info("    CA: modifying from {} to {}", oldCa, newCa);
+            LOG.debug("    CA: modifying from {} to {}", oldCa, newCa);
         }
         return newCa;
     }

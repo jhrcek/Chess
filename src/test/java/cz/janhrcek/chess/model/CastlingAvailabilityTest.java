@@ -8,6 +8,7 @@ import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
 import static cz.janhrcek.chess.model.api.enums.CastlingAvailability.*;
 import java.util.EnumSet;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -18,7 +19,6 @@ public class CastlingAvailabilityTest {
 
     @Test
     public void testParsingCorrectFenSubstring() {
-
         //Test parsing all valid CA substrings:
         //"KQkq", "KQk", "KQq", "KQ"
         //"Kkq", "Kk", "Kq", "K",
@@ -43,7 +43,26 @@ public class CastlingAvailabilityTest {
         assertEquals(CastlingAvailability.parseFenCaSubstring("q"), EnumSet.of(BLACK_QUEENSIDE), msg);
         assertEquals(CastlingAvailability.parseFenCaSubstring("-"), EnumSet.noneOf(CastlingAvailability.class), msg);
     }
-    
-    //@Test
-    // public static void //TODO implement testParsingInvalidFenSubstring() {}
+
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "invalid-ca-fen-substrings")
+    public static void testParsingInvalidFenSubstring(String caFenSubstring) {
+        CastlingAvailability.parseFenCaSubstring(caFenSubstring);
+    }
+
+    @DataProvider(name = "invalid-ca-fen-substrings")
+    public Object[][] invalidCAFenSubstringProducer() {
+        return new Object[][]{
+                    {"QKkq"}, //characters in wrong order
+                    {"kqKQ"},
+                    {"Kqk"},
+                    {"kK"},
+                    {"KKQkq"}, //duplicate characters
+                    {"KQkkq"},
+                    {"aKQkq"}, //invalid characters
+                    {"KbQkq"},
+                    {"KQkq*"},
+                    {"KQ-kq"},
+                    {"_"}
+                };
+    }
 }

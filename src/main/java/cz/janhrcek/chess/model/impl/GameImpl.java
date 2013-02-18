@@ -8,6 +8,7 @@ import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +36,11 @@ public class GameImpl implements Game {
     }
 
     @Override
-    public void makeMove(Move move) throws ChessboardException {
+    public void makeMove(Move move) throws ChessboardException, IllegalMoveException {
         GameState stateBeforeMove = getFocusedState();
         GameState stateAfterMove = stateFactory.create(stateBeforeMove, move);
         GameTree.HistoryNode nodeAfterMove = new GameTree.HistoryNode(gameTree.getFocusedNode(), move, stateAfterMove);
         gameTree.addNode(nodeAfterMove);
-
     }
 
     @Override
