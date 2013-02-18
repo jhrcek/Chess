@@ -4,6 +4,8 @@
  */
 package cz.janhrcek.chess.model.api;
 
+import cz.janhrcek.chess.model.impl.ChessboardException;
+
 /**
  *
  * @author jhrcek
@@ -12,9 +14,7 @@ public interface Game {
 
     public GameState getInitialState();
 
-    public void setInitialState(GameState initial);
-
-    public void makeMove(Move m);
+    public void makeMove(Move m) throws ChessboardException;
 
     public GameState getFocusedState();
 

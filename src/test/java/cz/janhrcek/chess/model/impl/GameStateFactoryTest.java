@@ -10,9 +10,9 @@ import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import java.util.EnumSet;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
@@ -68,18 +68,18 @@ public class GameStateFactoryTest {
             //Check position
             Position expected = new Position();
             expected.setInitialPosition();
-            expected.makeMove(new Move(WHITE_PAWN,E2,E4));
-            
-            assertEquals(stateAfterE4.getPosition(), expected, "The position should be equal to initial position");
-            assertEquals(initialGameState.getPosition().getPiece(E2), null);
-            assertEquals(initialGameState.getPosition().getPiece(E4), WHITE_PAWN);
+            expected.makeMove(new Move(WHITE_PAWN, E2, E4));
+
+            assertEquals(stateAfterE4.getPosition(), expected);
+            assertEquals(stateAfterE4.getPosition().getPiece(E2), null);
+            assertEquals(stateAfterE4.getPosition().getPiece(E4), WHITE_PAWN);
 
             //Check the other components of the game state
-            assertFalse(initialGameState.isWhiteToMove(), "It should be black to move" + tail);
-            assertEquals(initialGameState.getCastlingAvailabilities(), EnumSet.allOf(CastlingAvailability.class), "All castling availabilities should be present" + tail);
-            assertEquals(initialGameState.getEnPassantTargetSquare(), E3, "En-passant target square should be E3" + tail);
-            assertEquals(initialGameState.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
-            assertEquals(initialGameState.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
+            assertFalse(stateAfterE4.isWhiteToMove(), "It should be black to move" + tail);
+            assertEquals(stateAfterE4.getCastlingAvailabilities(), EnumSet.allOf(CastlingAvailability.class), "All castling availabilities should be present" + tail);
+            assertEquals(stateAfterE4.getEnPassantTargetSquare(), E3, "En-passant target square should be E3" + tail);
+            assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
+            assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
         } catch (InvalidFenException | ChessboardException ex) {
             fail("Unexpected exception was thrown!", ex);
         }

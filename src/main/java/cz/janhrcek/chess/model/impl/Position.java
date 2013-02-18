@@ -1,16 +1,18 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.api.Promotion;
-import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.enums.Piece;
+import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.Arrays;
 
 /**
- * Represents piece placement on the standard 8x8 chess board. This is basically
- * the visible component of given game state. This class offers methods to
- * manipulate with the pieces on the board arbitrarily (that is the manipulation
- * with the pieces does not have to be according to chess rules).
+ * TODO: make position immutable (only FEN string based constructor + static
+ * factory method from given position and move) Represents piece placement on
+ * the standard 8x8 chess board. This is basically the visible component of
+ * given game state. This class offers methods to manipulate with the pieces on
+ * the board arbitrarily (that is the manipulation with the pieces does not have
+ * to be according to chess rules).
  *
  * @author Jan Hrcek
  */
@@ -30,6 +32,22 @@ public class Position {
      * in the corresponding array slot.
      */
     private final Piece[][] board;
+
+    /**
+     * Creates new position by making given move from given position.
+     *
+     * @param from the position, from which we want to create new one by making
+     * given move
+     * @param move the move to make in the from position
+     * @return the position which arises by making given move in given position
+     * @throws ChessboardException if the piece described in the move is not on
+     * given "from" square in given position
+     */
+    public static Position createFrom(Position from, Move move) throws ChessboardException {
+        Position newPosition = from.copy();
+        newPosition.makeMove(move);
+        return newPosition;
+    }
 
     /**
      * Creates new Instance of the chessboard.
@@ -131,7 +149,7 @@ public class Position {
      */
     public void putPiece(final Piece piece, final Square square) {
         if (piece == null || square == null) {
-            throw new NullPointerException("Piece or square can not be null!");
+            throw new NullPointerException("Piece or square can not be null! piece = " + piece + ", square = " + square);
         }
         board[square.getFile()][square.getRank()] = piece;
     }
@@ -249,5 +267,18 @@ public class Position {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(this.board);
+    }
+
+    private Position copy() {
+        Position copy = new Position();
+        for (Square s : Square.values()) {
+            Piece p = getPiece(s);
+            if (p != null) {
+                copy.putPiece(p, s);
+            } else {
+                copy.removePiece(s);
+            }
+        }
+        return copy;
     }
 }
