@@ -19,4 +19,12 @@ public interface Game {
     public GameState getFocusedState();
 
     public void focusPreviousState();
+    
+    /**
+     * User's of this class that want to be notified of changes should add
+     * GameListener objects using this method.
+     */
+    public void addGameListener(GameListener gl);
+    
+    public void removeGameListener(GameListener gl);
 }

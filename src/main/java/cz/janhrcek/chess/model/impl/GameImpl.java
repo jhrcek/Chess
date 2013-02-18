@@ -6,6 +6,7 @@ package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
@@ -22,12 +23,14 @@ public class GameImpl implements Game {
 
     private GameStateFactory stateFactory;
     private GameTree gameTree;
-
+private List<GameListener> listeners;
+    
     public GameImpl(String initialStateFen, GameStateFactory factory) throws InvalidFenException {
         this.stateFactory = factory;
         GameState initialState = stateFactory.create(initialStateFen);
-        GameTree.HistoryNode initialNode = new GameTree.HistoryNode(null, null, initialState);
-        this.gameTree = new GameTree(initialNode);
+        GameTree.HistoryNode initialHistoryNode = new GameTree.HistoryNode(null, null, initialState);
+        this.gameTree = new GameTree(initialHistoryNode);
+        listeners = new ArrayList<>();
     }
 
     @Override
@@ -53,6 +56,16 @@ public class GameImpl implements Game {
         gameTree.focusParent();
     }
     //----------------------- PRIVATE IMPLEMENTATION ---------------------------
+
+    @Override
+    public void addGameListener(GameListener gl) {
+        listeners.add(gl);
+    }
+
+    @Override
+    public void removeGameListener(GameListener gl) {
+        listeners.remove(gl);
+    }
 
     private static class GameTree {
 

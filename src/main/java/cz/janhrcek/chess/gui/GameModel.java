@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 /**
  * The GameModel interface specifies the methods the ChessboardComponent will
- * use to get data from some class represennting the state of the game to be
+ * use to get data from some class representing the state of the game to be
  * displayed.
  *
  * @author xhrcek
