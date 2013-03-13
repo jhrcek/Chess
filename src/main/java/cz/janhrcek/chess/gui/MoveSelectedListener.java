@@ -1,14 +1,14 @@
 package cz.janhrcek.chess.gui;
 
-import java.util.EventListener;
+import cz.janhrcek.chess.model.api.Move;
 
 /**
- * This interface enables class to be informed when the MoveSelected event is
+ * This interface enables class to be notified when the MoveSelected event is
  * fired.
  *
  * @author xhrcek
  */
-public interface MoveSelectedEventListener extends EventListener {
+public interface MoveSelectedListener {
 
     /**
      * In this method should be the code, which reacts to fired
@@ -16,5 +16,5 @@ public interface MoveSelectedEventListener extends EventListener {
      *
      * @param event the event which represents event, that the move was selected
      */
-    void moveSelected(MoveSelectedEvent event);
+    void moveSelected(Move move);
 }

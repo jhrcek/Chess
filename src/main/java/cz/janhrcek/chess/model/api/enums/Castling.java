@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Represents the right to castle.
  * @author jhrcek
  */
-public enum CastlingAvailability {
+public enum Castling {
 
     WHITE_KINGSIDE('K'),
     WHITE_QUEENSIDE('Q'),
@@ -24,7 +24,7 @@ public enum CastlingAvailability {
         return fenName;
     }
 
-    public static CastlingAvailability getCA(char fenName) {
+    public static Castling getCastling(char fenName) {
         if ("kqKQ".indexOf(fenName) == -1) {
             throw new IllegalArgumentException("fenName must be one of characters kqKQ; Your input: " + fenName);
         }
@@ -34,25 +34,25 @@ public enum CastlingAvailability {
     /**
      * Parses the substring of FEN string containing castling availabilities
      */
-    public static EnumSet<CastlingAvailability> parseFenCaSubstring(String fenCASubstring) {
+    public static EnumSet<Castling> parseFenCastlingSubstring(String fenCASubstring) {
         if (!CASTLING_AVAILABILITY_PATTERN.matcher(fenCASubstring).matches()) {
             throw new IllegalArgumentException(fenCASubstring + " is not valid FEN castling availability substring!");
         }
-        EnumSet<CastlingAvailability> cas = EnumSet.noneOf(CastlingAvailability.class);
+        EnumSet<Castling> cas = EnumSet.noneOf(Castling.class);
         if (!"-".equals(fenCASubstring)) {
             for (char c : fenCASubstring.toCharArray()) {
-                cas.add(CastlingAvailability.getCA(c));
+                cas.add(Castling.getCastling(c));
             }
         }
         return cas;
     }
 
-    public static String toFenCaSubstring(EnumSet<CastlingAvailability> cas) {
+    public static String toFenCastlingSubstring(EnumSet<Castling> cas) {
         StringBuilder sb = new StringBuilder();
         if (cas.isEmpty()) {
             return "-";
         } else {
-            for (CastlingAvailability ca : cas) {
+            for (Castling ca : cas) {
                 sb.append(ca.getFenName());
             }
         }
@@ -60,15 +60,15 @@ public enum CastlingAvailability {
 
     }
 
-    private CastlingAvailability(char fenName) {
+    private Castling(char fenName) {
         this.fenName = fenName;
     }
     private final char fenName;
-    private static final Map<Character, CastlingAvailability> fen2ca = new HashMap<>();
+    private static final Map<Character, Castling> fen2ca = new HashMap<>();
     private static final Pattern CASTLING_AVAILABILITY_PATTERN = Pattern.compile("^K?Q?k?q?$|^-$");
 
     static {
-        for (CastlingAvailability ca : CastlingAvailability.values()) {
+        for (Castling ca : Castling.values()) {
             fen2ca.put(ca.getFenName(), ca);
         }
     }

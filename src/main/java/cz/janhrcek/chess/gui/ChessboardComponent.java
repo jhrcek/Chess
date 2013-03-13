@@ -1,8 +1,11 @@
 package cz.janhrcek.chess.gui;
 
+import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameChangedEvent;
+import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -18,9 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO OLD ChessboardComponent - remove
- * GUI component ChessboardComponent represents chessboard with pieces. This
- * component is resizable (resizing it will cause change of the size of the
+ * GUI component OldChessboardComponent represents chessboard with pieces. This
+ * component is resizeable (resizing it will cause change of the size of the
  * chessboard). This component enables user to select moves by clicking on it.
  *
  * @author xhrcek
@@ -30,14 +32,16 @@ public class ChessboardComponent extends JComponent {
     /**
      * Creates new instance of ChessboardComponent.
      *
-     * @param model the model which represents state of the game, which this
+     * @param game the model which represents state of the game, which this
      * component displays
      */
-    public ChessboardComponent(GameModel model) {
-        if (model == null) {
+    public ChessboardComponent(Game game) {
+        if (game == null) {
             throw new NullPointerException("model can't be null!");
         }
-        setModel(model);
+
+        this.game = game;
+        game.addGameListener(myGameListener);
         enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
         enableEvents(java.awt.AWTEvent.COMPONENT_EVENT_MASK);
     }
@@ -45,37 +49,36 @@ public class ChessboardComponent extends JComponent {
     /**
      * Sets model representing state of game displayed by this component.
      *
-     * @param model model representing state of the game which we want to
-     * display using this component
+     * @param game model representing state of the game which we want to display
+     * using this component
      */
-    public void setModel(GameModel model) {
-        if (this.model != null) {
-            this.model.removeGameModelListener(myGameStateModelListener);
+    public final void setModel(Game game) {
+        if (this.game != null) {
+            this.game.removeGameListener(myGameListener);
         }
-        this.model = model;
-        model.addGameModelListener(myGameStateModelListener);
+        this.game = game;
+        game.addGameListener(myGameListener);
     }
 
     /**
-     * Returns model representing state of game diplayed by the component.
+     * Returns model representing state of game displayed by the component.
      *
      * @return the model representing state of the game which is displayed by
      * this component
      */
-    public GameModel getModel() {
-        return model;
+    public Game getGame() {
+        return game;
     }
 
     /**
-     * This method registers any object which implements
-     * MoveSelectedEventListener interface as a listener to the instance of this
-     * class. When some MoveSeletesEvent occurs, than given object will be
-     * notified of the occurrence.
+     * This method registers any object which implements MoveSelectedListener
+     * interface as a listener to the instance of this class. When some
+     * MoveSeletesEvent occurs, than given object will be notified of the
+     * occurrence.
      *
-     * @param listener the object to be registered as a
-     * MoveSelectedEventListener
+     * @param listener the object to be registered as a MoveSelectedListener
      */
-    public void addMoveSelectedEventListener(MoveSelectedEventListener listener) {
+    public void addMoveSelectedListener(MoveSelectedListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -88,7 +91,7 @@ public class ChessboardComponent extends JComponent {
      *
      * @param listener the listener we want to unregister
      */
-    public void removeMoveSelectedEventListener(MoveSelectedEventListener listener) {
+    public void removeMoveSelectedEventListener(MoveSelectedListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -96,7 +99,7 @@ public class ChessboardComponent extends JComponent {
     }
 
     /**
-     * Paints component in the gui.
+     * Paints component in the GUI.
      *
      * @param g the graphics object using which the component will be painted
      */
@@ -115,8 +118,8 @@ public class ChessboardComponent extends JComponent {
     }
 
     /**
-     * This method handles user ineraction with ChessboardComponent via mouse
-     * clicking.
+     * This method handles user interaction with OldChessboardComponent via
+     * mouse clicking.
      *
      * @param e eventObject representing some mouse event
      */
@@ -135,16 +138,15 @@ public class ChessboardComponent extends JComponent {
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
                 //vybran "from" i "to" -> vytvorime MoveInfo reprezentujici ten tah
                 Piece movingPiece =
-                        model.getChessboard().getPiece(selectedFromSquare);
+                        //model.getChessboard().getPiece(selectedFromSquare);
+                        game.getFocusedState().getPosition().getPiece(selectedFromSquare);
                 Move selectedMove =
                         createSelectedMove(movingPiece,
                         selectedFromSquare, //from
                         clickedSquare); //to
-                MoveSelectedEvent msevent =
-                        new MoveSelectedEvent(this, selectedMove);
                 //vsem posluchacum dam vedet, ze byl vybran nejaky tah
-                for (MoveSelectedEventListener listener : listeners) {
-                    listener.moveSelected(msevent);
+                for (MoveSelectedListener listener : listeners) {
+                    listener.moveSelected(selectedMove);
                 }
                 //zrusime cerveny ctverce kolem selectedFromSquare
                 Square tmpSq = selectedFromSquare;
@@ -160,7 +162,8 @@ public class ChessboardComponent extends JComponent {
             //povolime vybrat nejaky from square POUZE TEHDY, je-li na nem
             //nejaka figura (JAKEKOLI BARVY)
             if (clickedSquare != null
-                    && model.getChessboard().getPiece(clickedSquare) != null) {
+                    //model.getChessboard().getPiece(clickedSquare) != null
+                    && game.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
                 selectedFromSquare = clickedSquare;
                 //nakreslime cerveny ctverec kolem selectedFromSquare
                 repaintSquare(selectedFromSquare);
@@ -243,23 +246,23 @@ public class ChessboardComponent extends JComponent {
      * Collection of objects, which will be notified of the selection of move
      * when some move is selected.
      */
-    private Collection<MoveSelectedEventListener> listeners =
-            new HashSet<MoveSelectedEventListener>();
+    private Collection<MoveSelectedListener> listeners =
+            new HashSet<>();
     SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
      * Instance of GameModel, from which we can get all information (displayable
      * on chessboard) about the state of the game.
      */
-    private GameModel model;
+    private Game game;
     /**
      * Whenever GameState is changed, this listener will do appropriate changes
      * to this component, so that displayed state corresponds to current
      * GameState.
      */
-    private GameModelListener myGameStateModelListener =
-            new GameModelListener() {
+    private GameListener myGameListener =
+            new GameListener() {
                 @Override
-                public void gameStateChanged(GameModelEvent event) {
+                public void gameChanged(GameChangedEvent event) {
                     //prekreslime vsechny pole jejichz obsah se v posledni
                     //zmene stavu zmenil
                     for (Square changedSquare : event.getChangedSquares()) {
@@ -281,7 +284,8 @@ public class ChessboardComponent extends JComponent {
      */
     private void paintSquares(Graphics g, int cellSize, int deltaX, int deltaY) {
         for (Square sq : Square.values()) {
-            Piece pieceOnSqare = model.getChessboard().getPiece(sq);
+            //Piece pieceOnSqare = model.getChessboard().getPiece(sq);
+            Piece pieceOnSqare = game.getFocusedState().getPosition().getPiece(sq);
             squareImages.getSquareImage(pieceOnSqare, sq.isLight()).paintIcon(this, g,
                     deltaX + sq.getFile() * cellSize,
                     deltaY + (7 - sq.getRank()) * cellSize);
@@ -351,7 +355,8 @@ public class ChessboardComponent extends JComponent {
     private void repaintSquare(Square s) {
         LOG.debug("Repaint square {}", s);
         Graphics g = getGraphics();
-        Piece pieceOnSq = model.getChessboard().getPiece(s);
+        //Piece pieceOnSq = model.getChessboard().getPiece(s);
+        Piece pieceOnSq = game.getFocusedState().getPosition().getPiece(s);
 
         squareImages.getSquareImage(pieceOnSq, s.isLight()).paintIcon(this, g,
                 deltaX + s.getFile() * sizeOfSquare,
@@ -381,8 +386,8 @@ public class ChessboardComponent extends JComponent {
      * correspond to any square, than null is returned.
      *
      * @param event mouse event that holds the information about the mouse
-     * click, for which we want to find correpsonding square
-     * @return the Square object corrresponding to clicked square of null if no
+     * click, for which we want to find corresponding square
+     * @return the Square object corresponding to clicked square of null if no
      * square was clicked on.
      */
     private Square getCorrespondingSquare(MouseEvent event) {

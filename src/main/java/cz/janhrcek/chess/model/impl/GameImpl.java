@@ -5,32 +5,38 @@
 package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.gui.MoveSelectedListener;
 import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Initial state of the game is set upon construction.
  *
  * @author jhrcek
  */
-public class GameImpl implements Game {
+public class GameImpl implements Game, MoveSelectedListener {
 
-    private GameStateFactory stateFactory;
-    private GameTree gameTree;
-private List<GameListener> listeners;
-    
+    private final GameStateFactory stateFactory;
+    private final GameTree gameTree;
+    private final List<GameListener> gameListeners;
+    private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
+
     public GameImpl(String initialStateFen, GameStateFactory factory) throws InvalidFenException {
         this.stateFactory = factory;
         GameState initialState = stateFactory.create(initialStateFen);
         GameTree.HistoryNode initialHistoryNode = new GameTree.HistoryNode(null, null, initialState);
         this.gameTree = new GameTree(initialHistoryNode);
-        listeners = new ArrayList<>();
+        gameListeners = new ArrayList<>();
     }
 
     @Override
@@ -55,16 +61,56 @@ private List<GameListener> listeners;
     public void focusPreviousState() {
         gameTree.focusParent();
     }
-    //----------------------- PRIVATE IMPLEMENTATION ---------------------------
 
     @Override
+    public String toString() {
+        return gameTree.toString();
+    }
+
+    //----------------------- PRIVATE IMPLEMENTATION ---------------------------
+    @Override
     public void addGameListener(GameListener gl) {
-        listeners.add(gl);
+        gameListeners.add(gl);
     }
 
     @Override
     public void removeGameListener(GameListener gl) {
-        listeners.remove(gl);
+        gameListeners.remove(gl);
+    }
+
+    @Override
+    public void moveSelected(Move move) {
+        try {
+            makeMove(move);
+            LOG.info("Move selected: {}", move);
+            List<Square> squaresThatChanged =
+                    getSquaresThatChanged();
+            GameChangedEvent gcEvent = new GameChangedEvent(squaresThatChanged);
+            for (GameListener listener : gameListeners) {
+                listener.gameChanged(gcEvent);
+            }
+        } catch (IllegalMoveException ex) {
+            //TODO something in case of illegal move
+        } catch (ChessboardException ex) {
+            //TODO something in case of chessboardException
+        }
+    }
+
+    /**
+     * 
+     * @return list of squares that changed from previously focused game state to currently focused state.
+     */
+    private List<Square> getSquaresThatChanged() {
+        List<Square> changedSquares = new ArrayList<>();
+        Position current = gameTree.getFocusedNode().getGameState().getPosition();
+        Position previous = gameTree.getFocusedNode().getParent().getGameState().getPosition();
+        for (Square sq : Square.values()) {
+            if (current.getPiece(sq) != previous.getPiece(sq)) {
+                changedSquares.add(sq);
+            }
+        }
+        LOG.debug("Squares changed by the move: {}", changedSquares);
+        return changedSquares;
     }
 
     private static class GameTree {
@@ -101,6 +147,32 @@ private List<GameListener> listeners;
             focusedNode = newNode;
         }
 
+        @Override
+        public String toString() {
+            StringBuilder result = new StringBuilder();
+            histNodeToString(root, result);
+            return result.toString();
+        }
+
+        private void histNodeToString(HistoryNode node, StringBuilder sb) {
+            if (node.getMove() != null) {
+                sb.append(node.getMove().toString()).append("\n");
+            } else {
+                sb.append("null move").append("\n");
+            }
+            switch (node.getChildren().size()) {
+                case 0:
+                    break;
+                case 1:
+                    histNodeToString(node.getChildren().get(0), sb);
+                    break;
+                default:
+                    sb.append("{side line}");
+                    histNodeToString(node.getChildren().get(0), sb);
+                    break;
+            }
+        }
+
         public static class HistoryNode {
 
             //link to parent (to enable taking back of moves - moving to previous states)
@@ -134,6 +206,10 @@ private List<GameListener> listeners;
 
             public List<HistoryNode> getChildren() {
                 return children;
+            }
+
+            public HistoryNode getParent() {
+                return parent;
             }
         }
     }

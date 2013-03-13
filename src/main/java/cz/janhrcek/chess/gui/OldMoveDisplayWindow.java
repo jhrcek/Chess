@@ -10,19 +10,19 @@ import javax.swing.JTextArea;
  *
  * @author xhrcek
  */
-public class MoveDisplayWindow extends JTextArea {
+public class OldMoveDisplayWindow extends JTextArea {
 
-    private GameModel model;
+    private OldGameModel model;
     private String moveDelimiter;
 
     /**
-     * Creates a new instance of MoveDisplayWindow
+     * Creates a new instance of OldMoveDisplayWindow
      *
      * @param model The model of the game from which this method can extract all
      * necessary information, so that it can display the text representation of
      * the moves played in the game
      */
-    public MoveDisplayWindow(GameModel model) {
+    public OldMoveDisplayWindow(OldGameModel model) {
         if (model == null) {
             throw new NullPointerException("model can't be null!");
         }
@@ -38,7 +38,7 @@ public class MoveDisplayWindow extends JTextArea {
      *
      * @param model The model for representation of the state of the game
      */
-    public void setModel(GameModel model) {
+    public void setModel(OldGameModel model) {
         if (this.model != null) {
             this.model.removeGameModelListener(myGameStateModelListener);
         }
@@ -58,10 +58,10 @@ public class MoveDisplayWindow extends JTextArea {
         String movetext = model.getMovetextString(true);
         setText(movetext.substring(0, movetext.lastIndexOf(" ")));
     }
-    private GameModelListener myGameStateModelListener =
-            new GameModelListener() {
+    private OldGameModelListener myGameStateModelListener =
+            new OldGameModelListener() {
                 @Override
-                public void gameStateChanged(GameModelEvent event) {
+                public void gameStateChanged(OldGameModelEvent event) {
                     //Kdyz se zmeni stav hry prepiseme text
                     writeOutMoves();
                 }

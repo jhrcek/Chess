@@ -4,6 +4,7 @@
  */
 package cz.janhrcek.chess.model.impl;
 
+import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameState;
@@ -38,7 +39,7 @@ public class GameTest {
     @BeforeMethod
     public void initializeGame() {
         try {
-            game = new GameImpl("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", gsf);
+            game = new GameImpl(FenParser.INITIAL_STATE_FEN, gsf);
         } catch (InvalidFenException ex) {
             fail("Unexpected exception!", ex);
         }
@@ -52,7 +53,7 @@ public class GameTest {
         assertEquals(initialState.getFullmoveNumber(), 1);
         assertEquals(initialState.getPosition().getPiece(E2), WHITE_PAWN);
         assertEquals(initialState.getPosition().getPiece(E4), null);
-        assertEquals(initialState.getEnPassantTargetSquare(), null);
+        assertEquals(initialState.getEnPassantTarget(), null);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class GameTest {
             assertEquals(state.getFullmoveNumber(), 1);
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
-            assertEquals(state.getEnPassantTargetSquare(), E3);
+            assertEquals(state.getEnPassantTarget(), E3);
         } catch (ChessboardException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
@@ -77,11 +78,12 @@ public class GameTest {
             game.makeMove(new Move(BLACK_KNIGHT, G8, F6));
             GameState state = game.getFocusedState();
 
+
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
             assertEquals(state.getPosition().getPiece(G8), null);
             assertEquals(state.getPosition().getPiece(F6), BLACK_KNIGHT);
-            assertEquals(state.getEnPassantTargetSquare(), null);
+            assertEquals(state.getEnPassantTarget(), null);
             assertEquals(state.getHalfmoveClock(), 1);
             assertEquals(state.getFullmoveNumber(), 2);
         } catch (ChessboardException | IllegalMoveException ex) {
@@ -101,10 +103,23 @@ public class GameTest {
             assertEquals(state.getPosition().getPiece(E2), null);
             assertEquals(state.getPosition().getPiece(G8), BLACK_KNIGHT); //knight is back!
             assertEquals(state.getPosition().getPiece(F6), null); //F6 is empty again!
-            assertEquals(state.getEnPassantTargetSquare(), E3);
+            assertEquals(state.getEnPassantTarget(), E3);
             assertEquals(state.getHalfmoveClock(), 0);
             assertEquals(state.getFullmoveNumber(), 1);
 
+        } catch (IllegalMoveException | ChessboardException ex) {
+            fail("Unexpected exception!", ex);
+        }
+    }
+
+    @Test //TODO deleteThis test
+    public void testSomeMoves() {
+        try {
+            game.makeMove(new Move(WHITE_PAWN, E2, E4));
+            game.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            game.makeMove(new Move(WHITE_KNIGHT, G1, F3));
+            GameState state = game.getFocusedState();
+            System.out.println(game.toString());
         } catch (IllegalMoveException | ChessboardException ex) {
             fail("Unexpected exception!", ex);
         }

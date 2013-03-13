@@ -1,12 +1,13 @@
 package cz.janhrcek.chess.model.impl;
 
+import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
+import cz.janhrcek.chess.model.api.enums.Castling;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import java.util.EnumSet;
@@ -28,7 +29,7 @@ public class GameStateFactoryTest {
         RuleChecker rc = new FIDERuleChecker();
         GameStateFactory gsf = new GameStateFactoryImpl(rc);
         try {
-            GameState state = gsf.create("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            GameState state = gsf.create(FenParser.INITIAL_STATE_FEN);
 
             //Asserts
             String tail = " in the initial state of game";
@@ -47,8 +48,8 @@ public class GameStateFactoryTest {
 
             //Check the other components of the game state
             assertTrue(state.isWhiteToMove(), "It should be white to move" + tail);
-            assertEquals(state.getCastlingAvailabilities(), EnumSet.allOf(CastlingAvailability.class), "All castling availabilities should be present" + tail);
-            assertNull(state.getEnPassantTargetSquare(), "En-passant target square should be null" + tail);
+            assertEquals(state.getCastlings(), EnumSet.allOf(Castling.class), "All castling availabilities should be present" + tail);
+            assertNull(state.getEnPassantTarget(), "En-passant target square should be null" + tail);
             assertEquals(state.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
             assertEquals(state.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
         } catch (InvalidFenException ife) {
@@ -61,7 +62,7 @@ public class GameStateFactoryTest {
         RuleChecker rc = new FIDERuleChecker();
         GameStateFactory gsf = new GameStateFactoryImpl(rc);
         try {
-            GameState initialGameState = gsf.create("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            GameState initialGameState = gsf.create(FenParser.INITIAL_STATE_FEN);
             GameState stateAfterE4 = gsf.create(initialGameState, new Move(WHITE_PAWN, E2, E4));
 
             //Asserts
@@ -77,8 +78,8 @@ public class GameStateFactoryTest {
 
             //Check the other components of the game state
             assertFalse(stateAfterE4.isWhiteToMove(), "It should be black to move" + tail);
-            assertEquals(stateAfterE4.getCastlingAvailabilities(), EnumSet.allOf(CastlingAvailability.class), "All castling availabilities should be present" + tail);
-            assertEquals(stateAfterE4.getEnPassantTargetSquare(), E3, "En-passant target square should be E3" + tail);
+            assertEquals(stateAfterE4.getCastlings(), EnumSet.allOf(Castling.class), "All castling availabilities should be present" + tail);
+            assertEquals(stateAfterE4.getEnPassantTarget(), E3, "En-passant target square should be E3" + tail);
             assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
             assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
         } catch (InvalidFenException | ChessboardException | IllegalMoveException ex) {

@@ -1,5 +1,5 @@
 /*
- * GameModelListener.java
+ * OldGameModelListener.java
  *
  * Created on 19. ��jen 2006, 15:32
  *
@@ -14,13 +14,13 @@ package cz.janhrcek.chess.gui;
  *
  * @author xhrcek
  */
-public interface GameModelListener {
+public interface OldGameModelListener {
 
     /**
-     * This method should contain code which reacts to the GameModelEvent.
+     * This method should contain code which reacts to the OldGameModelEvent.
      *
      * @param event the event fired by some game model representing the change
      * of the model.
      */
-    void gameStateChanged(GameModelEvent event);
+    void gameStateChanged(OldGameModelEvent event);
 }

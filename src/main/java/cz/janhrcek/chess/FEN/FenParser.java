@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.FEN;
 
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
+import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.impl.GameStateImpl;
@@ -31,10 +31,10 @@ public class FenParser {
     public String gameStateToFen(GameState state) {
         LOG.info("Converting game state to FEN");
         StringBuilder sb = new StringBuilder(50);
-        Square ep = state.getEnPassantTargetSquare();
+        Square ep = state.getEnPassantTarget();
         sb.append(positionToFen(state.getPosition()))
                 .append(state.isWhiteToMove() ? " w " : " b ")
-                .append(CastlingAvailability.toFenCaSubstring(state.getCastlingAvailabilities()))
+                .append(Castling.toFenCastlingSubstring(state.getCastlings()))
                 .append(" ")
                 .append(ep == null ? "-" : ep.toString().toLowerCase())
                 .append(" ")
@@ -123,7 +123,7 @@ public class FenParser {
         if (!CASTLING_AVAILABILITY_PATTERN.matcher(fields[2]).matches()) {
             throw new InvalidFenException(format(CA_FIELD_MSG, fields[2]));
         } else {
-            this.castlingAvailabilities = CastlingAvailability.parseFenCaSubstring(fields[2]);
+            this.castlingAvailabilities = Castling.parseFenCastlingSubstring(fields[2]);
             LOG.debug("    3. Castling availabilities: {}", this.castlingAvailabilities);
         }
 
@@ -226,7 +226,7 @@ public class FenParser {
     private void resetParserState() {
         position = null;
         whiteToMove = false;
-        castlingAvailabilities = EnumSet.noneOf(CastlingAvailability.class);
+        castlingAvailabilities = EnumSet.noneOf(Castling.class);
         enPassantTargetSquare = null;
         halfmoveClock = 0;
         fullmoveNumber = 0;
@@ -234,7 +234,7 @@ public class FenParser {
     //fields for storing initialization values of currently parsed fen string
     private Position position;
     private boolean whiteToMove;
-    private EnumSet<CastlingAvailability> castlingAvailabilities;
+    private EnumSet<Castling> castlingAvailabilities;
     private Square enPassantTargetSquare;
     private int halfmoveClock;
     private int fullmoveNumber;
@@ -249,4 +249,6 @@ public class FenParser {
     private static final Pattern DIGIT_PATTERN = Pattern.compile("^\\d+$");
     private static final Pattern CASTLING_AVAILABILITY_PATTERN = Pattern.compile("^K?Q?k?q?$|^-$");
     private static final Pattern EN_PASSANT_PATTERN = Pattern.compile("^[abcdefgh][36]$|^-$");
+    //
+    public static final String INITIAL_STATE_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 }

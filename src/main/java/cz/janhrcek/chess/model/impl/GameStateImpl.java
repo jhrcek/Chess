@@ -5,7 +5,7 @@
 package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
+import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.EnumSet;
 
@@ -21,7 +21,7 @@ public class GameStateImpl implements GameState {
 
     private Position position;
     private boolean whiteToMove;
-    private EnumSet<CastlingAvailability> castlingAvailabilities;
+    private EnumSet<Castling> castlingAvailabilities;
     private Square enPassantTargetSquare;
     private int halfmoveClock;
     private int fullmoveNumber;
@@ -37,7 +37,7 @@ public class GameStateImpl implements GameState {
     public GameStateImpl() {
         position = new Position();
         whiteToMove = true;
-        castlingAvailabilities = EnumSet.allOf(CastlingAvailability.class);
+        castlingAvailabilities = EnumSet.allOf(Castling.class);
         enPassantTargetSquare = null;
         halfmoveClock = 0;
         fullmoveNumber = 1;
@@ -51,7 +51,7 @@ public class GameStateImpl implements GameState {
      * The instances of this class are intended to be created by
      * GameStateFactory.
      */
-    public GameStateImpl(Position p, boolean wToMove, EnumSet<CastlingAvailability> ca, Square ep, int halfmove, int fullmove) {
+    public GameStateImpl(Position p, boolean wToMove, EnumSet<Castling> ca, Square ep, int halfmove, int fullmove) {
         position = p;
         whiteToMove = wToMove;
         castlingAvailabilities = ca;
@@ -71,12 +71,12 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public EnumSet<CastlingAvailability> getCastlingAvailabilities() {
+    public EnumSet<Castling> getCastlings() {
         return castlingAvailabilities;
     }
 
     @Override
-    public Square getEnPassantTargetSquare() {
+    public Square getEnPassantTarget() {
         return enPassantTargetSquare;
     }
 

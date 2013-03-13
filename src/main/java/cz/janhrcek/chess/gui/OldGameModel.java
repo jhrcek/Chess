@@ -6,21 +6,20 @@ import cz.janhrcek.chess.model.impl.Position;
 import java.util.LinkedList;
 
 /**
- * TODO: Old GameModel remove
- * The GameModel interface specifies the methods the ChessboardComponent will
+ * The OldGameModel interface specifies the methods the ChessboardComponent will
  * use to get data from some class representing the state of the game to be
  * displayed.
  *
  * @author xhrcek
  */
-public interface GameModel {
+public interface OldGameModel {
 
     /**
      * Adds Listener, which will of changes of the gamestate.
      *
      * @param listener the listener to register
      */
-    void addGameModelListener(GameModelListener listener);
+    void addGameModelListener(OldGameModelListener listener);
 
     /**
      * Removes given move listener, so that it will be no longer notified of the
@@ -28,7 +27,7 @@ public interface GameModel {
      *
      * @param listener the listener to unregister
      */
-    void removeGameModelListener(GameModelListener listener);
+    void removeGameModelListener(OldGameModelListener listener);
 
     //methody na ziskavani informaci o stavy hry
     /**

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
@@ -25,16 +25,16 @@ import javax.swing.LayoutStyle;
  *
  * @author xhrcek
  */
-public class GameSaver extends JDialog {
+public class OldGameSaver extends JDialog {
 
     /**
-     * Creates new form GameSaver
+     * Creates new form OldGameSaver
      *
      * @param owner the frame on which this dialog depends
      * @param gameToWrite the game, which we want to save to file
      * @param outputFile the file in which we want to save te game
      */
-    public GameSaver(JFrame owner, BrowsableGameOld gameToWrite, File outputFile) {
+    public OldGameSaver(JFrame owner, OldGameStateMutable gameToWrite, File outputFile) {
         super(owner, "Saving game ...");
         if (gameToWrite == null) {
             throw new NullPointerException("gameToWrite can't be null!");
@@ -62,7 +62,7 @@ public class GameSaver extends JDialog {
                 //find out whether user wants to append or overwrite
                 boolean appendFlag;
                 Object[] options = {"Append", "Overwrite", "Cancel Saving"};
-                int n = JOptionPane.showOptionDialog(GameSaver.this,
+                int n = JOptionPane.showOptionDialog(OldGameSaver.this,
                         "Do you want to APPEND game to the end of selected"
                         + " file or\n would you like to OVERWRITE the selected file",
                         "Append or Overwrite?",
@@ -105,7 +105,7 @@ public class GameSaver extends JDialog {
      * @return true if filling header went OK, false otherwise
      */
     private boolean fillInHeader() {
-        BrowsableGameOld.GameHeader header = gameToWrite.getGameHeader();
+        OldGameStateMutable.GameHeader header = gameToWrite.getGameHeader();
         //extract values from the fields...
         header.setEvent(jTextField1.getText());
         header.setSite(jTextField2.getText());
@@ -296,6 +296,6 @@ public class GameSaver extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
     // End of variables declaration
-    private BrowsableGameOld gameToWrite;
+    private OldGameStateMutable gameToWrite;
     private File outputFile;
 }

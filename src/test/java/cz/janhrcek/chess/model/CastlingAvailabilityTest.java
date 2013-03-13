@@ -4,8 +4,8 @@
  */
 package cz.janhrcek.chess.model;
 
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
-import static cz.janhrcek.chess.model.api.enums.CastlingAvailability.*;
+import cz.janhrcek.chess.model.api.enums.Castling;
+import static cz.janhrcek.chess.model.api.enums.Castling.*;
 import java.util.EnumSet;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.DataProvider;
@@ -26,27 +26,27 @@ public class CastlingAvailabilityTest {
         //"kq", "k", "q", "-"
 
         String msg = "Castling availability fen substring was not parsed correctly!";
-        assertEquals(CastlingAvailability.parseFenCaSubstring("KQkq"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("KQk"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_KINGSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("KQq"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("KQ"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Kkq"), EnumSet.of(WHITE_KINGSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Kk"), EnumSet.of(WHITE_KINGSIDE, BLACK_KINGSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Kq"), EnumSet.of(WHITE_KINGSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("K"), EnumSet.of(WHITE_KINGSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Qkq"), EnumSet.of(WHITE_QUEENSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Qk"), EnumSet.of(WHITE_QUEENSIDE, BLACK_KINGSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Qq"), EnumSet.of(WHITE_QUEENSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("Q"), EnumSet.of(WHITE_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("kq"), EnumSet.of(BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("k"), EnumSet.of(BLACK_KINGSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("q"), EnumSet.of(BLACK_QUEENSIDE), msg);
-        assertEquals(CastlingAvailability.parseFenCaSubstring("-"), EnumSet.noneOf(CastlingAvailability.class), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("KQkq"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("KQk"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_KINGSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("KQq"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("KQ"), EnumSet.of(WHITE_KINGSIDE, WHITE_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Kkq"), EnumSet.of(WHITE_KINGSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Kk"), EnumSet.of(WHITE_KINGSIDE, BLACK_KINGSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Kq"), EnumSet.of(WHITE_KINGSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("K"), EnumSet.of(WHITE_KINGSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Qkq"), EnumSet.of(WHITE_QUEENSIDE, BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Qk"), EnumSet.of(WHITE_QUEENSIDE, BLACK_KINGSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Qq"), EnumSet.of(WHITE_QUEENSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("Q"), EnumSet.of(WHITE_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("kq"), EnumSet.of(BLACK_KINGSIDE, BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("k"), EnumSet.of(BLACK_KINGSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("q"), EnumSet.of(BLACK_QUEENSIDE), msg);
+        assertEquals(Castling.parseFenCastlingSubstring("-"), EnumSet.noneOf(Castling.class), msg);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "invalid-ca-fen-substrings")
     public static void testParsingInvalidFenSubstring(String caFenSubstring) {
-        CastlingAvailability.parseFenCaSubstring(caFenSubstring);
+        Castling.parseFenCastlingSubstring(caFenSubstring);
     }
 
     @DataProvider(name = "invalid-ca-fen-substrings")

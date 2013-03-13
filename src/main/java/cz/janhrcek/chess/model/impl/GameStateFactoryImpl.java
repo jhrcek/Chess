@@ -11,8 +11,8 @@ import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
-import static cz.janhrcek.chess.model.api.enums.CastlingAvailability.*;
+import cz.janhrcek.chess.model.api.enums.Castling;
+import static cz.janhrcek.chess.model.api.enums.Castling.*;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
@@ -47,7 +47,7 @@ public class GameStateFactoryImpl implements GameStateFactory {
         ruleChecker.checkLegality(move, originState);
         Position p = Position.createFrom(originState.getPosition(), move);
         boolean wtm = !originState.isWhiteToMove(); //flip side to move
-        EnumSet<CastlingAvailability> ca = determineCastlingAvailabilities(originState, move); //TODO determine clastling availability
+        EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move); //TODO determine clastling availability
         Square ep = determineEnPassantTargetSquare(move);
         int halfmove = shouldResetHalfmoveClock(originState, move)
                 ? 0 : originState.getHalfmoveClock() + 1;
@@ -112,13 +112,13 @@ public class GameStateFactoryImpl implements GameStateFactory {
      * @param move
      * @return
      */
-    private EnumSet<CastlingAvailability> determineCastlingAvailabilities(GameState originState, Move move) {
+    private EnumSet<Castling> determineCastlingAvailabilities(GameState originState, Move move) {
         if (move == null) {
             throw new IllegalArgumentException("move can't be null!");
         }
 
-        EnumSet<CastlingAvailability> oldCa = originState.getCastlingAvailabilities();
-        EnumSet<CastlingAvailability> newCa = EnumSet.copyOf(oldCa);
+        EnumSet<Castling> oldCa = originState.getCastlings();
+        EnumSet<Castling> newCa = EnumSet.copyOf(oldCa);
 
         if (oldCa.isEmpty()) {
             return newCa;

@@ -30,13 +30,13 @@ import java.util.ListIterator;
  *
  * @author Jan Hrcek
  */
-public class BrowsableGameOld {
+public class OldGameStateMutable {
 
     /**
-     * Creates new instance of BrowsableGameOld, whose initial GameState is 
+     * Creates new instance of OldGameStateMutable, whose initial GameState is 
      * standard Initial Position of the chess game described by Fide Rules.
      */
-    public BrowsableGameOld() {
+    public OldGameStateMutable() {
         currentlyFocusedPosition = new Position();
         currentlyFocusedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
@@ -74,27 +74,6 @@ public class BrowsableGameOld {
                 + WHITE_K_ROOK_MASK;
         castlingAvailabilities.add(castlingAvailabilityTracker);
         whichMovesWereEnPassant.add(new Integer(0));
-    }
-
-    /**
-     * TODO: Implement this method Sets all necessary state information so that
-     * this game state corresponds to game state represented by the FENString
-     * argument.
-     *
-     * @param FENString the string in the FEN (Forsythe-Edwards Notation)
-     * representing some state of the game
-     * @throws IllegalArgumentException if parameter is not legal FEN string
-     */
-    public void setGameState(String FENString)
-            throws IllegalArgumentException {
-        if (FENString == null) {
-            throw new NullPointerException("FENString can't be null");
-        }
-        if (false) {
-            throw new IllegalArgumentException("FENString must be"
-                    + " legal FEN String");
-        }
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /**
@@ -1068,7 +1047,7 @@ public class BrowsableGameOld {
      */
     public String getMovetextSectionString(boolean highligtCurrentMove) {
         StringBuilder sb = new StringBuilder();
-        iteratingGame = new BrowsableGameOld();
+        iteratingGame = new OldGameStateMutable();
 
         for (int i = 0; i < movesPlayed.size(); i++) {
 
@@ -1295,7 +1274,7 @@ public class BrowsableGameOld {
      * Other non-state related information about the game.
      */
     private GameHeader gameHeader;
-    private BrowsableGameOld iteratingGame;
+    private OldGameStateMutable iteratingGame;
 
     /**
      * Returns information about which moves were captures.

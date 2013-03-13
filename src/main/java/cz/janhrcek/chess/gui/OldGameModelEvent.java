@@ -5,29 +5,28 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * TODO old GameModelEvent remove
  * This event indicates, that the state of game represented by the class
- * GameModel has changed. This event carries information which squares on
+ * OldGameModel has changed. This event carries information which squares on
  * chessboard changed during the last change of the state of the game.
  *
  * @author Jan Hrcek
  */
-public class GameModelEvent extends EventObject {
+public class OldGameModelEvent extends EventObject {
 
     /**
      * The list of squares on the chessboard, whose contents (pieces) changed
-     * since the last GameModelEvent was fired.
+     * since the last OldGameModelEvent was fired.
      */
     private List<Square> changedSquares;
 
     /**
-     * Creates the instance of the GameModelEvent.
+     * Creates the instance of the OldGameModelEvent.
      *
-     * @param source the GameModel which fired this event
+     * @param source the OldGameModel which fired this event
      * @param changedSquares the squares on the board that changed since the
-     * last GameModelEvent was fired.
+     * last OldGameModelEvent was fired.
      */
-    public GameModelEvent(GameModel source, List<Square> changedSquares) {
+    public OldGameModelEvent(OldGameModel source, List<Square> changedSquares) {
         super(source);
         this.changedSquares = changedSquares;
     }
@@ -36,7 +35,7 @@ public class GameModelEvent extends EventObject {
      * This method returns list of squares on the chessboard which changed
      * during the last change of the state.
      *
-     * @return the squares that changes since the last GameModelEvent was fired
+     * @return the squares that changes since the last OldGameModelEvent was fired
      */
     public List<Square> getChangedSquares() {
         return changedSquares;

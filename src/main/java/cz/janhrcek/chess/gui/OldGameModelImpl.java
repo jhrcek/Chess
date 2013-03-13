@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.impl.Position;
@@ -17,19 +17,19 @@ import java.util.LinkedList;
 import javax.swing.JOptionPane;
 
 /**
- * This implementation of the GameModel is just encapsulation of
- * chess.stateofgame.Game. This class also implements MoveSelectedEventListener
+ * This implementation of the OldGameModel is just encapsulation of
+ * chess.stateofgame.Game. This class also implements MoveSelectedListener
  * so that it can change the gamestate when user selects a move in GUI.
  *
  * @author xhrcek
  */
-public class MyGameModel implements GameModel, MoveSelectedEventListener {
+public class OldGameModelImpl implements OldGameModel, MoveSelectedListener {
 
     /**
      * The Game object which this class encapsulates for the representation of
      * the gamestate.
      */
-    private BrowsableGameOld gameState;
+    private OldGameStateMutable gameState;
     /**
      * Enables us to control the legality of the moves.
      */
@@ -37,27 +37,27 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     /**
      * Listeners, which will be notified of the changes of the gamestate.
      */
-    private Collection<GameModelListener> listeners =
-            new HashSet<GameModelListener>();
+    private Collection<OldGameModelListener> listeners =
+            new HashSet<OldGameModelListener>();
 
     /**
-     * Creates a new instance of MyGameModel
+     * Creates a new instance of OldGameModelImpl
      *
      * @param state The game object which will be encapsulated for the
      * representation of the games tate
      */
-    public MyGameModel(BrowsableGameOld state) {
+    public OldGameModelImpl(OldGameStateMutable state) {
         this.gameState = state;
         ruleChecker = new FIDERulesOld();
     }
 
     /**
-     * Sets the game which this implementation of GameModel encapsulates for
+     * Sets the game which this implementation of OldGameModel encapsulates for
      * represetation of the state of the game.
      *
      * @param g the game to represent the state of the game
      */
-    public void setGame(BrowsableGameOld g) {
+    public void setGame(OldGameStateMutable g) {
         if (g == null) {
             throw new NullPointerException("g can't be null!");
         }
@@ -65,13 +65,13 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     }
 
     /**
-     * Return the game which this implementation of GameModel encapsulates for
+     * Return the game which this implementation of OldGameModel encapsulates for
      * representation of the game state.
      *
-     * @return the game which this implementation of GameModel encapsulates for
+     * @return the game which this implementation of OldGameModel encapsulates for
      * representation of the game state.
      */
-    public BrowsableGameOld getGame() {
+    public OldGameStateMutable getGame() {
         return gameState;
     }
 
@@ -81,7 +81,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param listener the listener to register
      */
     @Override
-    public void addGameModelListener(GameModelListener listener) {
+    public void addGameModelListener(OldGameModelListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -95,7 +95,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param listener the listener to unregister
      */
     @Override
-    public void removeGameModelListener(GameModelListener listener) {
+    public void removeGameModelListener(OldGameModelListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -180,9 +180,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     @Override
     public void setNewGame() {
         gameState.setNewGame();
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, Arrays.asList(Square.values()));
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, Arrays.asList(Square.values()));
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -202,9 +202,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
         //doslo ke zmene tahu -> dame vedet posluchacum zmeny stavu
         ArrayList<Square> squaresThatChanged =
                 getSquaresThatChanged(lastMove);
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, squaresThatChanged);
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, squaresThatChanged);
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -217,24 +217,23 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param event the event which represents event, that the move was selected
      */
     @Override
-    public void moveSelected(MoveSelectedEvent event) {
+    public void moveSelected(Move move) {
         //check the legality of selected move in given game state
         //and handle illegal moves
-        if (!handleIllegalMoves(event)) {
+        if (!handleIllegalMoves(move)) {
             return; //move was illegal, so we don't continue
         }
 
         //only legal moves should get here!!
-        Move selectedMove = event.getSelectedMove();
-        makeMove(selectedMove);
+        makeMove(move);
 
         //dojdeme-li tady, pak tah je legalni a vsem posluchacum muzem
         // rict, ze udalost nastala
         ArrayList<Square> squaresThatChanged =
-                getSquaresThatChanged(selectedMove);
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, squaresThatChanged);
-        for (GameModelListener listener : listeners) {
+                getSquaresThatChanged(move);
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, squaresThatChanged);
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -281,9 +280,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     @Override
     public void setFirstPosition() {
         gameState.setFirstPosition();
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, Arrays.asList(Square.values()));
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, Arrays.asList(Square.values()));
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -295,9 +294,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     @Override
     public void setPreviousPosition() {
         gameState.setPreviousPosition();
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, Arrays.asList(Square.values()));
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, Arrays.asList(Square.values()));
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -309,9 +308,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     @Override
     public void setNextPosition() {
         gameState.setNextPosition();
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, Arrays.asList(Square.values()));
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, Arrays.asList(Square.values()));
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -322,9 +321,9 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
     @Override
     public void setLastPositon() {
         gameState.setLastPosition();
-        GameModelEvent gSMEvent =
-                new GameModelEvent(this, Arrays.asList(Square.values()));
-        for (GameModelListener listener : listeners) {
+        OldGameModelEvent gSMEvent =
+                new OldGameModelEvent(this, Arrays.asList(Square.values()));
+        for (OldGameModelListener listener : listeners) {
             listener.gameStateChanged(gSMEvent);
         }
     }
@@ -352,15 +351,14 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
      * @param event The event carrying information about the move which was
      * selected
      */
-    private boolean handleIllegalMoves(MoveSelectedEvent event) {
-        Move selectedMove = event.getSelectedMove();
-        MoveType legalityTestResult = ruleChecker.checkMove(gameState, selectedMove);
+    private boolean handleIllegalMoves(Move m) {
+        MoveType legalityTestResult = ruleChecker.checkMove(gameState, m);
         String errorMessage = "";
 
         switch (legalityTestResult) {
             case ILLEGAL_PIECE_MOVE:
                 System.out.println("typ tahu:" + legalityTestResult);
-                switch (selectedMove.getPiece()) {
+                switch (m.getPiece()) {
                     case WHITE_KING:
                     case BLACK_KING:
                         errorMessage = "King can only move one square in any"
@@ -387,7 +385,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
                                 + "uare\n along file or rank respectively).";
                         break;
                     case WHITE_PAWN:
-                        if (selectedMove.getFrom().getRank() == 1) {
+                        if (m.getFrom().getRank() == 1) {
                             errorMessage = "Pawns can only move one or two"
                                     + " squares\n forward from their starting"
                                     + " position or t";
@@ -398,7 +396,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
                         }
                         break;
                     case BLACK_PAWN:
-                        if (selectedMove.getFrom().getRank() == 6) {
+                        if (m.getFrom().getRank() == 6) {
                             errorMessage = "Pawns can only move one or two"
                                     + " squares\n forward from their starting"
                                     + " position or t";
@@ -415,7 +413,7 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
                 break;
             case ILLEGAL_WRONG_COLOR:
                 System.out.println("typ tahu:" + legalityTestResult);
-                if (selectedMove.getPiece().isWhite()) {
+                if (m.getPiece().isWhite()) {
                     errorMessage = "You cannot move white"
                             + " piece, when it is black to move.";
                 } else {
@@ -431,11 +429,11 @@ public class MyGameModel implements GameModel, MoveSelectedEventListener {
             case ILLEGAL_SQUARE_OCCUPIED:
                 System.out.println("typ tahu: " + legalityTestResult);
                 //test jestli nejde o pesaka blokovaneho nepratelskou figurou
-                if ((selectedMove.getPiece().equals(Piece.WHITE_PAWN)
-                        && !gameState.getChessboard().getPiece(selectedMove.getTo())
+                if ((m.getPiece().equals(Piece.WHITE_PAWN)
+                        && !gameState.getChessboard().getPiece(m.getTo())
                         .isWhite())
-                        || (selectedMove.getPiece().equals(Piece.BLACK_PAWN)
-                        && gameState.getChessboard().getPiece(selectedMove.getTo())
+                        || (m.getPiece().equals(Piece.BLACK_PAWN)
+                        && gameState.getChessboard().getPiece(m.getTo())
                         .isWhite())) {
                     errorMessage = "Pawns cannot move forward when their"
                             + " path\n is blocked by anything.";

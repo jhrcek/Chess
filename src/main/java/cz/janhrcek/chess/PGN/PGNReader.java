@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.PGN;
 
-import cz.janhrcek.chess.model.impl.BrowsableGameOld;
-import cz.janhrcek.chess.model.impl.BrowsableGameOld.GameHeader;
+import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import cz.janhrcek.chess.model.impl.OldGameStateMutable.GameHeader;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.impl.Position;
@@ -38,7 +38,7 @@ public class PGNReader {
     /**
      * The game which is currently being reconstructed from parsed pgn file.
      */
-    private static BrowsableGameOld currentGame;
+    private static OldGameStateMutable currentGame;
     /**
      * We need rule checker to find ambiguous SAN moves.
      */
@@ -50,7 +50,7 @@ public class PGNReader {
      * @param f the pgn file to be parsed.
      * @return The list of games stored in the file.
      */
-    public static List<BrowsableGameOld> parseFile(File f) {
+    public static List<OldGameStateMutable> parseFile(File f) {
         if (f == null) {
             throw new NullPointerException("File can't be null!");
         }
@@ -62,7 +62,7 @@ public class PGNReader {
             throw new IllegalArgumentException("File must end with \".pgn\"");
         }
 
-        ArrayList<BrowsableGameOld> listOfGames = new ArrayList<BrowsableGameOld>();
+        ArrayList<OldGameStateMutable> listOfGames = new ArrayList<OldGameStateMutable>();
         BufferedReader input = null;
         parsingTagpairs = true;
 
@@ -70,8 +70,8 @@ public class PGNReader {
             input = new BufferedReader(new FileReader(f));
             String line = null;
 
-            currentGame = new BrowsableGameOld();
-            BrowsableGameOld.GameHeader currentGameHeader = currentGame.getGameHeader();
+            currentGame = new OldGameStateMutable();
+            OldGameStateMutable.GameHeader currentGameHeader = currentGame.getGameHeader();
             StringBuilder moveText = new StringBuilder();
 
             //po radcich precteme cely pgn file
@@ -99,7 +99,7 @@ public class PGNReader {
                         //a vytvor novou hru, jez zacnes parsovat
                         if (line.startsWith("[")) {
                             parsingTagpairs = true;
-                            currentGame = new BrowsableGameOld();
+                            currentGame = new OldGameStateMutable();
                             currentGameHeader = currentGame.getGameHeader();
                             String[] pole = line.split("\"");
                             setAttribute(currentGameHeader,

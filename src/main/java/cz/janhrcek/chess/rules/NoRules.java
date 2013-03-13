@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.impl.BrowsableGameOld;
+import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 
 /**
@@ -23,7 +23,7 @@ public class NoRules implements RuleCheckerOld {
      *
      */
     @Override
-    public final MoveType checkMove(final BrowsableGameOld state,
+    public final MoveType checkMove(final OldGameStateMutable state,
             final Move move) {
         if (state == null) {
             throw new IllegalArgumentException("state can't be null!");

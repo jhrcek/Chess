@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.model.api;
 
-import cz.janhrcek.chess.model.api.enums.CastlingAvailability;
+import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.impl.Position;
 import java.util.EnumSet;
@@ -18,11 +18,11 @@ public interface GameState {
 
     boolean isWhiteToMove();
 
-    EnumSet<CastlingAvailability> getCastlingAvailabilities();
+    EnumSet<Castling> getCastlings();
 
     int getHalfmoveClock();
 
-    Square getEnPassantTargetSquare();
+    Square getEnPassantTarget();
 
     int getFullmoveNumber();
 }

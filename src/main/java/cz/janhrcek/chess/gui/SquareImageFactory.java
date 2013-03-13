@@ -30,7 +30,7 @@ public class SquareImageFactory {
      * create image of the whole board.
      */
     private Map<String, ImageIcon> images =
-            new HashMap<String, ImageIcon>(26); //6 piece kinds * 2 piece colors * 2 background colors + 2 empty 
+            new HashMap<>(26); //6 piece kinds * 2 piece colors * 2 background colors + 2 empty 
 
     public SquareImageFactory(int initialSizeOfImages) {
         generateNewIcons(initialSizeOfImages);
@@ -88,30 +88,24 @@ public class SquareImageFactory {
             // create the transcoder input
             String svgURI = SquareImageFactory.class.getResource(inputSVGName).toString();
             TranscoderInput input = new TranscoderInput(svgURI);
+            try (ByteArrayOutputStream ostream = new ByteArrayOutputStream()) {
+                TranscoderOutput output = new TranscoderOutput(ostream);
 
-            // create the transcoder output
-            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-            TranscoderOutput output = new TranscoderOutput(ostream);
-
-            //save the image to byte array as png
-            t.transcode(input, output);
-            ImageIcon icon = new ImageIcon(ostream.toByteArray());
-            LOG.info("loading piece image {} ", inputSVGName.substring(0, inputSVGName.length() - 4));
-            images.put(inputSVGName.substring(0, inputSVGName.length() - 4), icon);
-            ostream.flush();
-            ostream.close();
+                //save the image to byte array as png
+                t.transcode(input, output);
+                ImageIcon icon = new ImageIcon(ostream.toByteArray());
+                LOG.info("loading piece image {} ", inputSVGName.substring(0, inputSVGName.length() - 4));
+                images.put(inputSVGName.substring(0, inputSVGName.length() - 4), icon);
+                ostream.flush();
+            }
         } catch (MalformedURLException mue) {
-            System.err.println("There was something wrong with the url of some"
-                    + " svg file");
-            mue.printStackTrace();
+            LOG.error("There was something wrong with the url of some svg file", mue);
         } catch (FileNotFoundException fnfe) {
-            fnfe.printStackTrace();
+            LOG.error("Exception when loading piece icons", fnfe);
         } catch (TranscoderException te) {
-            System.err.println("There was an exception during"
-                    + " transcoding the file");
-            te.printStackTrace();
+            LOG.error("There was an exception during transcoding of piece icon file", te);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            LOG.error("Exception when loading icon", ioe);
         }
     }
 }
