@@ -123,8 +123,8 @@ public class FenParser {
         if (!CASTLING_AVAILABILITY_PATTERN.matcher(fields[2]).matches()) {
             throw new InvalidFenException(format(CA_FIELD_MSG, fields[2]));
         } else {
-            this.castlingAvailabilities = Castling.parseFenCastlingSubstring(fields[2]);
-            LOG.debug("    3. Castling availabilities: {}", this.castlingAvailabilities);
+            this.castlings = Castling.parseFenCastlingSubstring(fields[2]);
+            LOG.debug("    3. Castling availabilities: {}", this.castlings);
         }
 
         //4. Check en-passant target square
@@ -148,7 +148,7 @@ public class FenParser {
             LOG.debug("    6. Full-move number: {}", this.fullmoveNumber);
         }
 
-        return new GameStateImpl(position, whiteToMove, castlingAvailabilities, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameStateImpl(position, whiteToMove, castlings, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
     }
 
     /**
@@ -226,7 +226,7 @@ public class FenParser {
     private void resetParserState() {
         position = null;
         whiteToMove = false;
-        castlingAvailabilities = EnumSet.noneOf(Castling.class);
+        castlings = EnumSet.noneOf(Castling.class);
         enPassantTargetSquare = null;
         halfmoveClock = 0;
         fullmoveNumber = 0;
@@ -234,7 +234,7 @@ public class FenParser {
     //fields for storing initialization values of currently parsed fen string
     private Position position;
     private boolean whiteToMove;
-    private EnumSet<Castling> castlingAvailabilities;
+    private EnumSet<Castling> castlings;
     private Square enPassantTargetSquare;
     private int halfmoveClock;
     private int fullmoveNumber;
