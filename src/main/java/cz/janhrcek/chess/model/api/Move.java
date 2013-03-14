@@ -88,4 +88,34 @@ public class Move {
                 .append(" to ").append(to)
                 .append("]").toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + (this.piece != null ? this.piece.hashCode() : 0);
+        hash = 29 * hash + (this.from != null ? this.from.hashCode() : 0);
+        hash = 29 * hash + (this.to != null ? this.to.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Move other = (Move) obj;
+        if (this.piece != other.piece) {
+            return false;
+        }
+        if (this.from != other.from) {
+            return false;
+        }
+        if (this.to != other.to) {
+            return false;
+        }
+        return true;
+    }
 }

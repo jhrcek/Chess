@@ -6,12 +6,15 @@ import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.impl.FIDERuleChecker;
 import cz.janhrcek.chess.model.impl.GameImpl;
 import cz.janhrcek.chess.model.impl.GameStateFactoryImpl;
-import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.ScrollPaneConstants;
 
 /**
  *
@@ -21,16 +24,12 @@ public class MainWindow extends JFrame {
 
     public MainWindow() throws HeadlessException {
         super("Chess");
-        initComponents();
+        createAndShowGui();
     }
 
-    private void initComponents() {
+    private void createAndShowGui() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
 
-//        initActions();
-//        initMenus();
-//        initButtons();
 
         //create representation of gamestate
         try {
@@ -38,65 +37,43 @@ public class MainWindow extends JFrame {
         } catch (InvalidFenException ex) {
             throw new IllegalStateException("Unexpected exception thrown", ex);
         }
-        
-        
-        
+
         chessboardComponent = new ChessboardComponent(game);
         chessboardComponent.addMoveSelectedListener((MoveSelectedListener) game);
-        //this.add(chessboardComponent);
-        
+
         AdHocMoveDisplayArea moveDisplay = new AdHocMoveDisplayArea(game);
-        //this.add(moveDisplay);
-        
-        JScrollPane moveScroll = new JScrollPane(moveDisplay);
-        
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                chessboardComponent, moveScroll);
-        splitPane.setDividerLocation(300);
-        splitPane.setDividerSize(1);
-        
-        this.add(splitPane);
-//       
-//
-//        //create okno na zobrazovani tahu
-//        moveDisplayWindow = new MoveDisplayWindow(stateModel);
-//        //vytvorime tabulku na zobrazovani parslych her
-//        gamesTable = new JTable(gamesTableModel);
-//        gamesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        myLSListener = new Main.MyListSelectionListener();
-//        rowSelectionModel = gamesTable.getSelectionModel();
-//        rowSelectionModel.addListSelectionListener(myLSListener);
-//
-//        JPanel navigButtonPanel = new JPanel();
-//        navigButtonPanel.add(firstButton);
-//        navigButtonPanel.add(previousButton);
-//        navigButtonPanel.add(cancelLastButton);
-//        navigButtonPanel.add(nextButton);
-//        navigButtonPanel.add(lastButton);
-//
-//
-//        JScrollPane moveDisplPane = new JScrollPane(moveDisplayWindow);
-//        moveDisplPane.setHorizontalScrollBarPolicy(
-//                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//
-//        JSplitPane rightPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-//                moveDisplPane, new JScrollPane(gamesTable));
-//        rightPane.setDividerLocation(230);
-//        rightPane.setDividerSize(4);
-//
-//        JSplitPane upperPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-//                chessboardComponent, rightPane);
-//        upperPane.setDividerLocation(425);
-//        upperPane.setDividerSize(4);
-//
-//        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-//                upperPane, navigButtonPanel);
-//        mainSplitPane.setDividerSize(4);
-//        mainSplitPane.setDividerLocation(463);
-//
-//        add(mainSplitPane);
-        setSize(300, 500);
+
+        JScrollPane scrollableMoveDisplay = new JScrollPane(moveDisplay);
+
+        JPanel gameBrowseControls = new JPanel();
+        gameBrowseControls.setLayout(new FlowLayout());// GridLayout(3, 3));
+        gameBrowseControls.add(firstButton);
+        gameBrowseControls.add(previousButton);
+        gameBrowseControls.add(nextButton);
+        gameBrowseControls.add(lastButton);
+        previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.focusPreviousState();
+            }
+        });
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        mainPanel.add(chessboardComponent);
+        mainPanel.add(scrollableMoveDisplay);
+        mainPanel.add(gameBrowseControls);
+
+        this.add(mainPanel);
+        setSize(650, 650);
     }
+    //controls
+    private final JButton firstButton = new JButton("First");
+    private final JButton previousButton = new JButton("Previous");
+    private final JButton nextButton = new JButton("Next");
+    private final JButton lastButton = new JButton("Last");
+    //model
     private Game game;
+    //gui providing view into model
     private ChessboardComponent chessboardComponent;
 }
