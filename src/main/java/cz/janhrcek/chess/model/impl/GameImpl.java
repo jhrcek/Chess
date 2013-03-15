@@ -56,9 +56,9 @@ public class GameImpl implements Game, MoveSelectedListener {
     }
 
     @Override
-    public void focusPreviousState() {
-        log.info("Focusing previous state");
-        gameTree.focusParent();
+    public void focusInitialState() {
+        log.info("Focusing initial state");
+        gameTree.focusRoot();
         notifyListeners();
     }
 
@@ -66,6 +66,20 @@ public class GameImpl implements Game, MoveSelectedListener {
     public void focusNextState() {
         log.info("Focusing next state");
         gameTree.focusFirstChild();
+        notifyListeners();
+    }
+
+    @Override
+    public void focusPreviousState() {
+        log.info("Focusing previous state");
+        gameTree.focusParent();
+        notifyListeners();
+    }
+
+    @Override
+    public void focusLastState() {
+        log.info("Focusing last state");
+        gameTree.focusLeaf();
         notifyListeners();
     }
 
@@ -147,6 +161,11 @@ public class GameImpl implements Game, MoveSelectedListener {
             return focusedNode;
         }
 
+        private void focusRoot() {
+            log.info("Browsing tree: focusing root node");
+            focusedNode = root;
+        }
+
         public void focusParent() {
             if (focusedNode.parent != null) { //if we are not already at the root
                 log.info("Browsing tree: focusing parent of the current node");
@@ -162,6 +181,13 @@ public class GameImpl implements Game, MoveSelectedListener {
                 focusedNode = focusedNode.getChildren().get(0);
             } else {
                 log.info("Browsing tree: can't focus child, we are already at the end of current line!");
+            }
+        }
+
+        private void focusLeaf() {
+            log.info("Browsing tree: moving to the end of the current line");
+            while (focusedNode.children.size() > 0) {
+                focusedNode = focusedNode.getChildren().get(0);
             }
         }
 
