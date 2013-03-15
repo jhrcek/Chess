@@ -27,4 +27,6 @@ public interface Game {
     public void addGameListener(GameListener gl);
     
     public void removeGameListener(GameListener gl);
+
+    public void focusNextState();
 }

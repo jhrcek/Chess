@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.FEN.InvalidFenException;
@@ -63,9 +59,14 @@ public class GameImpl implements Game, MoveSelectedListener {
     public void focusPreviousState() {
         log.info("Focusing previous state");
         gameTree.focusParent();
-        for (GameListener gameListener : gameListeners) {
-            gameListener.gameChanged(new GameChangedEvent(Arrays.asList(Square.values())));
-        }
+        notifyListeners();
+    }
+
+    @Override
+    public void focusNextState() {
+        log.info("Focusing next state");
+        gameTree.focusFirstChild();
+        notifyListeners();
     }
 
     @Override
@@ -73,7 +74,6 @@ public class GameImpl implements Game, MoveSelectedListener {
         return gameTree.toString();
     }
 
-    //----------------------- PRIVATE IMPLEMENTATION ---------------------------
     @Override
     public void addGameListener(GameListener gl) {
         gameListeners.add(gl);
@@ -102,6 +102,13 @@ public class GameImpl implements Game, MoveSelectedListener {
             log.info("The move selected has problem.", ex);
         }
     }
+    //----------------------- PRIVATE IMPLEMENTATION ---------------------------
+
+    private void notifyListeners() {
+        for (GameListener gameListener : gameListeners) {
+            gameListener.gameChanged(new GameChangedEvent(Arrays.asList(Square.values())));
+        }
+    }
 
     /**
      *
@@ -123,6 +130,7 @@ public class GameImpl implements Game, MoveSelectedListener {
 
     private static class Tree {
 
+        private static final Logger log = LoggerFactory.getLogger(Tree.class);
         private Node root;
         private Node focusedNode;
 
@@ -141,7 +149,19 @@ public class GameImpl implements Game, MoveSelectedListener {
 
         public void focusParent() {
             if (focusedNode.parent != null) { //if we are not already at the root
+                log.info("Browsing tree: focusing parent of the current node");
                 focusedNode = focusedNode.parent;
+            } else {
+                log.info("Browsing tree: can't focus parent, we are already at the root of the tree!");
+            }
+        }
+
+        private void focusFirstChild() {
+            if (focusedNode.children.size() > 0) {
+                log.info("Browsing tree: focusing first child of the current node");
+                focusedNode = focusedNode.getChildren().get(0);
+            } else {
+                log.info("Browsing tree: can't focus child, we are already at the end of current line!");
             }
         }
 
@@ -154,6 +174,7 @@ public class GameImpl implements Game, MoveSelectedListener {
                     return;
                 }
             }
+            log.debug("Adding new child node for move {}", newNode.getMove());
             focusedNode.addChild(newNode);
             focusedNode = newNode;
         }
@@ -195,6 +216,7 @@ public class GameImpl implements Game, MoveSelectedListener {
 
         public static class Node {
 
+            private static final Logger log = LoggerFactory.getLogger(Node.class);
             //link to parent (to enable taking back of moves - moving to previous states)
             private final Node parent;
             //list of children
@@ -219,7 +241,7 @@ public class GameImpl implements Game, MoveSelectedListener {
             }
 
             public void addChild(Node child) {
-                log.debug("Adding new node for move {}", child.getMove());
+                log.debug("Adding new child node for move {}", child.getMove());
                 children.add(child);
             }
 

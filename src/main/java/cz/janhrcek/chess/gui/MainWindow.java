@@ -58,6 +58,13 @@ public class MainWindow extends JFrame {
             }
         });
 
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.focusNextState();
+            }
+        });
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
         mainPanel.add(chessboardComponent);
