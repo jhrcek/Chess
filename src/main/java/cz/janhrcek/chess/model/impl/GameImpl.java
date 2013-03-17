@@ -9,9 +9,7 @@ import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,29 +56,52 @@ public class GameImpl implements Game, MoveSelectedListener {
     @Override
     public void focusInitialState() {
         log.info("Focusing initial state");
+        GameState previousState = getFocusedState();
         gameTree.focusRoot();
-        notifyListeners();
+        GameState currentState = getFocusedState();
+        notifyListeners(new GameChangedEvent(previousState, currentState));
     }
 
     @Override
     public void focusNextState() {
         log.info("Focusing next state");
+        GameState previousState = getFocusedState();
         gameTree.focusFirstChild();
-        notifyListeners();
+        GameState currentState = getFocusedState();
+        notifyListeners(new GameChangedEvent(previousState, currentState));
     }
 
     @Override
     public void focusPreviousState() {
         log.info("Focusing previous state");
+        GameState previousState = getFocusedState();
         gameTree.focusParent();
-        notifyListeners();
+        GameState currentState = getFocusedState();
+        notifyListeners(new GameChangedEvent(previousState, currentState));
     }
 
     @Override
     public void focusLastState() {
         log.info("Focusing last state");
+        GameState previousState = getFocusedState();
         gameTree.focusLeaf();
-        notifyListeners();
+        GameState currentState = getFocusedState();
+        notifyListeners(new GameChangedEvent(previousState, currentState));
+    }
+
+    @Override
+    public void moveSelected(Move move) {
+        log.info("Got notification from GUI - move selected: {}", move);
+        try {
+            GameState previousState = getFocusedState();
+            makeMove(move);
+            GameState currentState = getFocusedState();
+            notifyListeners(new GameChangedEvent(previousState, currentState));
+        } catch (IllegalMoveException ex) {
+            log.info("The move selected is illegal.", ex);
+        } catch (ChessboardException ex) {
+            log.info("The move selected has problem.", ex);
+        }
     }
 
     @Override
@@ -98,48 +119,11 @@ public class GameImpl implements Game, MoveSelectedListener {
         gameListeners.remove(gl);
     }
 
-    @Override
-    public void moveSelected(Move move) {
-        log.info("Got notification from GUI - move selected: {}", move);
-        try {
-            makeMove(move);
-
-            List<Square> squaresThatChanged =
-                    getSquaresThatChanged();
-            GameChangedEvent gcEvent = new GameChangedEvent(squaresThatChanged);
-            for (GameListener listener : gameListeners) {
-                listener.gameChanged(gcEvent);
-            }
-        } catch (IllegalMoveException ex) {
-            log.info("The move selected is illegal.", ex);
-        } catch (ChessboardException ex) {
-            log.info("The move selected has problem.", ex);
-        }
-    }
     //----------------------- PRIVATE IMPLEMENTATION ---------------------------
-
-    private void notifyListeners() {
+    private void notifyListeners(GameChangedEvent change) {
         for (GameListener gameListener : gameListeners) {
-            gameListener.gameChanged(new GameChangedEvent(Arrays.asList(Square.values())));
+            gameListener.gameChanged(change);
         }
-    }
-
-    /**
-     *
-     * @return list of squares that changed from previously focused game state
-     * to currently focused state.
-     */
-    private List<Square> getSquaresThatChanged() {
-        List<Square> changedSquares = new ArrayList<>();
-        Position current = gameTree.getFocusedNode().getGameState().getPosition();
-        Position previous = gameTree.getFocusedNode().getParent().getGameState().getPosition();
-        for (Square sq : Square.values()) {
-            if (current.getPiece(sq) != previous.getPiece(sq)) {
-                changedSquares.add(sq);
-            }
-        }
-        log.debug("Squares changed by the move: {}", changedSquares);
-        return changedSquares;
     }
 
     private static class Tree {
@@ -200,7 +184,7 @@ public class GameImpl implements Game, MoveSelectedListener {
                     return;
                 }
             }
-            log.debug("Adding new child node for move {}", newNode.getMove());
+            log.debug("Adding new node for move {}", newNode.getMove());
             focusedNode.addChild(newNode);
             focusedNode = newNode;
         }

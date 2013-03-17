@@ -1,7 +1,11 @@
 package cz.janhrcek.chess.model.api;
 
 import cz.janhrcek.chess.model.api.enums.Square;
+import cz.janhrcek.chess.model.impl.Position;
+import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This event represents change in the state of the game.
@@ -14,17 +18,24 @@ public class GameChangedEvent {
      * The list of squares in the position, whose contents changed (either
      * pieces were put on them or removed from them).
      */
-    private List<Square> changedSquares;
+    private final List<Square> changedSquares;
+    private final GameState previous;
+    private final GameState current;
+    private static final Logger log = LoggerFactory.getLogger(GameChangedEvent.class);
 
-    /**
-     * Creates the instance of the GameChangedEvent.
-     *
-     * @param source the GameModel which fired this event
-     * @param changedSquares the squares on the board that changed since the
-     * last GameModelEvent was fired.
-     */
-    public GameChangedEvent(List<Square> changedSquares) {
-        this.changedSquares = changedSquares;
+    public GameChangedEvent(GameState previous, GameState current) {
+        this.previous = previous;
+        this.current = current;
+
+        Position previousPos = previous.getPosition();
+        Position currentPos = current.getPosition();
+        changedSquares = new ArrayList<>(64);
+        for (Square square : Square.values()) {
+            if (previousPos.getPiece(square) != currentPos.getPiece(square)) {
+                changedSquares.add(square);
+            }
+        }
+        log.debug("Squares changed by the event: {}", changedSquares);
     }
 
     /**
@@ -35,5 +46,13 @@ public class GameChangedEvent {
      */
     public List<Square> getChangedSquares() {
         return changedSquares;
+    }
+
+    public GameState getPreviousState() {
+        return previous;
+    }
+
+    public GameState getCurrentState() {
+        return current;
     }
 }

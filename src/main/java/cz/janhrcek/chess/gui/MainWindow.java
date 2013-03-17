@@ -30,7 +30,6 @@ public class MainWindow extends JFrame {
     private void createAndShowGui() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         //create representation of gamestate
         try {
             game = new GameImpl(FenParser.INITIAL_STATE_FEN, new GameStateFactoryImpl(new FIDERuleChecker()));
@@ -42,8 +41,10 @@ public class MainWindow extends JFrame {
         chessboardComponent.addMoveSelectedListener((MoveSelectedListener) game);
 
         AdHocMoveDisplayArea moveDisplay = new AdHocMoveDisplayArea(game);
-
         JScrollPane scrollableMoveDisplay = new JScrollPane(moveDisplay);
+
+        GameTreeDisplayer gameTreeDisplay = new GameTreeDisplayer(game);
+        JScrollPane scrollableGameTreeDisplay = new JScrollPane(gameTreeDisplay);
 
         JPanel gameBrowseControls = new JPanel();
         gameBrowseControls.setLayout(new FlowLayout());// GridLayout(3, 3));
@@ -84,6 +85,7 @@ public class MainWindow extends JFrame {
         mainPanel.add(chessboardComponent);
         mainPanel.add(scrollableMoveDisplay);
         mainPanel.add(gameBrowseControls);
+        mainPanel.add(scrollableGameTreeDisplay);
 
         this.add(mainPanel);
         setSize(650, 650);
