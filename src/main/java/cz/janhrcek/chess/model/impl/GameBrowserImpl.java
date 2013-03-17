@@ -1,12 +1,10 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.gui.MoveSelectedListener;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
@@ -21,36 +19,29 @@ import org.slf4j.LoggerFactory;
  */
 public class GameBrowserImpl implements GameBrowser, MoveSelectedListener {
 
-    private final GameStateFactory stateFactory;
     private final GameTree gameTree;
     private final List<GameListener> gameListeners;
     private static final Logger log = LoggerFactory.getLogger(GameBrowserImpl.class);
 
-    public GameBrowserImpl(String initialStateFen, GameStateFactory factory) throws InvalidFenException {
-        this.stateFactory = factory;
-        GameState initialState = stateFactory.create(initialStateFen);
-        GameTree.Node initialHistoryNode = new GameTree.Node(null, null, initialState);
-        this.gameTree = new GameTree(initialHistoryNode);
+    public GameBrowserImpl(GameTree gameTree) {
+        this.gameTree = gameTree;
         gameListeners = new ArrayList<>();
     }
 
     @Override
     public GameState getInitialState() {
-        return gameTree.getRoot().getGameState();
+        return gameTree.getRootState();
     }
 
     @Override
     public void makeMove(Move move) throws ChessboardException, IllegalMoveException {
-        log.info("Making move {}", move);
-        GameState stateBeforeMove = getFocusedState();
-        GameState stateAfterMove = stateFactory.create(stateBeforeMove, move);
-        GameTree.Node nodeAfterMove = new GameTree.Node(gameTree.getFocusedNode(), move, stateAfterMove);
-        gameTree.addNode(nodeAfterMove);
+        log.info("Trying to make move{}", move);
+        gameTree.addMove(move);
     }
 
     @Override
     public GameState getFocusedState() {
-        return gameTree.getFocusedNode().getGameState();
+        return gameTree.getFocusedState();
     }
 
     @Override

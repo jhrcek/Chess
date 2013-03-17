@@ -1,6 +1,9 @@
 package cz.janhrcek.chess.model.impl;
 
+import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,27 +14,31 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhrcek
  */
-class GameTree {
+public class GameTree {
+
     private static final Logger log = LoggerFactory.getLogger(GameTree.class);
-    private Node root;
+    private final GameStateFactory stateFactory;
+    private final Node rootNode;
     private Node focusedNode;
 
-    public GameTree(Node root) {
-        this.root = root;
-        this.focusedNode = root;
+    public GameTree(GameStateFactory gsf, String initialStateFen) throws InvalidFenException {
+        this.stateFactory = gsf;
+        GameState initialState = stateFactory.create(initialStateFen);
+        this.rootNode = new Node(null, null, initialState);
+        this.focusedNode = rootNode;
     }
 
-    public Node getRoot() {
-        return root;
+    public GameState getRootState() {
+        return rootNode.getGameState();
     }
 
-    public Node getFocusedNode() {
-        return focusedNode;
+    public GameState getFocusedState() {
+        return focusedNode.getGameState();
     }
 
     void focusRoot() {
         log.info("Browsing tree: focusing root node");
-        focusedNode = root;
+        focusedNode = rootNode;
     }
 
     public void focusParent() {
@@ -60,24 +67,26 @@ class GameTree {
         }
     }
 
-    public void addNode(Node newNode) {
+    public void addMove(Move newMove) throws ChessboardException, IllegalMoveException {
         //if currently focused node already has a child preceded by move in the node, just move the gocus
         for (Node childNode : focusedNode.getChildren()) {
-            if (childNode.getMove().equals(newNode.getMove())) {
-                log.debug("There is already a child with move {} -> just switching focus to that child, not adding the move", newNode.getMove());
+            if (childNode.getMove().equals(newMove)) {
+                log.debug("There is already a child with move {} -> just switching focus to that child, not adding the move", newMove);
                 focusedNode = childNode;
                 return;
             }
         }
-        log.debug("Adding new node for move {}", newNode.getMove());
-        focusedNode.addChild(newNode);
-        focusedNode = newNode;
+        log.debug("Adding new node for move {}", newMove);
+        GameState stateAfterMove = stateFactory.create(getFocusedState(), newMove);
+        Node newFocusedNode = new Node(focusedNode, newMove, stateAfterMove);
+        focusedNode.addChild(newFocusedNode);
+        focusedNode = newFocusedNode;
     }
 
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        histNodeToString(root, result, "");
+        histNodeToString(rootNode, result, "");
         return result.toString();
     }
 
@@ -106,7 +115,7 @@ class GameTree {
         }
     }
 
-    public static class Node {
+    private static class Node {
 
         private static final Logger log = LoggerFactory.getLogger(Node.class);
         //link to parent (to enable taking back of moves - moving to previous states)
@@ -145,5 +154,4 @@ class GameTree {
             return parent;
         }
     }
-    
 }

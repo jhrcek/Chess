@@ -17,10 +17,10 @@ import org.testng.annotations.Test;
  */
 public class FenParserTest {
     
-    private static FenParser parser;
+    private FenParser parser;
 
     @BeforeClass
-    public void setUp() {
+    public void setupParser() {
         parser = new FenParser();
     }
 

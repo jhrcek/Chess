@@ -28,7 +28,8 @@ public class GameTest {
 
     private RuleChecker rc;
     private GameStateFactory gsf;
-    private GameBrowser game;
+    private GameBrowser gameBrowser;
+    private GameTree gameTree;
 
     @BeforeClass
     public void setup() {
@@ -39,7 +40,8 @@ public class GameTest {
     @BeforeMethod
     public void initializeGame() {
         try {
-            game = new GameBrowserImpl(FenParser.INITIAL_STATE_FEN, gsf);
+            gameTree = new GameTree(gsf,FenParser.INITIAL_STATE_FEN);
+            gameBrowser = new GameBrowserImpl(gameTree);
         } catch (InvalidFenException ex) {
             fail("Unexpected exception!", ex);
         }
@@ -47,7 +49,7 @@ public class GameTest {
 
     @Test
     public void testGetInitialState() {
-        GameState initialState = game.getInitialState();
+        GameState initialState = gameBrowser.getInitialState();
         assertEquals(initialState.getPosition().getPiece(A1), WHITE_ROOK);
         assertEquals(initialState.getHalfmoveClock(), 0);
         assertEquals(initialState.getFullmoveNumber(), 1);
@@ -59,8 +61,8 @@ public class GameTest {
     @Test
     public void testMakeMoveE4() {
         try {
-            game.makeMove(new Move(WHITE_PAWN, E2, E4));
-            GameState state = game.getFocusedState();
+            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
+            GameState state = gameBrowser.getFocusedState();
             assertEquals(state.getHalfmoveClock(), 0);
             assertEquals(state.getFullmoveNumber(), 1);
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
@@ -74,9 +76,9 @@ public class GameTest {
     @Test
     public void testMakeMoveE4Nf6() {
         try {
-            game.makeMove(new Move(WHITE_PAWN, E2, E4));
-            game.makeMove(new Move(BLACK_KNIGHT, G8, F6));
-            GameState state = game.getFocusedState();
+            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
+            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            GameState state = gameBrowser.getFocusedState();
 
 
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
@@ -94,10 +96,10 @@ public class GameTest {
     @Test
     public void testFocusPreviousState() {
         try {
-            game.makeMove(new Move(WHITE_PAWN, E2, E4));
-            game.makeMove(new Move(BLACK_KNIGHT, G8, F6));
-            game.focusPreviousState();
-            GameState state = game.getFocusedState();
+            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
+            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            gameBrowser.focusPreviousState();
+            GameState state = gameBrowser.getFocusedState();
 
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
@@ -115,11 +117,11 @@ public class GameTest {
     @Test //TODO deleteThis test
     public void testSomeMoves() {
         try {
-            game.makeMove(new Move(WHITE_PAWN, E2, E4));
-            game.makeMove(new Move(BLACK_KNIGHT, G8, F6));
-            game.makeMove(new Move(WHITE_KNIGHT, G1, F3));
-            GameState state = game.getFocusedState();
-            System.out.println(game.toString());
+            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
+            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            gameBrowser.makeMove(new Move(WHITE_KNIGHT, G1, F3));
+            GameState state = gameBrowser.getFocusedState();
+            System.out.println(gameBrowser.toString());
         } catch (IllegalMoveException | ChessboardException ex) {
             fail("Unexpected exception!", ex);
         }
