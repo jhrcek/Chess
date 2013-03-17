@@ -50,7 +50,6 @@ public class GameTreeDisplayer extends JEditorPane implements GameListener {
             }
         });
         this.game = game;
-        game.addGameListener(this);//listen to GameChangeEvents
     }
 
     @Override

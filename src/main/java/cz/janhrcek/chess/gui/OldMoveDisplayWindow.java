@@ -60,10 +60,10 @@ public class OldMoveDisplayWindow extends JTextArea {
     }
     private OldGameModelListener myGameStateModelListener =
             new OldGameModelListener() {
-                @Override
-                public void gameStateChanged(OldGameModelEvent event) {
-                    //Kdyz se zmeni stav hry prepiseme text
-                    writeOutMoves();
-                }
-            };
+        @Override
+        public void gameStateChanged(OldGameModelEvent event) {
+            //Kdyz se zmeni stav hry prepiseme text
+            writeOutMoves();
+        }
+    };
 }

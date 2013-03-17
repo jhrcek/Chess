@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 
 /**
  *
@@ -43,8 +44,13 @@ public class MainWindow extends JFrame {
         AdHocMoveDisplayArea moveDisplay = new AdHocMoveDisplayArea(game);
         JScrollPane scrollableMoveDisplay = new JScrollPane(moveDisplay);
 
-        GameTreeDisplayer gameTreeDisplay = new GameTreeDisplayer(game);
-        JScrollPane scrollableGameTreeDisplay = new JScrollPane(gameTreeDisplay);
+        treeDisplayer = new GameTreeDisplayer(game);
+        JScrollPane scrollableGameTreeDisplay = new JScrollPane(treeDisplayer);
+        
+        stateDisplayer = new GameStateDisplayer();
+        
+        game.addGameListener(stateDisplayer);
+        game.addGameListener(treeDisplayer);
 
         JPanel gameBrowseControls = new JPanel();
         gameBrowseControls.setLayout(new FlowLayout());// GridLayout(3, 3));
@@ -79,13 +85,17 @@ public class MainWindow extends JFrame {
                 game.focusLastState();
             }
         });
-
+        JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, stateDisplayer);
+        controlsPlusStateDisplayer.setDividerLocation(20);
+        controlsPlusStateDisplayer.setDividerSize(0);
+        
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
         mainPanel.add(chessboardComponent);
         mainPanel.add(scrollableMoveDisplay);
-        mainPanel.add(gameBrowseControls);
+        mainPanel.add(controlsPlusStateDisplayer);
         mainPanel.add(scrollableGameTreeDisplay);
+        //mainPanel.add(stateDisplayer);
 
         this.add(mainPanel);
         setSize(650, 650);
@@ -99,4 +109,6 @@ public class MainWindow extends JFrame {
     private Game game;
     //gui providing view into model
     private ChessboardComponent chessboardComponent;
+    private GameTreeDisplayer treeDisplayer;
+    private GameStateDisplayer stateDisplayer;
 }
