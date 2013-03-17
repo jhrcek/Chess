@@ -1,12 +1,14 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
+import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
@@ -17,6 +19,7 @@ import java.util.HashSet;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.border.LineBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,7 @@ public class ChessboardComponent extends JComponent {
      * @param game the model which represents state of the game, which this
      * component displays
      */
-    public ChessboardComponent(Game game) {
+    public ChessboardComponent(GameBrowser game) {
         if (game == null) {
             throw new NullPointerException("model can't be null!");
         }
@@ -44,6 +47,7 @@ public class ChessboardComponent extends JComponent {
         game.addGameListener(myGameListener);
         enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
         enableEvents(java.awt.AWTEvent.COMPONENT_EVENT_MASK);
+        setBorder(new LineBorder(Color.BLACK, 1));
     }
 
     /**
@@ -52,7 +56,7 @@ public class ChessboardComponent extends JComponent {
      * @param game model representing state of the game which we want to display
      * using this component
      */
-    public final void setModel(Game game) {
+    public final void setModel(GameBrowser game) {
         if (this.game != null) {
             this.game.removeGameListener(myGameListener);
         }
@@ -66,7 +70,7 @@ public class ChessboardComponent extends JComponent {
      * @return the model representing state of the game which is displayed by
      * this component
      */
-    public Game getGame() {
+    public GameBrowser getGame() {
         return game;
     }
 
@@ -253,7 +257,7 @@ public class ChessboardComponent extends JComponent {
      * Instance of GameModel, from which we can get all information (displayable
      * on chessboard) about the state of the game.
      */
-    private Game game;
+    private GameBrowser game;
     /**
      * Whenever GameState is changed, this listener will do appropriate changes
      * to this component, so that displayed state corresponds to current
@@ -261,15 +265,15 @@ public class ChessboardComponent extends JComponent {
      */
     private GameListener myGameListener =
             new GameListener() {
-                @Override
-                public void gameChanged(GameChangedEvent event) {
-                    //prekreslime vsechny pole jejichz obsah se v posledni
-                    //zmene stavu zmenil
-                    for (Square changedSquare : event.getChangedSquares()) {
-                        repaintSquare(changedSquare);
-                    }
-                }
-            };
+        @Override
+        public void gameChanged(GameChangedEvent event) {
+            //prekreslime vsechny pole jejichz obsah se v posledni
+            //zmene stavu zmenil
+            for (Square changedSquare : event.getChangedSquares()) {
+                repaintSquare(changedSquare);
+            }
+        }
+    };
 
     /**
      * Paint the squares of the chessboard, which this component represents.
@@ -435,21 +439,21 @@ public class ChessboardComponent extends JComponent {
      */
     private Move createSelectedMove(Piece piece, Square from, Square to) {
         //je-li to pawn promotion dame vybrat na co ho chce promotnout
-        if ((piece.equals(Piece.WHITE_PAWN) && from.getRank() == 6 && to.getRank() == 7)
-                || (piece.equals(Piece.BLACK_PAWN) && from.getRank() == 1 && to.getRank() == 0)) {
+        if ((piece.equals(WHITE_PAWN) && from.getRank() == 6 && to.getRank() == 7)
+                || (piece.equals(BLACK_PAWN) && from.getRank() == 1 && to.getRank() == 0)) {
             ImageIcon[] options;
             if (piece.isWhite()) {
                 options = new ImageIcon[]{
-                    squareImages.getSquareImage(Piece.WHITE_QUEEN, false),
-                    squareImages.getSquareImage(Piece.WHITE_ROOK, true),
-                    squareImages.getSquareImage(Piece.WHITE_BISHOP, false),
-                    squareImages.getSquareImage(Piece.WHITE_KNIGHT, true)};
+                    squareImages.getSquareImage(WHITE_QUEEN, false),
+                    squareImages.getSquareImage(WHITE_ROOK, true),
+                    squareImages.getSquareImage(WHITE_BISHOP, false),
+                    squareImages.getSquareImage(WHITE_KNIGHT, true)};
             } else {
                 options = new ImageIcon[]{
-                    squareImages.getSquareImage(Piece.BLACK_QUEEN, false),
-                    squareImages.getSquareImage(Piece.BLACK_ROOK, true),
-                    squareImages.getSquareImage(Piece.BLACK_BISHOP, false),
-                    squareImages.getSquareImage(Piece.BLACK_KNIGHT, true)};
+                    squareImages.getSquareImage(BLACK_QUEEN, false),
+                    squareImages.getSquareImage(BLACK_ROOK, true),
+                    squareImages.getSquareImage(BLACK_BISHOP, false),
+                    squareImages.getSquareImage(BLACK_KNIGHT, true)};
             }
             int toWhatPromote =
                     JOptionPane.showOptionDialog(getTopLevelAncestor(),
@@ -464,20 +468,20 @@ public class ChessboardComponent extends JComponent {
             Piece promoPiece;
             switch (toWhatPromote) {
                 case 0:
-                    promoPiece = piece.isWhite() ? Piece.WHITE_QUEEN
-                            : Piece.BLACK_QUEEN;
+                    promoPiece = piece.isWhite() ? WHITE_QUEEN
+                            : BLACK_QUEEN;
                     break;
                 case 1:
-                    promoPiece = piece.isWhite() ? Piece.WHITE_ROOK
-                            : Piece.BLACK_ROOK;
+                    promoPiece = piece.isWhite() ? WHITE_ROOK
+                            : BLACK_ROOK;
                     break;
                 case 2:
-                    promoPiece = piece.isWhite() ? Piece.WHITE_BISHOP
-                            : Piece.BLACK_BISHOP;
+                    promoPiece = piece.isWhite() ? WHITE_BISHOP
+                            : BLACK_BISHOP;
                     break;
                 case 3:
-                    promoPiece = piece.isWhite() ? Piece.WHITE_KNIGHT
-                            : Piece.BLACK_KNIGHT;
+                    promoPiece = piece.isWhite() ? WHITE_KNIGHT
+                            : BLACK_KNIGHT;
                     break;
                 default:
                     throw new IllegalStateException("toWhatPromote"

@@ -4,7 +4,7 @@
  */
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import javax.swing.JTextArea;
@@ -14,9 +14,9 @@ import javax.swing.JTextArea;
  * @author jhrcek
  */
 public class AdHocMoveDisplayArea extends JTextArea implements GameListener {
-    private Game game;
+    private GameBrowser game;
 
-    public AdHocMoveDisplayArea(Game game) {
+    public AdHocMoveDisplayArea(GameBrowser game) {
         this.game = game;
         game.addGameListener(this);//listen to GameChangeEvents
     }

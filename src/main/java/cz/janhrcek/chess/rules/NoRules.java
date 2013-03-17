@@ -13,17 +13,17 @@ public class NoRules implements RuleCheckerOld {
 
     /**
      * Since no control of legality is made, this implementation always returns
-     * MoveType.LEGAL object.
+     * MoveTypeOld.LEGAL object.
      *
      * @param state the state of game in which we would like to move a piece
      * from square to square and we want to know whether this move is legal.
      * @param move information about the move (which pice, from where, to where)
      * of which we want to check legality
-     * @return MoveType.LEGAL
+     * @return MoveTypeOld.LEGAL
      *
      */
     @Override
-    public final MoveType checkMove(final OldGameStateMutable state,
+    public final MoveTypeOld checkMove(final OldGameStateMutable state,
             final Move move) {
         if (state == null) {
             throw new IllegalArgumentException("state can't be null!");
@@ -31,6 +31,6 @@ public class NoRules implements RuleCheckerOld {
         if (move == null) {
             throw new IllegalArgumentException("move can't be null!");
         }
-        return MoveType.LEGAL;
+        return MoveTypeOld.LEGAL;
     }
 }

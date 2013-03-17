@@ -18,8 +18,8 @@ public interface RuleCheckerOld {
      * from square to square and we want to know whether this move is legal.
      * @param move information about the move (which pice, from where, to where)
      * we want to check legality of
-     * @return MoveType object carrying information about the legality of the
+     * @return MoveTypeOld object carrying information about the legality of the
      * move.
      */
-    MoveType checkMove(OldGameStateMutable state, Move move);
+    MoveTypeOld checkMove(OldGameStateMutable state, Move move);
 }

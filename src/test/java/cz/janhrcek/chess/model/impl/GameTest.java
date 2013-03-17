@@ -6,7 +6,7 @@ package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
-import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
@@ -28,7 +28,7 @@ public class GameTest {
 
     private RuleChecker rc;
     private GameStateFactory gsf;
-    private Game game;
+    private GameBrowser game;
 
     @BeforeClass
     public void setup() {
@@ -39,7 +39,7 @@ public class GameTest {
     @BeforeMethod
     public void initializeGame() {
         try {
-            game = new GameImpl(FenParser.INITIAL_STATE_FEN, gsf);
+            game = new GameBrowserImpl(FenParser.INITIAL_STATE_FEN, gsf);
         } catch (InvalidFenException ex) {
             fail("Unexpected exception!", ex);
         }

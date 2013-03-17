@@ -10,7 +10,7 @@ import cz.janhrcek.chess.model.impl.ChessboardException;
  *
  * @author jhrcek
  */
-public interface Game {
+public interface GameBrowser {
 
     public GameState getInitialState();
 

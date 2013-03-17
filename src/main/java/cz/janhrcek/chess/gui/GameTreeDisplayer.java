@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import java.io.IOException;
@@ -24,9 +24,9 @@ public class GameTreeDisplayer extends JEditorPane implements GameListener {
 
     private static final Logger log = LoggerFactory.getLogger(GameTreeDisplayer.class);
     HTMLDocument htmlDoc;
-    private Game game;
+    private GameBrowser game;
 
-    public GameTreeDisplayer(Game game) {
+    public GameTreeDisplayer(GameBrowser game) {
         setContentType("text/html");
         htmlDoc = (HTMLDocument) this.getDocument();
         setEditable(false);

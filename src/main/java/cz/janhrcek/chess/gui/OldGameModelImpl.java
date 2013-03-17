@@ -6,7 +6,7 @@ import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.impl.Position;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.FIDERulesOld;
-import cz.janhrcek.chess.rules.MoveType;
+import cz.janhrcek.chess.rules.MoveTypeOld;
 import cz.janhrcek.chess.rules.NoRules;
 import cz.janhrcek.chess.rules.RuleCheckerOld;
 import java.util.ArrayList;
@@ -352,7 +352,7 @@ public class OldGameModelImpl implements OldGameModel, MoveSelectedListener {
      * selected
      */
     private boolean handleIllegalMoves(Move m) {
-        MoveType legalityTestResult = ruleChecker.checkMove(gameState, m);
+        MoveTypeOld legalityTestResult = ruleChecker.checkMove(gameState, m);
         String errorMessage = "";
 
         switch (legalityTestResult) {

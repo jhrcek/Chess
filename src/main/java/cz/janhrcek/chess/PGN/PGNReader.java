@@ -4,6 +4,7 @@ import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import cz.janhrcek.chess.model.impl.OldGameStateMutable.GameHeader;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
+import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.impl.Position;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
@@ -283,23 +284,23 @@ public class PGNReader {
             case 'f':
             case 'g':
             case 'h':
-                piece = (isWhiteToMove ? Piece.WHITE_PAWN : Piece.BLACK_PAWN);
+                piece = (isWhiteToMove ? WHITE_PAWN : BLACK_PAWN);
                 break;
             case 'B':
-                piece = (isWhiteToMove ? Piece.WHITE_BISHOP : Piece.BLACK_BISHOP);
+                piece = (isWhiteToMove ? WHITE_BISHOP : BLACK_BISHOP);
                 break;
             case 'K':
             case 'O': //rosada zacina Ockem (NE NULOU!)
-                piece = (isWhiteToMove ? Piece.WHITE_KING : Piece.BLACK_KING);
+                piece = (isWhiteToMove ? WHITE_KING : BLACK_KING);
                 break;
             case 'N':
-                piece = (isWhiteToMove ? Piece.WHITE_KNIGHT : Piece.BLACK_KNIGHT);
+                piece = (isWhiteToMove ? WHITE_KNIGHT : BLACK_KNIGHT);
                 break;
             case 'Q':
-                piece = (isWhiteToMove ? Piece.WHITE_QUEEN : Piece.BLACK_QUEEN);
+                piece = (isWhiteToMove ? WHITE_QUEEN : BLACK_QUEEN);
                 break;
             case 'R':
-                piece = (isWhiteToMove ? Piece.WHITE_ROOK : Piece.BLACK_ROOK);
+                piece = (isWhiteToMove ? WHITE_ROOK : BLACK_ROOK);
                 break;
             default:
                 throw new IllegalStateException("I have sanMove, which does NOT"
@@ -323,16 +324,16 @@ public class PGNReader {
         switch (letter) {
             case 'Q':
                 return (isWhiteToMove
-                        ? Piece.WHITE_QUEEN : Piece.BLACK_QUEEN);
+                        ? WHITE_QUEEN : BLACK_QUEEN);
             case 'R':
                 return (isWhiteToMove
-                        ? Piece.WHITE_ROOK : Piece.BLACK_ROOK);
+                        ? WHITE_ROOK : BLACK_ROOK);
             case 'B':
                 return (isWhiteToMove
-                        ? Piece.WHITE_BISHOP : Piece.BLACK_BISHOP);
+                        ? WHITE_BISHOP : BLACK_BISHOP);
             case 'N':
                 return (isWhiteToMove
-                        ? Piece.WHITE_KNIGHT : Piece.BLACK_KNIGHT);
+                        ? WHITE_KNIGHT : BLACK_KNIGHT);
             default:
                 throw new IllegalStateException("I got letter t"
                         + "hat is not in [QRBN]!");
@@ -405,7 +406,7 @@ public class PGNReader {
 
         Position currBoard = currentGame.getChessboard();
 
-        if (piece.equals(Piece.WHITE_PAWN) || piece.equals(Piece.BLACK_PAWN)) {
+        if (piece.equals(WHITE_PAWN) || piece.equals(BLACK_PAWN)) {
             int fileIdx = (int) sanMove.charAt(0) - 97;
             for (Square s : Square.values()) {
                 if (s.getFile() == fileIdx) {
@@ -428,7 +429,6 @@ public class PGNReader {
             if (squaresWithPiece.size() == 1) {
                 from = squaresWithPiece.get(0);
             } else {
-                //System.out.println("squaresWithPiece.size() = " + squaresWithPiece.size());
                 //ziskame desambiguacni info
                 char desambigChar = sanMove.charAt(1);
                 //System.out.println("Desambig Char = " + desambigChar);

@@ -3,7 +3,9 @@ package cz.janhrcek.chess.model.impl;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Piece;
+import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
+import static cz.janhrcek.chess.model.api.enums.Square.*;
 import java.util.Arrays;
 
 /**
@@ -85,39 +87,39 @@ public class Position {
      */
     public void setInitialPosition() {
         //put white pieces on the board
-        putPiece(Piece.WHITE_ROOK, Square.A1);  //rooks
-        putPiece(Piece.WHITE_ROOK, Square.H1);
-        putPiece(Piece.WHITE_KNIGHT, Square.B1);  //knights
-        putPiece(Piece.WHITE_KNIGHT, Square.G1);
-        putPiece(Piece.WHITE_BISHOP, Square.C1);  //bishops
-        putPiece(Piece.WHITE_BISHOP, Square.F1);
-        putPiece(Piece.WHITE_QUEEN, Square.D1);  //queen
-        putPiece(Piece.WHITE_KING, Square.E1);  //king
-        putPiece(Piece.WHITE_PAWN, Square.A2);  //pawns
-        putPiece(Piece.WHITE_PAWN, Square.B2);
-        putPiece(Piece.WHITE_PAWN, Square.C2);
-        putPiece(Piece.WHITE_PAWN, Square.D2);
-        putPiece(Piece.WHITE_PAWN, Square.E2);
-        putPiece(Piece.WHITE_PAWN, Square.F2);
-        putPiece(Piece.WHITE_PAWN, Square.G2);
-        putPiece(Piece.WHITE_PAWN, Square.H2);
+        putPiece(WHITE_ROOK, A1);  //rooks
+        putPiece(WHITE_ROOK, H1);
+        putPiece(WHITE_KNIGHT, B1);  //knights
+        putPiece(WHITE_KNIGHT, G1);
+        putPiece(WHITE_BISHOP, C1);  //bishops
+        putPiece(WHITE_BISHOP, F1);
+        putPiece(WHITE_QUEEN, D1);  //queen
+        putPiece(WHITE_KING, E1);  //king
+        putPiece(WHITE_PAWN, A2);  //pawns
+        putPiece(WHITE_PAWN, B2);
+        putPiece(WHITE_PAWN, C2);
+        putPiece(WHITE_PAWN, D2);
+        putPiece(WHITE_PAWN, E2);
+        putPiece(WHITE_PAWN, F2);
+        putPiece(WHITE_PAWN, G2);
+        putPiece(WHITE_PAWN, H2);
         //put black pieces on the board
-        putPiece(Piece.BLACK_ROOK, Square.A8);  //rooks
-        putPiece(Piece.BLACK_ROOK, Square.H8);
-        putPiece(Piece.BLACK_KNIGHT, Square.B8);  //knights
-        putPiece(Piece.BLACK_KNIGHT, Square.G8);
-        putPiece(Piece.BLACK_BISHOP, Square.C8);  //bishops
-        putPiece(Piece.BLACK_BISHOP, Square.F8);
-        putPiece(Piece.BLACK_QUEEN, Square.D8);  //queen
-        putPiece(Piece.BLACK_KING, Square.E8);  //king
-        putPiece(Piece.BLACK_PAWN, Square.A7);  //pawns
-        putPiece(Piece.BLACK_PAWN, Square.B7);
-        putPiece(Piece.BLACK_PAWN, Square.C7);
-        putPiece(Piece.BLACK_PAWN, Square.D7);
-        putPiece(Piece.BLACK_PAWN, Square.E7);
-        putPiece(Piece.BLACK_PAWN, Square.F7);
-        putPiece(Piece.BLACK_PAWN, Square.G7);
-        putPiece(Piece.BLACK_PAWN, Square.H7);
+        putPiece(BLACK_ROOK, A8);  //rooks
+        putPiece(BLACK_ROOK, H8);
+        putPiece(BLACK_KNIGHT, B8);  //knights
+        putPiece(BLACK_KNIGHT, G8);
+        putPiece(BLACK_BISHOP, C8);  //bishops
+        putPiece(BLACK_BISHOP, F8);
+        putPiece(BLACK_QUEEN, D8);  //queen
+        putPiece(BLACK_KING, E8);  //king
+        putPiece(BLACK_PAWN, A7);  //pawns
+        putPiece(BLACK_PAWN, B7);
+        putPiece(BLACK_PAWN, C7);
+        putPiece(BLACK_PAWN, D7);
+        putPiece(BLACK_PAWN, E7);
+        putPiece(BLACK_PAWN, F7);
+        putPiece(BLACK_PAWN, G7);
+        putPiece(BLACK_PAWN, H7);
         //remove everything from the 3rd, 4th, 5th and 6th rank
         for (int file = 0; file < NUMBER_OF_FILES; file++) {
             for (int rank = 2; rank < NUMBER_OF_RANKS - 2; rank++) { //ranks 3-6

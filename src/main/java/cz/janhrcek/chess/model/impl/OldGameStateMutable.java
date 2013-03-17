@@ -6,7 +6,7 @@ import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.FIDERulesOld;
-import cz.janhrcek.chess.rules.MoveType;
+import cz.janhrcek.chess.rules.MoveTypeOld;
 import cz.janhrcek.chess.rules.NoRules;
 import cz.janhrcek.chess.rules.RuleCheckerOld;
 import java.util.ArrayList;
@@ -101,7 +101,7 @@ public class OldGameStateMutable {
             return;
         }
 
-        MoveType mt = ruleChecker.checkMove(this, move);
+        MoveTypeOld mt = ruleChecker.checkMove(this, move);
         try {///prozatimni reseni
             switchOnMoveType(move, mt);
         } catch (IllegalStateException ise) {
@@ -424,7 +424,7 @@ public class OldGameStateMutable {
         }
     }
 
-    private void switchOnMoveType(Move move, MoveType mt) {
+    private void switchOnMoveType(Move move, MoveTypeOld mt) {
         switch (mt) {
             case LEGAL_MATE:
                 checks.add(Boolean.valueOf("TRUE"));

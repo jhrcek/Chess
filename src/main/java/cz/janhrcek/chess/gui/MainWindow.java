@@ -2,9 +2,9 @@ package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
-import cz.janhrcek.chess.model.api.Game;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.impl.FIDERuleChecker;
-import cz.janhrcek.chess.model.impl.GameImpl;
+import cz.janhrcek.chess.model.impl.GameBrowserImpl;
 import cz.janhrcek.chess.model.impl.GameStateFactoryImpl;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -33,7 +33,7 @@ public class MainWindow extends JFrame {
 
         //create representation of gamestate
         try {
-            game = new GameImpl(FenParser.INITIAL_STATE_FEN, new GameStateFactoryImpl(new FIDERuleChecker()));
+            game = new GameBrowserImpl(FenParser.INITIAL_STATE_FEN, new GameStateFactoryImpl(new FIDERuleChecker()));
         } catch (InvalidFenException ex) {
             throw new IllegalStateException("Unexpected exception thrown", ex);
         }
@@ -106,7 +106,7 @@ public class MainWindow extends JFrame {
     private final JButton nextButton = new JButton("Next");
     private final JButton lastButton = new JButton("Last");
     //model
-    private Game game;
+    private GameBrowser game;
     //gui providing view into model
     private ChessboardComponent chessboardComponent;
     private GameTreeDisplayer treeDisplayer;
