@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.gui.MoveSelectedListener;
+import cz.janhrcek.chess.gui.MoveListener;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhrcek
  */
-public class GameBrowserImpl implements GameBrowser, MoveSelectedListener {
+public class GameBrowserImpl implements GameBrowser, MoveListener {
 
     private final GameTree gameTree;
     private final List<GameListener> gameListeners;

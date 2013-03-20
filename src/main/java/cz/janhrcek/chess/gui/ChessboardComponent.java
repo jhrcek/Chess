@@ -8,6 +8,7 @@ import cz.janhrcek.chess.model.api.Promotion;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -45,8 +46,8 @@ public class ChessboardComponent extends JComponent {
 
         this.game = game;
         game.addGameListener(myGameListener);
-        enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
-        enableEvents(java.awt.AWTEvent.COMPONENT_EVENT_MASK);
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        enableEvents(AWTEvent.COMPONENT_EVENT_MASK);
         setBorder(new LineBorder(Color.BLACK, 1));
     }
 
@@ -75,14 +76,13 @@ public class ChessboardComponent extends JComponent {
     }
 
     /**
-     * This method registers any object which implements MoveSelectedListener
-     * interface as a listener to the instance of this class. When some
-     * MoveSeletesEvent occurs, than given object will be notified of the
-     * occurrence.
+     * This method registers any object which implements MoveListener interface
+     * as a listener to the instance of this class. When some MoveSeletesEvent
+     * occurs, than given object will be notified of the occurrence.
      *
-     * @param listener the object to be registered as a MoveSelectedListener
+     * @param listener the object to be registered as a MoveListener
      */
-    public void addMoveSelectedListener(MoveSelectedListener listener) {
+    public void addMoveSelectedListener(MoveListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -95,7 +95,7 @@ public class ChessboardComponent extends JComponent {
      *
      * @param listener the listener we want to unregister
      */
-    public void removeMoveSelectedEventListener(MoveSelectedListener listener) {
+    public void removeMoveSelectedEventListener(MoveListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -109,6 +109,7 @@ public class ChessboardComponent extends JComponent {
      */
     @Override
     protected void paintComponent(Graphics g) {
+        log.debug("Calling paintComponent(Graphics g)");
         if (isOpaque()) { //paint background
             g.setColor(getBackground());
             g.fillRect(0, 0, getWidth(), getHeight());
@@ -129,47 +130,48 @@ public class ChessboardComponent extends JComponent {
      */
     @Override
     protected void processMouseEvent(MouseEvent e) {
-        //v teto metode se nestarame o ZADNE JINE mouseEventy, nez MOUSE_CLICKED
+        //In this method we are only interested in MOUSE_CLICKED events
         if (e.getID() != MouseEvent.MOUSE_CLICKED) {
             return;
         }
-        //zjisti na ktere pole uzivatel klikl
-        Square clickedSquare = getCorrespondingSquare(e);
 
-        //implementace konecneho automatu ktera postupne konstruuje/rusi
-        //tah ktery uzivatel postupne zadava klikanim na ChessboardComponen
-        if (selectedFromSquare != null) { //"from" je uz vybran
+        //Find out which square user clicked on
+        Square clickedSquare = getCorrespondingSquare(e);
+        log.debug("Processing mouse click: User clicked {}", (clickedSquare == null ? "outside of Chessboard" : ("on square " + clickedSquare)));
+
+        //Finite state machine implementation that tries to constructs 
+        //a move instance based on user clicks on the chessboard component
+        if (selectedFromSquare != null) { //"from" has been chosen previously
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
-                //vybran "from" i "to" -> vytvorime MoveInfo reprezentujici ten tah
+                //Both "from" and "to" are selected -> Create Move instance and notify all MoveListeners
                 Piece movingPiece =
-                        //model.getChessboard().getPiece(selectedFromSquare);
                         game.getFocusedState().getPosition().getPiece(selectedFromSquare);
                 Move selectedMove =
                         createSelectedMove(movingPiece,
                         selectedFromSquare, //from
                         clickedSquare); //to
+                log.debug("User constructed {}, notifying all MoveListeners", selectedMove);
                 //vsem posluchacum dam vedet, ze byl vybran nejaky tah
-                for (MoveSelectedListener listener : listeners) {
+                for (MoveListener listener : listeners) {
                     listener.moveSelected(selectedMove);
                 }
-                //zrusime cerveny ctverce kolem selectedFromSquare
-                Square tmpSq = selectedFromSquare;
-                selectedFromSquare = null;
-                repaintSquare(tmpSq);
-            } else { //ruseni tahu (klik na stejny sq nebo mimo sachovnici)
-                //zrusime cerveny ctverec kolem selectedFromSquare
-                Square tmpSq = selectedFromSquare;
-                selectedFromSquare = null;
-                repaintSquare(tmpSq);
+            } else {
+                log.debug("  Canceling the selection of \"from\" square.");
             }
-        } else { //from jeste neni vybran
-            //povolime vybrat nejaky from square POUZE TEHDY, je-li na nem
-            //nejaka figura (JAKEKOLI BARVY)
+            //Cancel the red square around selected square 
+            //(because user either selected a "to" square and constructed the move,
+            // or he canceled a selection of "from" by clicking the "from" square
+            // again or clicking elsewhere on the chessboard component)
+            Square tmpSq = selectedFromSquare;
+            selectedFromSquare = null;
+            repaintSquare(tmpSq);
+        } else { //"From" has not yet been chosen --> this is the click that choooses from
+            //We will allow to choose from ONLY IF there is a piece (of any collor)
             if (clickedSquare != null
-                    //model.getChessboard().getPiece(clickedSquare) != null
                     && game.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
+                log.debug("  Selecting square {} as \"from\" square", clickedSquare);
                 selectedFromSquare = clickedSquare;
-                //nakreslime cerveny ctverec kolem selectedFromSquare
+                //Paint red square around selectedFromSquare to signify to user it has been chosen
                 repaintSquare(selectedFromSquare);
             }
         }
@@ -211,15 +213,15 @@ public class ChessboardComponent extends JComponent {
      */
     public void setClickable(Boolean flag) {
         if (flag == true) {
-            enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
+            enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         } else {
-            disableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
+            disableEvents(AWTEvent.MOUSE_EVENT_MASK);
         }
     }
 //------------------------------------------------------------------------
 //------------------------PRIVATE IMPLEMENTATION--------------------------
 //------------------------------------------------------------------------
-    private static final Logger LOG = LoggerFactory.getLogger(ChessboardComponent.class);
+    private static final Logger log = LoggerFactory.getLogger(ChessboardComponent.class);
     /**
      * Number of pixels from the edge of chessboard to the edge of the component
      * in which there are captions displayed.
@@ -250,7 +252,7 @@ public class ChessboardComponent extends JComponent {
      * Collection of objects, which will be notified of the selection of move
      * when some move is selected.
      */
-    private Collection<MoveSelectedListener> listeners =
+    private Collection<MoveListener> listeners =
             new HashSet<>();
     SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
@@ -287,6 +289,7 @@ public class ChessboardComponent extends JComponent {
      * edge of the chessboard
      */
     private void paintSquares(Graphics g, int cellSize, int deltaX, int deltaY) {
+        log.debug("  Calling paintSquares()");
         for (Square sq : Square.values()) {
             //Piece pieceOnSqare = model.getChessboard().getPiece(sq);
             Piece pieceOnSqare = game.getFocusedState().getPosition().getPiece(sq);
@@ -298,7 +301,7 @@ public class ChessboardComponent extends JComponent {
         //nakresli cerneny obdelnik kolem selectedFromSquare
         //(pokud nejaky vybrany je)
         if (selectedFromSquare != null) {
-            g.setColor(java.awt.Color.RED);
+            g.setColor(Color.RED);
             g.drawRect(deltaX + selectedFromSquare.getFile() * cellSize,
                     deltaY + (7 - selectedFromSquare.getRank()) * cellSize,
                     cellSize - 1,
@@ -310,7 +313,7 @@ public class ChessboardComponent extends JComponent {
         }
 
         //nakresli cerny obdelnik kolem sacovnice
-        g.setColor(java.awt.Color.BLACK);
+        g.setColor(Color.BLACK);
         g.drawRect(deltaX, deltaY, cellSize * 8, cellSize * 8);
     }
 
@@ -326,6 +329,7 @@ public class ChessboardComponent extends JComponent {
      * edge of the chessboard
      */
     private void paintCaptions(Graphics g, int cellSize, int deltaX, int deltaY) {
+        log.debug("  Calling paintCaptions()");
         for (int i = 0; i < 8; i++) {
             // column
             String letter = String.valueOf((char) ('A' + i));
@@ -357,9 +361,8 @@ public class ChessboardComponent extends JComponent {
      * @param s the square which we want to repaint
      */
     private void repaintSquare(Square s) {
-        LOG.debug("Repaint square {}", s);
+        log.debug("Repaint square {}", s);
         Graphics g = getGraphics();
-        //Piece pieceOnSq = model.getChessboard().getPiece(s);
         Piece pieceOnSq = game.getFocusedState().getPosition().getPiece(s);
 
         squareImages.getSquareImage(pieceOnSq, s.isLight()).paintIcon(this, g,
@@ -367,20 +370,27 @@ public class ChessboardComponent extends JComponent {
                 deltaY + (7 - s.getRank()) * sizeOfSquare);
 
         if (s.equals(selectedFromSquare)) {
-            g.setColor(java.awt.Color.RED);
-            g.drawRect(deltaX + selectedFromSquare.getFile() * sizeOfSquare,
-                    deltaY + (7 - selectedFromSquare.getRank()) * sizeOfSquare,
-                    sizeOfSquare - 1,
-                    sizeOfSquare - 1);
-            g.drawRect(deltaX + selectedFromSquare.getFile() * sizeOfSquare + 1,
-                    deltaY + (7 - selectedFromSquare.getRank()) * sizeOfSquare + 1,
-                    sizeOfSquare - 3,
-                    sizeOfSquare - 3);
+            paintRedBorderAroundSquare(s);
         }
 
         //prekresli cerny obdelnik kolem sachovnice
-        g.setColor(java.awt.Color.BLACK);
+        g.setColor(Color.BLACK);
         g.drawRect(deltaX, deltaY, sizeOfSquare * 8, sizeOfSquare * 8);
+    }
+
+    private void paintRedBorderAroundSquare(Square s) {
+        Graphics g = getGraphics();
+        Color previousColor = g.getColor(); //set to restore the color after painting
+        g.setColor(Color.RED);
+        g.drawRect(deltaX + s.getFile() * sizeOfSquare,
+                deltaY + (7 - s.getRank()) * sizeOfSquare,
+                sizeOfSquare - 1,
+                sizeOfSquare - 1);
+        g.drawRect(deltaX + s.getFile() * sizeOfSquare + 1,
+                deltaY + (7 - s.getRank()) * sizeOfSquare + 1,
+                sizeOfSquare - 3,
+                sizeOfSquare - 3);
+        g.setColor(previousColor);
     }
 
     /**

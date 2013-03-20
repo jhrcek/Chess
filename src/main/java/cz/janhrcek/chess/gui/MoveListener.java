@@ -8,7 +8,7 @@ import cz.janhrcek.chess.model.api.Move;
  *
  * @author xhrcek
  */
-public interface MoveSelectedListener {
+public interface MoveListener {
 
     /**
      * In this method should be the code, which reacts to fired

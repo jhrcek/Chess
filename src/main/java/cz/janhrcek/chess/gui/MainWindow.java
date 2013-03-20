@@ -42,7 +42,7 @@ public class MainWindow extends JFrame {
         }
 
         chessboardComponent = new ChessboardComponent(gameBrowser);
-        chessboardComponent.addMoveSelectedListener((MoveSelectedListener) gameBrowser);
+        chessboardComponent.addMoveSelectedListener((MoveListener) gameBrowser);
 
         AdHocMoveDisplayArea moveDisplay = new AdHocMoveDisplayArea(gameBrowser);
         JScrollPane scrollableMoveDisplay = new JScrollPane(moveDisplay);
@@ -89,7 +89,7 @@ public class MainWindow extends JFrame {
             }
         });
         JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, stateDisplayer);
-        controlsPlusStateDisplayer.setDividerLocation(20);
+        controlsPlusStateDisplayer.setDividerLocation(30);
         controlsPlusStateDisplayer.setDividerSize(0);
         
         JPanel mainPanel = new JPanel();

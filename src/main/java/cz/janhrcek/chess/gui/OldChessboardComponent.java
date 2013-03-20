@@ -66,14 +66,14 @@ public class OldChessboardComponent extends JComponent {
     }
 
     /**
-     * This method registers any object which implements MoveSelectedListener
+     * This method registers any object which implements MoveListener
      * interface as a listener to the instance of this class. When some
      * MoveSeletesEvent occurs, than given object will be notified of the
      * occurrence.
      *
-     * @param listener the object to be registered as a MoveSelectedListener
+     * @param listener the object to be registered as a MoveListener
      */
-    public void addMoveSelectedEventListener(MoveSelectedListener listener) {
+    public void addMoveSelectedEventListener(MoveListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -86,7 +86,7 @@ public class OldChessboardComponent extends JComponent {
      *
      * @param listener the listener we want to unregister
      */
-    public void removeMoveSelectedEventListener(MoveSelectedListener listener) {
+    public void removeMoveSelectedEventListener(MoveListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
@@ -139,7 +139,7 @@ public class OldChessboardComponent extends JComponent {
                         selectedFromSquare, //from
                         clickedSquare); //to
                 //vsem posluchacum dam vedet, ze byl vybran nejaky tah
-                for (MoveSelectedListener listener : listeners) {
+                for (MoveListener listener : listeners) {
                     listener.moveSelected(selectedMove);
                 }
                 //zrusime cerveny ctverce kolem selectedFromSquare
@@ -239,8 +239,8 @@ public class OldChessboardComponent extends JComponent {
      * Collection of objects, which will be notified of the selection of move
      * when some move is selected.
      */
-    private Collection<MoveSelectedListener> listeners =
-            new HashSet<MoveSelectedListener>();
+    private Collection<MoveListener> listeners =
+            new HashSet<MoveListener>();
     SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
      * Instance of OldGameModel, from which we can get all information

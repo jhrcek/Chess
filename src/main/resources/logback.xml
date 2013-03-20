@@ -10,7 +10,7 @@
         </encoder>
     </appender>
     <logger name="cz.janhrcek.chess.FEN.FenParser" level="WARN" />
-    <logger name="cz.janhrcek.chess.gui.ChessboardComponent" level="INFO" />
+    <!--<logger name="cz.janhrcek.chess.gui.ChessboardComponent" level="INFO" />-->
     <logger name="cz.janhrcek.chess.gui.SquareImageFactory" level="OFF" />
     <root level="DEBUG"><!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF-->
         <appender-ref ref="STDOUT" />

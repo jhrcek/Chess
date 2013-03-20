@@ -18,12 +18,12 @@ import javax.swing.JOptionPane;
 
 /**
  * This implementation of the OldGameModel is just encapsulation of
- * chess.stateofgame.Game. This class also implements MoveSelectedListener
+ * chess.stateofgame.Game. This class also implements MoveListener
  * so that it can change the gamestate when user selects a move in GUI.
  *
  * @author xhrcek
  */
-public class OldGameModelImpl implements OldGameModel, MoveSelectedListener {
+public class OldGameModelImpl implements OldGameModel, MoveListener {
 
     /**
      * The Game object which this class encapsulates for the representation of
