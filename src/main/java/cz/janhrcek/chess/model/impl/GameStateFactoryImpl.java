@@ -43,11 +43,11 @@ public class GameStateFactoryImpl implements GameStateFactory {
 
     @Override
     public GameState create(GameState originState, Move move) throws ChessboardException, IllegalMoveException {
-        LOG.info("Creating new GameState using move {}", move);
+        LOG.info("Creating new GameState using {}", move);
         ruleChecker.checkLegality(move, originState);
         Position p = Position.createFrom(originState.getPosition(), move);
         boolean wtm = !originState.isWhiteToMove(); //flip side to move
-        EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move); //TODO determine clastling availability
+        EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move);
         Square ep = determineEnPassantTargetSquare(move);
         int halfmove = shouldResetHalfmoveClock(originState, move)
                 ? 0 : originState.getHalfmoveClock() + 1;

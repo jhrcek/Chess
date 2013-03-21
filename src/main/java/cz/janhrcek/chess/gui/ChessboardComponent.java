@@ -31,48 +31,24 @@ import org.slf4j.LoggerFactory;
  *
  * @author xhrcek
  */
-public class ChessboardComponent extends JComponent {
+public class ChessboardComponent extends JComponent implements GameListener {
 
     /**
-     * Creates new instance of ChessboardComponent.
+     * Creates new instance of ChessboardComponent. The Component will use
+     * provided GameBrowser as its model, from which it gets currently focused
+     * GameState and displays it.
      *
-     * @param game the model which represents state of the game, which this
-     * component displays
+     * @param gameBrowser the model which represents state of the game, which
+     * this component displays
      */
-    public ChessboardComponent(GameBrowser game) {
-        if (game == null) {
+    public ChessboardComponent(GameBrowser gameBrowser) {
+        if (gameBrowser == null) {
             throw new NullPointerException("model can't be null!");
         }
-
-        this.game = game;
-        game.addGameListener(myGameListener);
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
-        enableEvents(AWTEvent.COMPONENT_EVENT_MASK);
+        this.gameBrowser = gameBrowser;
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
         setBorder(new LineBorder(Color.BLACK, 1));
-    }
-
-    /**
-     * Sets model representing state of game displayed by this component.
-     *
-     * @param game model representing state of the game which we want to display
-     * using this component
-     */
-    public final void setModel(GameBrowser game) {
-        if (this.game != null) {
-            this.game.removeGameListener(myGameListener);
-        }
-        this.game = game;
-        game.addGameListener(myGameListener);
-    }
-
-    /**
-     * Returns model representing state of game displayed by the component.
-     *
-     * @return the model representing state of the game which is displayed by
-     * this component
-     */
-    public GameBrowser getGame() {
-        return game;
+        gameBrowser.addGameListener(this);
     }
 
     /**
@@ -145,18 +121,17 @@ public class ChessboardComponent extends JComponent {
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
                 //Both "from" and "to" are selected -> Create Move instance and notify all MoveListeners
                 Piece movingPiece =
-                        game.getFocusedState().getPosition().getPiece(selectedFromSquare);
+                        gameBrowser.getFocusedState().getPosition().getPiece(selectedFromSquare);
                 Move selectedMove =
                         createSelectedMove(movingPiece,
                         selectedFromSquare, //from
                         clickedSquare); //to
-                log.debug("User constructed {}, notifying all MoveListeners", selectedMove);
-                //vsem posluchacum dam vedet, ze byl vybran nejaky tah
+                log.info("  User constructed {}, notifying {} listener(s)", selectedMove, listeners.size());
                 for (MoveListener listener : listeners) {
                     listener.moveSelected(selectedMove);
                 }
             } else {
-                log.debug("  Canceling the selection of \"from\" square.");
+                log.debug("  User cancels the selection of \"from\" square.");
             }
             //Cancel the red square around selected square 
             //(because user either selected a "to" square and constructed the move,
@@ -168,8 +143,8 @@ public class ChessboardComponent extends JComponent {
         } else { //"From" has not yet been chosen --> this is the click that choooses from
             //We will allow to choose from ONLY IF there is a piece (of any collor)
             if (clickedSquare != null
-                    && game.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
-                log.debug("  Selecting square {} as \"from\" square", clickedSquare);
+                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
+                log.info("  User chooses {} as \"from\" square", clickedSquare);
                 selectedFromSquare = clickedSquare;
                 //Paint red square around selectedFromSquare to signify to user it has been chosen
                 repaintSquare(selectedFromSquare);
@@ -259,23 +234,7 @@ public class ChessboardComponent extends JComponent {
      * Instance of GameModel, from which we can get all information (displayable
      * on chessboard) about the state of the game.
      */
-    private GameBrowser game;
-    /**
-     * Whenever GameState is changed, this listener will do appropriate changes
-     * to this component, so that displayed state corresponds to current
-     * GameState.
-     */
-    private GameListener myGameListener =
-            new GameListener() {
-        @Override
-        public void gameChanged(GameChangedEvent event) {
-            //prekreslime vsechny pole jejichz obsah se v posledni
-            //zmene stavu zmenil
-            for (Square changedSquare : event.getChangedSquares()) {
-                repaintSquare(changedSquare);
-            }
-        }
-    };
+    private GameBrowser gameBrowser;
 
     /**
      * Paint the squares of the chessboard, which this component represents.
@@ -292,7 +251,7 @@ public class ChessboardComponent extends JComponent {
         log.debug("  Calling paintSquares()");
         for (Square sq : Square.values()) {
             //Piece pieceOnSqare = model.getChessboard().getPiece(sq);
-            Piece pieceOnSqare = game.getFocusedState().getPosition().getPiece(sq);
+            Piece pieceOnSqare = gameBrowser.getFocusedState().getPosition().getPiece(sq);
             squareImages.getSquareImage(pieceOnSqare, sq.isLight()).paintIcon(this, g,
                     deltaX + sq.getFile() * cellSize,
                     deltaY + (7 - sq.getRank()) * cellSize);
@@ -363,7 +322,7 @@ public class ChessboardComponent extends JComponent {
     private void repaintSquare(Square s) {
         log.debug("Repaint square {}", s);
         Graphics g = getGraphics();
-        Piece pieceOnSq = game.getFocusedState().getPosition().getPiece(s);
+        Piece pieceOnSq = gameBrowser.getFocusedState().getPosition().getPiece(s);
 
         squareImages.getSquareImage(pieceOnSq, s.isLight()).paintIcon(this, g,
                 deltaX + s.getFile() * sizeOfSquare,
@@ -448,7 +407,7 @@ public class ChessboardComponent extends JComponent {
      * square to given square
      */
     private Move createSelectedMove(Piece piece, Square from, Square to) {
-        //je-li to pawn promotion dame vybrat na co ho chce promotnout
+        //If it is pawn promotion we must must make user choose to what piece the pawn should be promoted
         if ((piece.equals(WHITE_PAWN) && from.getRank() == 6 && to.getRank() == 7)
                 || (piece.equals(BLACK_PAWN) && from.getRank() == 1 && to.getRank() == 0)) {
             ImageIcon[] options;
@@ -501,5 +460,21 @@ public class ChessboardComponent extends JComponent {
         } else { //neni to pawn promotion
             return new Move(piece, from, to);
         }
+    }
+
+    @Override
+    public void gameChanged(GameChangedEvent event) {
+        log.info("ChessboardComponent caught GameChangedEvent, updating state...");
+
+        for (Square changedSquare : event.getChangedSquares()) {
+            repaintSquare(changedSquare);
+        }
+        //TODO - simplify logic of painting selectedFromSquare RED
+        //TODO - implement nulling of selected from square after change of underlying game state by other means (e.g. by First Button)
+//        if (selectedFromSquare != null) { //if game state is changed by other means (e.g. by going to the initial state of game using some button, we need to cancel selected from Square
+//            Square tmp = selectedFromSquare;
+//            selectedFromSquare = null;
+//            repaintSquare(tmp);
+//        }
     }
 }

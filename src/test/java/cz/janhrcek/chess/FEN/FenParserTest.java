@@ -25,7 +25,7 @@ public class FenParserTest {
     }
 
     @Test
-    public void testParsingCorrectFens() { //TODO implement testParsingCorrectFens
+    public void testParsingCorrectFens() {
         String[] fens = new String[]{
             FenParser.INITIAL_STATE_FEN,
             "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",

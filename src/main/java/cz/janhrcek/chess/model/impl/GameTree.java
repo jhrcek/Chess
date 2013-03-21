@@ -16,11 +16,6 @@ import org.slf4j.LoggerFactory;
  */
 public class GameTree {
 
-    private static final Logger log = LoggerFactory.getLogger(GameTree.class);
-    private final GameStateFactory stateFactory;
-    private final Node rootNode;
-    private Node focusedNode;
-
     public GameTree(GameStateFactory gsf, String initialStateFen) throws InvalidFenException {
         this.stateFactory = gsf;
         GameState initialState = stateFactory.create(initialStateFen);
@@ -76,7 +71,7 @@ public class GameTree {
                 return;
             }
         }
-        log.debug("Adding new node for move {}", newMove);
+        log.debug("Adding new GameState using {}", newMove);
         GameState stateAfterMove = stateFactory.create(getFocusedState(), newMove);
         Node newFocusedNode = new Node(focusedNode, newMove, stateAfterMove);
         focusedNode.addChild(newFocusedNode);
@@ -90,6 +85,7 @@ public class GameTree {
         return result.toString();
     }
 
+//--------------------------- PRIVATE IMPLEMENTATION ---------------------------
     private void histNodeToString(Node node, StringBuilder sb, String level) {
         if (node.getMove() != null) {
             sb.append(level).append(node.getMove().toString()).append("\n");
@@ -114,6 +110,10 @@ public class GameTree {
                 break;
         }
     }
+    private static final Logger log = LoggerFactory.getLogger(GameTree.class);
+    private final GameStateFactory stateFactory;
+    private final Node rootNode;
+    private Node focusedNode;
 
     private static class Node {
 

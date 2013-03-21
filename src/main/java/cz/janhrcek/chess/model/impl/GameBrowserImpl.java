@@ -13,15 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Initial state of the game is set upon construction.
  *
  * @author jhrcek
  */
 public class GameBrowserImpl implements GameBrowser, MoveListener {
-
-    private final GameTree gameTree;
-    private final List<GameListener> gameListeners;
-    private static final Logger log = LoggerFactory.getLogger(GameBrowserImpl.class);
 
     public GameBrowserImpl(GameTree gameTree) {
         this.gameTree = gameTree;
@@ -35,7 +30,7 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
 
     @Override
     public void makeMove(Move move) throws ChessboardException, IllegalMoveException {
-        log.info("Trying to make move{}", move);
+        log.info("Trying to make move {}", move);
         gameTree.addMove(move);
     }
 
@@ -47,47 +42,47 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
     @Override
     public void focusInitialState() {
         log.info("Focusing initial state");
-        GameState previousState = getFocusedState();
+        GameState previous = getFocusedState();
         gameTree.focusRoot();
-        GameState currentState = getFocusedState();
-        notifyListeners(new GameChangedEvent(previousState, currentState));
+        GameState current = getFocusedState();
+        notifyListenersOfStateChange(previous, current);
     }
 
     @Override
     public void focusNextState() {
         log.info("Focusing next state");
-        GameState previousState = getFocusedState();
+        GameState previous = getFocusedState();
         gameTree.focusFirstChild();
-        GameState currentState = getFocusedState();
-        notifyListeners(new GameChangedEvent(previousState, currentState));
+        GameState current = getFocusedState();
+        notifyListenersOfStateChange(previous, current);
     }
 
     @Override
     public void focusPreviousState() {
         log.info("Focusing previous state");
-        GameState previousState = getFocusedState();
+        GameState previous = getFocusedState();
         gameTree.focusParent();
-        GameState currentState = getFocusedState();
-        notifyListeners(new GameChangedEvent(previousState, currentState));
+        GameState current = getFocusedState();
+        notifyListenersOfStateChange(previous, current);
     }
 
     @Override
     public void focusLastState() {
         log.info("Focusing last state");
-        GameState previousState = getFocusedState();
+        GameState previous = getFocusedState();
         gameTree.focusLeaf();
-        GameState currentState = getFocusedState();
-        notifyListeners(new GameChangedEvent(previousState, currentState));
+        GameState current = getFocusedState();
+        notifyListenersOfStateChange(previous, current);
     }
 
     @Override
     public void moveSelected(Move move) {
         log.info("Got notification from GUI - move selected: {}", move);
         try {
-            GameState previousState = getFocusedState();
+            GameState previous = getFocusedState();
             makeMove(move);
-            GameState currentState = getFocusedState();
-            notifyListeners(new GameChangedEvent(previousState, currentState));
+            GameState current = getFocusedState();
+            notifyListenersOfStateChange(previous, current);
         } catch (IllegalMoveException ex) {
             log.info("The move selected is illegal.", ex);
         } catch (ChessboardException ex) {
@@ -111,9 +106,15 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
     }
 
     //----------------------- PRIVATE IMPLEMENTATION ---------------------------
-    private void notifyListeners(GameChangedEvent change) {
+    private void notifyListenersOfStateChange(GameState previousState, GameState currentState) {
+        log.info("Focused GameState was changed - notifying {} GameListener(s)", gameListeners.size());
+        GameChangedEvent change = new GameChangedEvent(previousState, currentState);
         for (GameListener gameListener : gameListeners) {
             gameListener.gameChanged(change);
         }
     }
+    //
+    private final GameTree gameTree;
+    private final List<GameListener> gameListeners;
+    private static final Logger log = LoggerFactory.getLogger(GameBrowserImpl.class);
 }

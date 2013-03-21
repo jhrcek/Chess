@@ -114,7 +114,7 @@ public class GameTest {
         }
     }
 
-    @Test //TODO deleteThis test
+    @Test
     public void testSomeMoves() {
         try {
             gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
