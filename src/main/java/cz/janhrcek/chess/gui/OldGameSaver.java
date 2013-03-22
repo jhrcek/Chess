@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -141,7 +142,7 @@ public class OldGameSaver extends JDialog {
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBox1 = new javax.swing.JComboBox<>();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
@@ -168,7 +169,7 @@ public class OldGameSaver extends JDialog {
         jLabel8.setText("Result");
         jLabel8.setToolTipText("Choose the result of the game.");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"White won", "Black won", "Draw", "Unknown"}));
+        jComboBox1.setModel(new DefaultComboBoxModel<>(new String[]{"White won", "Black won", "Draw", "Unknown"}));
 
         okButton.setText("OK");
         okButton.setToolTipText("Saves the game and the information about into selected file.");
@@ -278,7 +279,7 @@ public class OldGameSaver extends JDialog {
         }
     }
     // Variables declaration - do not modify
-    private JComboBox jComboBox1;
+    private JComboBox<String> jComboBox1;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;

@@ -1,11 +1,3 @@
-/*
- * OldGameModelListener.java
- *
- * Created on 19. ��jen 2006, 15:32
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 package cz.janhrcek.chess.gui;
 
 /**
