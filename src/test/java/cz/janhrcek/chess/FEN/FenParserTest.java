@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  * @author jhrcek
  */
 public class FenParserTest {
-    
+
     private FenParser parser;
 
     @BeforeClass
@@ -53,24 +53,24 @@ public class FenParserTest {
     @DataProvider(name = "invalid-fens")
     public Object[][] invalidFenProvider() {
         return new Object[][]{
-                    {"3 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}, //with more than 6 fields
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with less than 6 fields
-                    {"rnbqkbnr/pppppppp/8/8/8/8PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with less than 8 ranks in piece placement substring
-                    {"rnbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RNBQKBNR w KQkq 0 1"}, //with more than 8 ranks in piece placement substring
-                    {"anbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with incorrect chars in piece placement substring
-                    {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RNBQKBNR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
-                    {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RN1QK2NR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
-                    {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RN1QK2NR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR j KQkq - 0 1"},//with incorrect player to move 
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR white KQkq 0 1"},//with incorrect player to move field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR white KQkq 0 1"},//with incorrect player to move field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b QKkq 0 1"},//with incorrect castling availability field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b kqKQ 0 1"},//with incorrect castling availability field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b sQKkq 0 1"},//with incorrect castling availability field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b king 0 1"},//with incorrect castling availability field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b 0 0 1"},//with incorrect castling availability field
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR KQk ten 1"},//with incorrect castling halfmove clock
-                    {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR KQk 5 3.5"}//with incorrect castling fullmove number                            
-                };
+            {"3 rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}, //with more than 6 fields
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with less than 6 fields
+            {"rnbqkbnr/pppppppp/8/8/8/8PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with less than 8 ranks in piece placement substring
+            {"rnbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RNBQKBNR w KQkq 0 1"}, //with more than 8 ranks in piece placement substring
+            {"anbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 0 1"}, //with incorrect chars in piece placement substring
+            {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RNBQKBNR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
+            {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RN1QK2NR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
+            {"nbqkbnr/pppppppp/8/8/8/8PPPPP//PPP/RN1QK2NR w KQkq 0 1"}, //with wrong row-sum in piece placement substring
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR j KQkq - 0 1"},//with incorrect player to move 
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR white KQkq 0 1"},//with incorrect player to move field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR white KQkq 0 1"},//with incorrect player to move field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b QKkq 0 1"},//with incorrect castling availability field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b kqKQ 0 1"},//with incorrect castling availability field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b sQKkq 0 1"},//with incorrect castling availability field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b king 0 1"},//with incorrect castling availability field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b 0 0 1"},//with incorrect castling availability field
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR KQk ten 1"},//with incorrect castling halfmove clock
+            {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR KQk 5 3.5"}//with incorrect castling fullmove number                            
+        };
     }
 }

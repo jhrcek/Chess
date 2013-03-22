@@ -17,23 +17,25 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author jhrcek
  */
-public class MainWindow extends JFrame {
+public class MainWindow {
+
+    private JFrame frame;
 
     public MainWindow() throws HeadlessException {
-        super("Chess");
+        frame = new JFrame("Chess");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createAndShowGui();
     }
 
     private void createAndShowGui() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         //create representation of gamestate
-        
         try {
             GameTree gameTree = new GameTree(new GameStateFactoryImpl(new FIDERuleChecker()), FenParser.INITIAL_STATE_FEN);
             gameBrowser = new GameBrowserImpl(gameTree);
@@ -49,9 +51,9 @@ public class MainWindow extends JFrame {
 
         treeDisplayer = new GameTreeDisplayer(gameBrowser);
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(treeDisplayer);
-        
+
         stateDisplayer = new GameStateDisplayer();
-        
+
         gameBrowser.addGameListener(stateDisplayer);
         gameBrowser.addGameListener(treeDisplayer);
 
@@ -64,6 +66,7 @@ public class MainWindow extends JFrame {
         previousButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.info("User clicks \"{}\" button", previousButton.getText());
                 gameBrowser.focusPreviousState();
             }
         });
@@ -71,6 +74,7 @@ public class MainWindow extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.info("User clicks \"{}\" button", nextButton.getText());
                 gameBrowser.focusNextState();
             }
         });
@@ -78,6 +82,7 @@ public class MainWindow extends JFrame {
         firstButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.info("User clicks \"{}\" button", firstButton.getText());
                 gameBrowser.focusInitialState();
             }
         });
@@ -85,13 +90,14 @@ public class MainWindow extends JFrame {
         lastButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.info("User clicks \"{}\" button", lastButton.getText());
                 gameBrowser.focusLastState();
             }
         });
         JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, stateDisplayer);
         controlsPlusStateDisplayer.setDividerLocation(30);
         controlsPlusStateDisplayer.setDividerSize(0);
-        
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
         mainPanel.add(chessboardComponent);
@@ -100,8 +106,9 @@ public class MainWindow extends JFrame {
         mainPanel.add(scrollableGameTreeDisplay);
         //mainPanel.add(stateDisplayer);
 
-        this.add(mainPanel);
-        setSize(650, 650);
+        frame.add(mainPanel);
+        frame.setSize(650, 650);
+        frame.setVisible(true);
     }
     //controls
     private final JButton firstButton = new JButton("First");
@@ -114,4 +121,5 @@ public class MainWindow extends JFrame {
     private ChessboardComponent chessboardComponent;
     private GameTreeDisplayer treeDisplayer;
     private GameStateDisplayer stateDisplayer;
+    private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 }

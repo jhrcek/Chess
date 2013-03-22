@@ -25,11 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * GUI component OldChessboardComponent represents chessboard with pieces. This
- * component is resizeable (resizing it will cause change of the size of the
- * chessboard). This component enables user to select moves by clicking on it.
+ * GUI component that displays visible part of currently focused state of
+ * underlying GameBrowser - as a chessboard with pieces. This component is
+ * resizeable (resizing it will cause change of the size of the chessboard).
+ * This component enables user to select moves by clicking on it.
  *
- * @author xhrcek
+ * @author Jan Hrcek
  */
 public class ChessboardComponent extends JComponent implements GameListener {
 
@@ -102,22 +103,29 @@ public class ChessboardComponent extends JComponent implements GameListener {
      * This method handles user interaction with OldChessboardComponent via
      * mouse clicking.
      *
-     * @param e eventObject representing some mouse event
+     * @param mouseEvent eventObject representing some mouse event
      */
     @Override
-    protected void processMouseEvent(MouseEvent e) {
+    protected void processMouseEvent(MouseEvent mouseEvent) {
         //In this method we are only interested in MOUSE_CLICKED events
-        if (e.getID() != MouseEvent.MOUSE_CLICKED) {
+        if (mouseEvent.getID() != MouseEvent.MOUSE_CLICKED) {
             return;
         }
 
         //Find out which square user clicked on
-        Square clickedSquare = getCorrespondingSquare(e);
+        Square clickedSquare = getClickedSquare(mouseEvent);
         log.debug("Processing mouse click: User clicked {}", (clickedSquare == null ? "outside of Chessboard" : ("on square " + clickedSquare)));
 
         //Finite state machine implementation that tries to constructs 
         //a move instance based on user clicks on the chessboard component
-        if (selectedFromSquare != null) { //"from" has been chosen previously
+        if (selectedFromSquare == null) {
+            //We will allow to choose "from" square ONLY IF there is a piece (of any collor)
+            if (clickedSquare != null
+                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
+                log.info("  User chooses {} as \"from\" square", clickedSquare);
+                highlightFromSquare(clickedSquare);
+            }
+        } else { //"from" has been chosen previously
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
                 //Both "from" and "to" are selected -> Create Move instance and notify all MoveListeners
                 Piece movingPiece =
@@ -132,24 +140,25 @@ public class ChessboardComponent extends JComponent implements GameListener {
                 }
             } else {
                 log.debug("  User cancels the selection of \"from\" square.");
-            }
-            //Cancel the red square around selected square 
-            //(because user either selected a "to" square and constructed the move,
-            // or he canceled a selection of "from" by clicking the "from" square
-            // again or clicking elsewhere on the chessboard component)
-            Square tmpSq = selectedFromSquare;
-            selectedFromSquare = null;
-            repaintSquare(tmpSq);
-        } else { //"From" has not yet been chosen --> this is the click that choooses from
-            //We will allow to choose from ONLY IF there is a piece (of any collor)
-            if (clickedSquare != null
-                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
-                log.info("  User chooses {} as \"from\" square", clickedSquare);
-                selectedFromSquare = clickedSquare;
-                //Paint red square around selectedFromSquare to signify to user it has been chosen
-                repaintSquare(selectedFromSquare);
+                unhighlightFromSquare();
             }
         }
+    }
+
+    private void highlightFromSquare(Square s) {
+        //Cancel the red square around selected square 
+        //(because user either selected a "to" square and constructed the move,
+        // or he canceled a selection of "from" by clicking the "from" square
+        // again or clicking elsewhere on the chessboard component)
+        selectedFromSquare = s;
+        //Paint red square around selectedFromSquare to signify to user it has been chosen
+        paintRedBorderAroundSquare(s);
+    }
+
+    private void unhighlightFromSquare() {
+        Square tmpSq = selectedFromSquare;
+        selectedFromSquare = null;
+        repaintSquare(tmpSq);
     }
 
     /**
@@ -167,6 +176,7 @@ public class ChessboardComponent extends JComponent implements GameListener {
         }
 
         Component source = ce.getComponent();
+        log.info("Component resized - new size: {} x {}", source.getWidth(), source.getHeight());
         //from the new size of component determine size of one icon
         sizeOfSquare = (Math.min(source.getWidth(), source.getHeight()) - 2 * BORDER) / 8;
         deltaX = (source.getWidth() - (sizeOfSquare * 8)) / 2;
@@ -182,15 +192,27 @@ public class ChessboardComponent extends JComponent implements GameListener {
      * to false user will be unable to change what is displayed on the
      * chessboard by clicking on it.
      *
-     * @param flag set to true, if you want to enable user to select moves by
-     * clicking on the component set to false if you want to ignore all clicks
-     * on the component
+     * @param clickable set to true, if you want to enable user to select moves
+     * by clicking on the component set to false if you want to ignore all
+     * clicks on the component
      */
-    public void setClickable(Boolean flag) {
-        if (flag == true) {
+    public void setClickable(Boolean clickable) {
+        if (clickable == true) {
             enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         } else {
             disableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        }
+    }
+
+    @Override
+    public void gameChanged(GameChangedEvent event) {
+        log.info("ChessboardComponent caught GameChangedEvent, updating state...");
+
+        for (Square changedSquare : event.getChangedSquares()) {
+            repaintSquare(changedSquare);
+        }
+        if (selectedFromSquare != null) { //if game state is changed by other means (e.g. by going to the initial state of game using some button, we need to cancel selected from Square
+            unhighlightFromSquare();
         }
     }
 //------------------------------------------------------------------------
@@ -229,7 +251,7 @@ public class ChessboardComponent extends JComponent implements GameListener {
      */
     private Collection<MoveListener> listeners =
             new HashSet<>();
-    SquareImageFactory squareImages = new SquareImageFactory(10);
+    private SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
      * Instance of GameModel, from which we can get all information (displayable
      * on chessboard) about the state of the game.
@@ -363,7 +385,7 @@ public class ChessboardComponent extends JComponent implements GameListener {
      * @return the Square object corresponding to clicked square of null if no
      * square was clicked on.
      */
-    private Square getCorrespondingSquare(MouseEvent event) {
+    private Square getClickedSquare(MouseEvent event) {
         if (event == null) {
             throw new NullPointerException("event can't be null!");
         }
@@ -373,14 +395,14 @@ public class ChessboardComponent extends JComponent implements GameListener {
         int columnIndex;
         int rankIndex;
 
-        //urcime index kliknuteho sloupce na sachovnici
+        //Determine column index of clicked square on the chessboard
         if (x > deltaX && x < (deltaX + 8 * sizeOfSquare)) {
             columnIndex = (x - deltaX) / sizeOfSquare;
         } else {
             columnIndex = -1;
         }
 
-        //urcime index kliknuteho radku na sachovnici
+        //Determine rank index of clicked square on the chessboard
         if (y > deltaY && y < (deltaY + 8 * sizeOfSquare)) {
             rankIndex = 7 - ((y - deltaY) / sizeOfSquare);
         } else {
@@ -460,21 +482,5 @@ public class ChessboardComponent extends JComponent implements GameListener {
         } else { //neni to pawn promotion
             return new Move(piece, from, to);
         }
-    }
-
-    @Override
-    public void gameChanged(GameChangedEvent event) {
-        log.info("ChessboardComponent caught GameChangedEvent, updating state...");
-
-        for (Square changedSquare : event.getChangedSquares()) {
-            repaintSquare(changedSquare);
-        }
-        //TODO - simplify logic of painting selectedFromSquare RED
-        //TODO - implement nulling of selected from square after change of underlying game state by other means (e.g. by First Button)
-//        if (selectedFromSquare != null) { //if game state is changed by other means (e.g. by going to the initial state of game using some button, we need to cancel selected from Square
-//            Square tmp = selectedFromSquare;
-//            selectedFromSquare = null;
-//            repaintSquare(tmp);
-//        }
     }
 }

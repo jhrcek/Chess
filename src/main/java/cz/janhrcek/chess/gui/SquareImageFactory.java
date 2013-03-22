@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SquareImageFactory {
 
-    private static Logger LOG = LoggerFactory.getLogger(SquareImageFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(SquareImageFactory.class);
     /**
      * Map for storing images (icons) of pieces on squares, which are used to
      * create image of the whole board.
@@ -56,6 +56,7 @@ public class SquareImageFactory {
             throw new IllegalArgumentException("width of output images must"
                     + " be between 1 and 1000 (in pixels)");
         }
+        log.info("Generating new set of piece icons with size {} pixels", sizeInPixels);
 
         //vytvorime transcoder, ktery prevede svg soubory na pgn
         PNGTranscoder transcoder = new PNGTranscoder();
@@ -94,18 +95,18 @@ public class SquareImageFactory {
                 //save the image to byte array as png
                 t.transcode(input, output);
                 ImageIcon icon = new ImageIcon(ostream.toByteArray());
-                LOG.info("loading piece image {} ", inputSVGName.substring(0, inputSVGName.length() - 4));
+                log.info("loading piece image {} ", inputSVGName.substring(0, inputSVGName.length() - 4));
                 images.put(inputSVGName.substring(0, inputSVGName.length() - 4), icon);
                 ostream.flush();
             }
         } catch (MalformedURLException mue) {
-            LOG.error("There was something wrong with the url of some svg file", mue);
+            log.error("There was something wrong with the url of some svg file", mue);
         } catch (FileNotFoundException fnfe) {
-            LOG.error("Exception when loading piece icons", fnfe);
+            log.error("Exception when loading piece icons", fnfe);
         } catch (TranscoderException te) {
-            LOG.error("There was an exception during transcoding of piece icon file", te);
+            log.error("There was an exception during transcoding of piece icon file", te);
         } catch (IOException ioe) {
-            LOG.error("Exception when loading icon", ioe);
+            log.error("Exception when loading icon", ioe);
         }
     }
 }

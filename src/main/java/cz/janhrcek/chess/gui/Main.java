@@ -11,7 +11,6 @@ public class Main {
             @Override
             public void run() {
                 MainWindow window = new MainWindow();
-                window.setVisible(true);
             }
         });
     }
