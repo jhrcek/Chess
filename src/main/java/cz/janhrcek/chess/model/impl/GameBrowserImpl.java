@@ -1,5 +1,6 @@
 package cz.janhrcek.chess.model.impl;
 
+import com.google.inject.Inject;
 import cz.janhrcek.chess.gui.MoveListener;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
@@ -18,8 +19,9 @@ import org.slf4j.LoggerFactory;
  */
 public class GameBrowserImpl implements GameBrowser, MoveListener {
 
-    public GameBrowserImpl(GameTree gameTree) {
-        this.gameTree = gameTree;
+    @Inject
+    public GameBrowserImpl(Game game) {
+        this.gameTree = game;
         gameListeners = new ArrayList<>();
     }
 
@@ -114,7 +116,7 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
         }
     }
     //
-    private final GameTree gameTree;
+    private final Game gameTree;
     private final List<GameListener> gameListeners;
     private static final Logger log = LoggerFactory.getLogger(GameBrowserImpl.class);
 }

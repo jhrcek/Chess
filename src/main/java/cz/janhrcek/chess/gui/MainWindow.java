@@ -1,12 +1,9 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.FEN.FenParser;
-import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.guice.MyModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import cz.janhrcek.chess.model.api.GameBrowser;
-import cz.janhrcek.chess.model.impl.FIDERuleChecker;
-import cz.janhrcek.chess.model.impl.GameBrowserImpl;
-import cz.janhrcek.chess.model.impl.GameStateFactoryImpl;
-import cz.janhrcek.chess.model.impl.GameTree;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -35,34 +32,50 @@ public class MainWindow {
     }
 
     private void createAndShowGui() {
-        //create representation of gamestate
-        try {
-            GameTree gameTree = new GameTree(new GameStateFactoryImpl(new FIDERuleChecker()), FenParser.INITIAL_STATE_FEN);
-            gameBrowser = new GameBrowserImpl(gameTree);
-        } catch (InvalidFenException ex) {
-            throw new IllegalStateException("Unexpected exception thrown", ex);
-        }
+        Injector injector = Guice.createInjector(new MyModule());
 
-        chessboardComponent = new ChessboardComponent(gameBrowser);
-        chessboardComponent.addMoveSelectedListener((MoveListener) gameBrowser);
+        //Model
+        gameBrowser = injector.getInstance(GameBrowser.class);
+        //GUI components
+        chessboardComponent = injector.getInstance(ChessboardComponent.class);
+        adHocMoveDisplayer = injector.getInstance(AdHocMoveDisplayArea.class);
+        adHocGameTreeDisplayer = injector.getInstance(GameTreeDisplayer.class);
+        adHocGameStateDisplayer = new GameStateDisplayer();
 
-        AdHocMoveDisplayArea moveDisplay = new AdHocMoveDisplayArea(gameBrowser);
-        JScrollPane scrollableMoveDisplay = new JScrollPane(moveDisplay);
+        JScrollPane scrollableMoveDisplay = new JScrollPane(adHocMoveDisplayer);
+        JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);
 
-        treeDisplayer = new GameTreeDisplayer(gameBrowser);
-        JScrollPane scrollableGameTreeDisplay = new JScrollPane(treeDisplayer);
+        gameBrowser.addGameListener(adHocGameStateDisplayer);
+        gameBrowser.addGameListener(adHocGameTreeDisplayer);
 
-        stateDisplayer = new GameStateDisplayer();
+        JPanel gameBrowseControls = createPanelWithButtons();
+        JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, adHocGameStateDisplayer);
+        controlsPlusStateDisplayer.setDividerLocation(30);
+        controlsPlusStateDisplayer.setDividerSize(0);
 
-        gameBrowser.addGameListener(stateDisplayer);
-        gameBrowser.addGameListener(treeDisplayer);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        mainPanel.add(chessboardComponent);
+        mainPanel.add(scrollableMoveDisplay);
+        mainPanel.add(controlsPlusStateDisplayer);
+        mainPanel.add(scrollableGameTreeDisplay);
 
-        JPanel gameBrowseControls = new JPanel();
-        gameBrowseControls.setLayout(new FlowLayout());// GridLayout(3, 3));
-        gameBrowseControls.add(firstButton);
-        gameBrowseControls.add(previousButton);
-        gameBrowseControls.add(nextButton);
-        gameBrowseControls.add(lastButton);
+        frame.add(mainPanel);
+        frame.setSize(650, 650);
+        frame.setVisible(true);
+    }
+
+    /**
+     * @return panel with 4 buttons for browsing game via GUI: First, Previous,
+     * Next and Last
+     */
+    private JPanel createPanelWithButtons() {
+        JPanel panelWithButtons = new JPanel();
+        final JButton firstButton = new JButton("First");
+        final JButton previousButton = new JButton("Previous");
+        final JButton nextButton = new JButton("Next");
+        final JButton lastButton = new JButton("Last");
+
         previousButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,32 +107,20 @@ public class MainWindow {
                 gameBrowser.focusLastState();
             }
         });
-        JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, stateDisplayer);
-        controlsPlusStateDisplayer.setDividerLocation(30);
-        controlsPlusStateDisplayer.setDividerSize(0);
-
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
-        mainPanel.add(chessboardComponent);
-        mainPanel.add(scrollableMoveDisplay);
-        mainPanel.add(controlsPlusStateDisplayer);
-        mainPanel.add(scrollableGameTreeDisplay);
-        //mainPanel.add(stateDisplayer);
-
-        frame.add(mainPanel);
-        frame.setSize(650, 650);
-        frame.setVisible(true);
+        panelWithButtons.setLayout(new FlowLayout());
+        panelWithButtons.add(firstButton);
+        panelWithButtons.add(previousButton);
+        panelWithButtons.add(nextButton);
+        panelWithButtons.add(lastButton);
+        return panelWithButtons;
     }
-    //controls
-    private final JButton firstButton = new JButton("First");
-    private final JButton previousButton = new JButton("Previous");
-    private final JButton nextButton = new JButton("Next");
-    private final JButton lastButton = new JButton("Last");
-    //model
+    //Model (Browser providing view on chess game)
     private GameBrowser gameBrowser;
-    //gui providing view into model
+    //Gui providing view into model
     private ChessboardComponent chessboardComponent;
-    private GameTreeDisplayer treeDisplayer;
-    private GameStateDisplayer stateDisplayer;
+    private AdHocMoveDisplayArea adHocMoveDisplayer;
+    private GameTreeDisplayer adHocGameTreeDisplayer;
+    private GameStateDisplayer adHocGameStateDisplayer;
+    //
     private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 }

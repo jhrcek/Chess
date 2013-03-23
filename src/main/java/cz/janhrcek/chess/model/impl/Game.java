@@ -1,6 +1,8 @@
 package cz.janhrcek.chess.model.impl;
 
+import com.google.inject.Inject;
 import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.guice.FenString;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
@@ -14,9 +16,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhrcek
  */
-public class GameTree {
+public class Game {
 
-    public GameTree(GameStateFactory gsf, String initialStateFen) throws InvalidFenException {
+    @Inject
+    public Game(GameStateFactory gsf, @FenString String initialStateFen) throws InvalidFenException {
         this.stateFactory = gsf;
         GameState initialState = stateFactory.create(initialStateFen);
         this.rootNode = new Node(null, null, initialState);
@@ -110,7 +113,7 @@ public class GameTree {
                 break;
         }
     }
-    private static final Logger log = LoggerFactory.getLogger(GameTree.class);
+    private static final Logger log = LoggerFactory.getLogger(Game.class);
     private final GameStateFactory stateFactory;
     private final Node rootNode;
     private Node focusedNode;

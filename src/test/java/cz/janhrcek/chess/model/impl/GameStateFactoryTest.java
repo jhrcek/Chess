@@ -1,12 +1,14 @@
 package cz.janhrcek.chess.model.impl;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.RuleChecker;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
@@ -16,6 +18,8 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -24,12 +28,23 @@ import org.testng.annotations.Test;
  */
 public class GameStateFactoryTest {
 
+    private Injector injector;
+    private GameStateFactory gameStateFactory;
+
+    @BeforeClass
+    public void setupClass() {
+        injector = Guice.createInjector(new MyModule());
+    }
+
+    @BeforeMethod
+    public void setupMethod() {
+        gameStateFactory = injector.getInstance(GameStateFactory.class);
+    }
+
     @Test
     public void testCreatingInitialGameState() {
-        RuleChecker rc = new FIDERuleChecker();
-        GameStateFactory gsf = new GameStateFactoryImpl(rc);
         try {
-            GameState state = gsf.create(FenParser.INITIAL_STATE_FEN);
+            GameState state = gameStateFactory.create(FenParser.INITIAL_STATE_FEN);
 
             //Asserts
             String tail = " in the initial state of game";
@@ -59,29 +74,28 @@ public class GameStateFactoryTest {
 
     @Test(dependsOnMethods = "testCreatingInitialGameState")
     public void testCreateGameStateFromInitialByE4() {
-        RuleChecker rc = new FIDERuleChecker();
-        GameStateFactory gsf = new GameStateFactoryImpl(rc);
+        final Move firstMove = new Move(WHITE_PAWN, E2, E4);
         try {
-            GameState initialGameState = gsf.create(FenParser.INITIAL_STATE_FEN);
-            GameState stateAfterE4 = gsf.create(initialGameState, new Move(WHITE_PAWN, E2, E4));
+            GameState initialGameState = gameStateFactory.create(FenParser.INITIAL_STATE_FEN);
+            GameState stateAfterE4 = gameStateFactory.create(initialGameState, firstMove);
 
-            //Asserts
-            String tail = " after e4 played from the initial state of game";
             //Check position
             Position expected = new Position();
             expected.setInitialPosition();
-            expected.makeMove(new Move(WHITE_PAWN, E2, E4));
+            expected.makeMove(firstMove);
 
+            //Asserts
+            String msgTail = " after e4 played from the initial state of game";
             assertEquals(stateAfterE4.getPosition(), expected);
             assertEquals(stateAfterE4.getPosition().getPiece(E2), null);
             assertEquals(stateAfterE4.getPosition().getPiece(E4), WHITE_PAWN);
 
             //Check the other components of the game state
-            assertFalse(stateAfterE4.isWhiteToMove(), "It should be black to move" + tail);
-            assertEquals(stateAfterE4.getCastlings(), EnumSet.allOf(Castling.class), "All castling availabilities should be present" + tail);
-            assertEquals(stateAfterE4.getEnPassantTarget(), E3, "En-passant target square should be E3" + tail);
-            assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + tail);
-            assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + tail);
+            assertFalse(stateAfterE4.isWhiteToMove(), "It should be black to move" + msgTail);
+            assertEquals(stateAfterE4.getCastlings(), EnumSet.allOf(Castling.class), "All castling availabilities should be present" + msgTail);
+            assertEquals(stateAfterE4.getEnPassantTarget(), E3, "En-passant target square should be E3" + msgTail);
+            assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + msgTail);
+            assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + msgTail);
         } catch (InvalidFenException | ChessboardException | IllegalMoveException ex) {
             fail("Unexpected exception was thrown!", ex);
         }

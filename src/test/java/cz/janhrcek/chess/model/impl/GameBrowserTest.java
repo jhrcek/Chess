@@ -1,18 +1,16 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.FEN.FenParser;
-import cz.janhrcek.chess.FEN.InvalidFenException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.model.api.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.RuleChecker;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -20,27 +18,18 @@ import org.testng.annotations.Test;
  *
  * @author jhrcek
  */
-public class GameTest {
+public class GameBrowserTest {
 
-    private RuleChecker rc;
-    private GameStateFactory gsf;
+    private static final Move MOVE_E4 = new Move(WHITE_PAWN, E2, E4);
+    private static final Move MOVE_NF6 = new Move(BLACK_KNIGHT, G8, F6);
+    private static final Move MOVE_NF3 = new Move(WHITE_KNIGHT, G1, F3);
+    private Injector injector;
     private GameBrowser gameBrowser;
-    private GameTree gameTree;
-
-    @BeforeClass
-    public void setup() {
-        rc = new FIDERuleChecker();
-        gsf = new GameStateFactoryImpl(rc);
-    }
 
     @BeforeMethod
     public void initializeGame() {
-        try {
-            gameTree = new GameTree(gsf,FenParser.INITIAL_STATE_FEN);
-            gameBrowser = new GameBrowserImpl(gameTree);
-        } catch (InvalidFenException ex) {
-            fail("Unexpected exception!", ex);
-        }
+        injector = Guice.createInjector(new MyModule());
+        gameBrowser = injector.getInstance(GameBrowser.class);
     }
 
     @Test
@@ -57,7 +46,7 @@ public class GameTest {
     @Test
     public void testMakeMoveE4() {
         try {
-            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
+            gameBrowser.makeMove(MOVE_E4);
             GameState state = gameBrowser.getFocusedState();
             assertEquals(state.getHalfmoveClock(), 0);
             assertEquals(state.getFullmoveNumber(), 1);
@@ -72,10 +61,9 @@ public class GameTest {
     @Test
     public void testMakeMoveE4Nf6() {
         try {
-            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
-            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            gameBrowser.makeMove(MOVE_E4);
+            gameBrowser.makeMove(MOVE_NF6);
             GameState state = gameBrowser.getFocusedState();
-
 
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
@@ -92,8 +80,8 @@ public class GameTest {
     @Test
     public void testFocusPreviousState() {
         try {
-            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
-            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
+            gameBrowser.makeMove(MOVE_E4);
+            gameBrowser.makeMove(MOVE_NF6);
             gameBrowser.focusPreviousState();
             GameState state = gameBrowser.getFocusedState();
 
@@ -104,18 +92,17 @@ public class GameTest {
             assertEquals(state.getEnPassantTarget(), E3);
             assertEquals(state.getHalfmoveClock(), 0);
             assertEquals(state.getFullmoveNumber(), 1);
-
         } catch (IllegalMoveException | ChessboardException ex) {
             fail("Unexpected exception!", ex);
         }
     }
 
     @Test
-    public void testSomeMoves() {
+    public void testSomeMoves() { //TODO add some asserts
         try {
-            gameBrowser.makeMove(new Move(WHITE_PAWN, E2, E4));
-            gameBrowser.makeMove(new Move(BLACK_KNIGHT, G8, F6));
-            gameBrowser.makeMove(new Move(WHITE_KNIGHT, G1, F3));
+            gameBrowser.makeMove(MOVE_E4);
+            gameBrowser.makeMove(MOVE_NF6);
+            gameBrowser.makeMove(MOVE_NF3);
             GameState state = gameBrowser.getFocusedState();
             System.out.println(gameBrowser.toString());
         } catch (IllegalMoveException | ChessboardException ex) {

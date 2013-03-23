@@ -1,5 +1,6 @@
 package cz.janhrcek.chess.model.impl;
 
+import com.google.inject.Inject;
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
@@ -27,6 +28,7 @@ public class GameStateFactoryImpl implements GameStateFactory {
     private RuleChecker ruleChecker;
     private FenParser parser;
 
+    @Inject
     public GameStateFactoryImpl(RuleChecker rc) {
         ruleChecker = rc;
         parser = new FenParser();

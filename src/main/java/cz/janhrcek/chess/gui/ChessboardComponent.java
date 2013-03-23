@@ -1,5 +1,6 @@
 package cz.janhrcek.chess.gui;
 
+import com.google.inject.Inject;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jan Hrcek
  */
-public class ChessboardComponent extends JComponent implements GameListener {
+public final class ChessboardComponent extends JComponent implements GameListener {
 
     /**
      * Creates new instance of ChessboardComponent. The Component will use
@@ -42,13 +43,16 @@ public class ChessboardComponent extends JComponent implements GameListener {
      * @param gameBrowser the model which represents state of the game, which
      * this component displays
      */
+    @Inject
     public ChessboardComponent(GameBrowser gameBrowser) {
         if (gameBrowser == null) {
             throw new NullPointerException("model can't be null!");
         }
         this.gameBrowser = gameBrowser;
+
         enableEvents(AWTEvent.MOUSE_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
         setBorder(new LineBorder(Color.BLACK, 1));
+        this.addMoveSelectedListener((MoveListener) gameBrowser);
         gameBrowser.addGameListener(this);
     }
 
@@ -127,6 +131,7 @@ public class ChessboardComponent extends JComponent implements GameListener {
             }
         } else { //"from" has been chosen previously
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
+                log.info("  User chooses {} as \"to\" square", clickedSquare);
                 //Both "from" and "to" are selected -> Create Move instance and notify all MoveListeners
                 Piece movingPiece =
                         gameBrowser.getFocusedState().getPosition().getPiece(selectedFromSquare);
@@ -139,7 +144,7 @@ public class ChessboardComponent extends JComponent implements GameListener {
                     listener.moveSelected(selectedMove);
                 }
             } else {
-                log.debug("  User cancels the selection of \"from\" square.");
+                log.info("  User cancels the selection of \"from\" square.");
                 unhighlightFromSquare();
             }
         }
