@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.impl.OldGameStateMutable;
-import cz.janhrcek.chess.model.impl.MutablePosition;
+import cz.janhrcek.chess.model.impl.OldMutablePosition;
 
 /**
  * This implementation of Rule checker encapsulates the international standard
@@ -15,7 +15,7 @@ import cz.janhrcek.chess.model.impl.MutablePosition;
  * @author Jan Hrcek
  * @version 0.9
  */
-public class FIDERulesOld implements RuleCheckerOld {
+public class OldFIDERules implements OldRuleChecker {
 
     /**
      * Checks legality of the given move in the given state of the game.
@@ -24,11 +24,11 @@ public class FIDERulesOld implements RuleCheckerOld {
      * from square to square and we want to know whether this move is legal.
      * @param move information about the move (which pice, from where, to where)
      * of which we want to check legality
-     * @return MoveTypeOld object representing information about the legality of
+     * @return OldMoveType object representing information about the legality of
      * the move.
      */
     @Override
-    public final MoveTypeOld checkMove(final OldGameStateMutable state, final Move move) {
+    public final OldMoveType checkMove(final OldGameStateMutable state, final Move move) {
         if (state == null) {
             throw new NullPointerException("state can't be null!");
         }
@@ -36,14 +36,14 @@ public class FIDERulesOld implements RuleCheckerOld {
             throw new NullPointerException("move can't be null!");
         }
 
-        MutablePosition position = state.getChessboard();
+        OldMutablePosition position = state.getChessboard();
         Piece piece = move.getPiece();
         Square from = move.getFrom();
         Square to = move.getTo();
 
         //1. Kontrola spravnosti barvy tahajici figury
         if (!isRightColor(state, piece)) {
-            return MoveTypeOld.ILLEGAL_WRONG_COLOR;
+            return OldMoveType.ILLEGAL_WRONG_COLOR;
         }
 
         //2. Kontrole "Geometrie" tahu, neboli:
@@ -51,7 +51,7 @@ public class FIDERulesOld implements RuleCheckerOld {
         // (2.b) Nestoji jakakoli figura v ceste tahu (nesmi se preskakovat)
         // (2.c) Nestoji PRATELSKA figura na cilovem poli
         // (2.d) +dalsi featurky pro pesaka
-        MoveTypeOld geomTestResultType =
+        OldMoveType geomTestResultType =
                 canGeometricallyMove(position, piece, from, to);
         //pokud je jakakoli ilegalita
         if (!geomTestResultType.isLegal()) {
@@ -59,7 +59,7 @@ public class FIDERulesOld implements RuleCheckerOld {
         }
 
         //3. Byl by po provedeni tahu kral tahajiciho v sachu (coz je ilegalni)?
-        MoveTypeOld leavesKingInCheckResultType =
+        OldMoveType leavesKingInCheckResultType =
                 leavesKingInCheck(move, state);
         if (!leavesKingInCheckResultType.isLegal()) {
             return leavesKingInCheckResultType;
@@ -71,7 +71,7 @@ public class FIDERulesOld implements RuleCheckerOld {
                 && ((piece.equals(WHITE_PAWN) && from.getRank() == 4 && (to.getFile() != from.getFile()))
                 || (piece.equals(BLACK_PAWN) && from.getRank() == 3 && (to.getFile() != from.getFile())))) {
             //zjistime jeslti je legalni provest to e.p. capture
-            MoveTypeOld enPassantLegalityTestResult =
+            OldMoveType enPassantLegalityTestResult =
                     checkEnPassantCapture(move, state);
             if (!enPassantLegalityTestResult.isLegal()) {
                 return enPassantLegalityTestResult;
@@ -82,7 +82,7 @@ public class FIDERulesOld implements RuleCheckerOld {
         //5. Osetreni specialniho tahu: Rosada (castling)
         if (((piece.equals(WHITE_KING) && from.equals(Square.E1)) && (to.equals(Square.G1) || to.equals(Square.C1)))
                 || ((piece.equals(BLACK_KING) && from.equals(Square.E8)) && (to.equals(Square.G8) || to.equals(Square.C8)))) {
-            MoveTypeOld castlingAvailabilityTestResult =
+            OldMoveType castlingAvailabilityTestResult =
                     checkCastlingLegality(state, to);
             if (!castlingAvailabilityTestResult.isLegal()) {
                 return castlingAvailabilityTestResult;
@@ -90,19 +90,19 @@ public class FIDERulesOld implements RuleCheckerOld {
         }
 
         //6. Dava tento tah sach?
-        MoveTypeOld givesCheckResultType = givesCheck(move, state);
+        OldMoveType givesCheckResultType = givesCheck(move, state);
 
-        if (givesCheckResultType.equals(MoveTypeOld.LEGAL_CHECK)) {
+        if (givesCheckResultType.equals(OldMoveType.LEGAL_CHECK)) {
             //7. Vime, ze dava sach. Dava tento tah i mat?
             if (givesMate(move, state)) {
-                return MoveTypeOld.LEGAL_MATE;
+                return OldMoveType.LEGAL_MATE;
             } else {
-                return MoveTypeOld.LEGAL_CHECK;
+                return OldMoveType.LEGAL_CHECK;
             }
         } else {
             //vsechny test OK, neni to sach ani mat
             //-> je to "obycejny" legalni tah
-            return MoveTypeOld.LEGAL;
+            return OldMoveType.LEGAL;
         }
     }
 
@@ -122,7 +122,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @return true, if the path of movement of some piece is blocked on the
      * given position by some piece, false otherwise
      */
-    private static boolean isPathOfMoveBlocked(final MutablePosition position,
+    private static boolean isPathOfMoveBlocked(final OldMutablePosition position,
             final Square from,
             final Square to) {
         if (position == null) {
@@ -315,15 +315,15 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @param piece the piece we want to move in this position
      * @param from the square from which we want to move the piece
      * @param to the square to which we want to move the piece
-     * @return MoveTypeOld object representing legality type of checked move
+     * @return OldMoveType object representing legality type of checked move
      */
-    private static MoveTypeOld canGeometricallyMove(final MutablePosition position,
+    private static OldMoveType canGeometricallyMove(final OldMutablePosition position,
             final Piece piece,
             final Square from,
             final Square to) {
         // i) muze tam ta figura jit na prazdne sachovnici?
         if (!BitboardManager.canGo(piece, from, to)) {
-            return MoveTypeOld.ILLEGAL_PIECE_MOVE;
+            return OldMoveType.ILLEGAL_PIECE_MOVE;
         }
 
         // ii) nestoji nejaka figura v ceste tahu?
@@ -333,7 +333,7 @@ public class FIDERulesOld implements RuleCheckerOld {
                 && !piece.equals(WHITE_KING)
                 && !piece.equals(BLACK_KING)) {
             if (isPathOfMoveBlocked(position, from, to)) {
-                return MoveTypeOld.ILLEGAL_PATH_BLOCKED;
+                return OldMoveType.ILLEGAL_PATH_BLOCKED;
             }
         }
 
@@ -343,31 +343,31 @@ public class FIDERulesOld implements RuleCheckerOld {
                 || piece.equals(BLACK_PAWN)) {
             if (from.getFile() == to.getFile()) {  //pohyb po stejnem sloupci
                 if (pieceOnDestSq != null) { //nesmi tam byt ZADNA figura
-                    return MoveTypeOld.ILLEGAL_SQUARE_OCCUPIED;
+                    return OldMoveType.ILLEGAL_SQUARE_OCCUPIED;
                 }
             } else { //pohyb pesaka po diagonale
                 //jde o en passant pokus
                 if (((piece.equals(WHITE_PAWN) && from.getRank() == 4)
                         || (piece.equals(BLACK_PAWN) && from.getRank() == 3))
                         && (pieceOnDestSq == null)) {
-                    return MoveTypeOld.LEGAL; //tu ho povolime a checknem ho pak zvlast
+                    return OldMoveType.LEGAL; //tu ho povolime a checknem ho pak zvlast
                 } else { //nejde o en passant pokus
                     if (pieceOnDestSq == null //neni tam nic
                             || pieceOnDestSq.isWhite() == piece.isWhite()) { //ci je friend
-                        return MoveTypeOld.ILLEGAL_PIECE_MOVE;
+                        return OldMoveType.ILLEGAL_PIECE_MOVE;
                     } else { //je to pokus o en passant
-                        return MoveTypeOld.LEGAL;
+                        return OldMoveType.LEGAL;
                     }
                 }
             }
         } else { //pro nepesaky: if je tam friendly piece -> nesmis
             if (pieceOnDestSq != null
                     && pieceOnDestSq.isWhite() == piece.isWhite()) {
-                return MoveTypeOld.ILLEGAL_SQUARE_OCCUPIED;
+                return OldMoveType.ILLEGAL_SQUARE_OCCUPIED;
             }
         }
 
-        return MoveTypeOld.LEGAL; //vsechny testy prosly, vracime,
+        return OldMoveType.LEGAL; //vsechny testy prosly, vracime,
         //ze tah je (vzhledem k dosavadnim testum!) legalni
     }
 
@@ -386,7 +386,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * no such piece, this method returns null
      */
     private static Square findCheckingPiece(final boolean youMeanWhite,
-            final MutablePosition position) {
+            final OldMutablePosition position) {
         //nejprv si najdem krale
         Square kingsSquare = findKing(youMeanWhite, position);
         Piece tmpPiece = null;
@@ -417,19 +417,19 @@ public class FIDERulesOld implements RuleCheckerOld {
      *
      * @param move the move we want to check if it leaves the kin in check
      * @param state the sate of game in which we want to check it
-     * @return MoveTypeOld.ILLEGAL_LEAVES_KING_IN_CHECK if given move would leave
-     * the king in check MoveTypeOld.LEGAL otherwise
+     * @return OldMoveType.ILLEGAL_LEAVES_KING_IN_CHECK if given move would leave
+     * the king in check OldMoveType.LEGAL otherwise
      */
-    private static MoveTypeOld leavesKingInCheck(final Move move,
+    private static OldMoveType leavesKingInCheck(final Move move,
             final OldGameStateMutable state) {
-        MoveTypeOld result;
+        OldMoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame ...
         //a zjistime, zda existuje pole, na kterem je figura davajici sach
         if (findCheckingPiece(!state.isWhiteToMove(), state.getChessboard())
                 != null) {
-            result = MoveTypeOld.ILLEGAL_LEAVES_KING_IN_CHECK;
+            result = OldMoveType.ILLEGAL_LEAVES_KING_IN_CHECK;
         } else {
-            result = MoveTypeOld.LEGAL;
+            result = OldMoveType.LEGAL;
         }
         state.cancelLastMove(); //a pak kazdopadne vratime ten tah zpet
         return result;
@@ -445,19 +445,19 @@ public class FIDERulesOld implements RuleCheckerOld {
      * to the enemy king
      * @param state the state of game in which we would like to make the given
      * move
-     * @return MoveTypeOld.LEGAL_CHECK if given move gives check when made in given
-     * state of game<br> MoveTypeOld.LEGAL otherwise.
+     * @return OldMoveType.LEGAL_CHECK if given move gives check when made in given
+     * state of game<br> OldMoveType.LEGAL otherwise.
      */
-    private static MoveTypeOld givesCheck(final Move move,
+    private static OldMoveType givesCheck(final Move move,
             final OldGameStateMutable state) {
-        MoveTypeOld result;
+        OldMoveType result;
         state.makeUncheckedMove(move); //zkusebne si ten tah udelame
         //existuje pole, na kterem je figura davajici sach?
         if (findCheckingPiece(state.isWhiteToMove(), state.getChessboard())
                 != null) {
-            result = MoveTypeOld.LEGAL_CHECK;
+            result = OldMoveType.LEGAL_CHECK;
         } else {
-            result = MoveTypeOld.LEGAL;
+            result = OldMoveType.LEGAL;
         }
         state.cancelLastMove(); //a pak kazdopadne vratime ten tah zpet
         return result;
@@ -476,7 +476,7 @@ public class FIDERulesOld implements RuleCheckerOld {
     private static boolean givesMate(final Move move,
             final OldGameStateMutable state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame
-        MutablePosition position = state.getChessboard();
+        OldMutablePosition position = state.getChessboard();
 
         //najdeme krale, pro ktereho zjistujeme, jestli je v matu
         Piece king = //jde o cerneho nebo bileho?
@@ -587,7 +587,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @return the square on which given king sits
      */
     private static Square findKing(final boolean youMeanWhite,
-            final MutablePosition position) {
+            final OldMutablePosition position) {
         Piece king = //jde o cerneho nebo bileho?
                 youMeanWhite ? WHITE_KING : BLACK_KING;
         Piece tmpPiece = null;
@@ -603,28 +603,28 @@ public class FIDERulesOld implements RuleCheckerOld {
                 + " on the board!");
     }
 
-    private static MoveTypeOld checkCastlingLegality(OldGameStateMutable state,
+    private static OldMoveType checkCastlingLegality(OldGameStateMutable state,
             Square kingsTargetSquare) {
         String caString = state.getCastlingAvailability();
         switch (kingsTargetSquare) {//testneme dostupnost rosady v danem stavu hry
             case C8:
                 if (!caString.contains("q")) {
-                    return MoveTypeOld.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
+                    return OldMoveType.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
                 }
                 break;
             case G8:
                 if (!caString.contains("k")) {
-                    return MoveTypeOld.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
+                    return OldMoveType.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
                 }
                 break;
             case C1:
                 if (!caString.contains("Q")) {
-                    return MoveTypeOld.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
+                    return OldMoveType.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
                 }
                 break;
             case G1:
                 if (!caString.contains("K")) {
-                    return MoveTypeOld.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
+                    return OldMoveType.ILLEGAL_CASTLING_NO_LONGER_AVAILABLE;
                 }
                 break;
             default:
@@ -634,11 +634,11 @@ public class FIDERulesOld implements RuleCheckerOld {
         //je-li rosada dostupna pak jeste testnem jestli je legalni (2 podminky)
         //1.pokud je kral v sachu rosada neni legalni
         if (state.getChecks().getLast().equals(Boolean.TRUE)) {
-            return MoveTypeOld.ILLEGAL_CASTLING_KING_IN_CHECK;
+            return OldMoveType.ILLEGAL_CASTLING_KING_IN_CHECK;
         }
         //2. kral nesmi pri rosade prejit pres ohrozen pole
         //(nejdeme piece nepratelsy pis, ktery ohrozuje inkriminovane pole
-        MutablePosition position = state.getChessboard();
+        OldMutablePosition position = state.getChessboard();
         Piece tmpPiece;
         Square squareOnKingsCastlingPath =
                 getSquareOnKingsCastlingPath(kingsTargetSquare);
@@ -654,11 +654,11 @@ public class FIDERulesOld implements RuleCheckerOld {
                         squareOnKingsCastlingPath).isLegal()) {
                     System.out.println("testuju, jestli v pozici " + position + "muze jit" + tmpPiece + " z " + s + " na " + squareOnKingsCastlingPath);
                     //ohrozujici nalezen -> nesmi se rosadovat
-                    return MoveTypeOld.ILLEGAL_CASTLING_THROUGH_CHECK;
+                    return OldMoveType.ILLEGAL_CASTLING_THROUGH_CHECK;
                 }
             }
         }
-        return MoveTypeOld.LEGAL;
+        return OldMoveType.LEGAL;
     }
 
     /**
@@ -669,7 +669,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * the rook
      * @param kingsTargetSquare the square to which king castles
      */
-    private static void moveCastlingRook(MutablePosition board, Square kingsTargetSquare) {
+    private static void moveCastlingRook(OldMutablePosition board, Square kingsTargetSquare) {
         switch (kingsTargetSquare) {
             case C8:
                 board.removePiece(Square.A8);
@@ -728,13 +728,13 @@ public class FIDERulesOld implements RuleCheckerOld {
         }
     }
 
-    private MoveTypeOld checkEnPassantCapture(Move move, OldGameStateMutable state) {
+    private OldMoveType checkEnPassantCapture(Move move, OldGameStateMutable state) {
         Square enPassantTargetSquare = state.getEnPassantTargetSquare();
         if (enPassantTargetSquare != null
                 && move.getTo().equals(enPassantTargetSquare)) {
-            return MoveTypeOld.LEGAL;
+            return OldMoveType.LEGAL;
         } else {
-            return MoveTypeOld.ILLEGAL_EN_PASSANT;
+            return OldMoveType.ILLEGAL_EN_PASSANT;
         }
     }
 

@@ -1,5 +1,5 @@
 package cz.janhrcek.chess.model.impl;
-
+import cz.janhrcek.chess.model.api.Position;
 import com.google.inject.Inject;
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
@@ -43,7 +43,7 @@ public class GameStateFactoryImpl implements GameStateFactory {
     public GameState create(GameState originState, Move move) throws PieceNotPresentException, IllegalMoveException {
         LOG.info("Creating new GameState using {}", move);
         ruleChecker.checkLegality(move, originState);
-        MutablePosition p = MutablePosition.createFrom(originState.getPosition(), move);
+        Position p = originState.getPosition().createNewPositionUsing(move);
         boolean wtm = !originState.isWhiteToMove(); //flip side to move
         EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move);
         Square ep = determineEnPassantTargetSquare(move);

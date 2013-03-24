@@ -1,5 +1,9 @@
 package cz.janhrcek.chess.model.impl;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import cz.janhrcek.chess.guice.MyModule;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Square;
@@ -15,7 +19,8 @@ import java.util.EnumSet;
  */
 public class GameStateImpl implements GameState {
 
-    private MutablePosition position;
+    private static final Injector injector = Guice.createInjector(new MyModule());
+    private Position position;
     private boolean whiteToMove;
     private EnumSet<Castling> castlingAvailabilities;
     private Square enPassantTargetSquare;
@@ -31,7 +36,7 @@ public class GameStateImpl implements GameState {
      * GameStateFactory.
      */
     public GameStateImpl() {
-        position = new MutablePosition();
+        position = injector.getInstance(Position.class);
         whiteToMove = true;
         castlingAvailabilities = EnumSet.allOf(Castling.class);
         enPassantTargetSquare = null;
@@ -47,7 +52,7 @@ public class GameStateImpl implements GameState {
      * The instances of this class are intended to be created by
      * GameStateFactory.
      */
-    public GameStateImpl(MutablePosition p, boolean wToMove, EnumSet<Castling> ca, Square ep, int halfmove, int fullmove) {
+    public GameStateImpl(Position p, boolean wToMove, EnumSet<Castling> ca, Square ep, int halfmove, int fullmove) {
         position = p;
         whiteToMove = wToMove;
         castlingAvailabilities = ca;
@@ -57,7 +62,7 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public MutablePosition getPosition() {
+    public Position getPosition() {
         return position;
     }
 

@@ -5,10 +5,10 @@ import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.rules.BitboardManager;
-import cz.janhrcek.chess.rules.FIDERulesOld;
-import cz.janhrcek.chess.rules.MoveTypeOld;
+import cz.janhrcek.chess.rules.OldFIDERules;
+import cz.janhrcek.chess.rules.OldMoveType;
 import cz.janhrcek.chess.rules.NoRules;
-import cz.janhrcek.chess.rules.RuleCheckerOld;
+import cz.janhrcek.chess.rules.OldRuleChecker;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -34,10 +34,10 @@ public class OldGameStateMutable {
 
     /**
      * Creates new instance of OldGameStateMutable, whose initial GameState is 
-     * standard Initial MutablePosition of the chess game described by Fide Rules.
+     * standard Initial OldMutablePosition of the chess game described by Fide Rules.
      */
     public OldGameStateMutable() {
-        currentlyFocusedPosition = new MutablePosition();
+        currentlyFocusedPosition = new OldMutablePosition();
         currentlyFocusedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
         movesPlayed = new LinkedList<>();
@@ -46,7 +46,7 @@ public class OldGameStateMutable {
         checks = new LinkedList<>();
         castlingAvailabilities = new LinkedList<>();
         isWhiteToMove = true;
-        ruleChecker = new FIDERulesOld();
+        ruleChecker = new OldFIDERules();
         castlingAvailabilityTracker = BLACK_KING_MASK + WHITE_KING_MASK
                 + BLACK_Q_ROOK_MASK + BLACK_K_ROOK_MASK + WHITE_Q_ROOK_MASK
                 + WHITE_K_ROOK_MASK;
@@ -101,7 +101,7 @@ public class OldGameStateMutable {
             return;
         }
 
-        MoveTypeOld mt = ruleChecker.checkMove(this, move);
+        OldMoveType mt = ruleChecker.checkMove(this, move);
         try {///prozatimni reseni
             switchOnMoveType(move, mt);
         } catch (IllegalStateException ise) {
@@ -247,7 +247,7 @@ public class OldGameStateMutable {
      * @return instance of chessboard holding information about the positioning
      * of pieces
      */
-    public MutablePosition getChessboard() {
+    public OldMutablePosition getChessboard() {
         return currentlyFocusedPosition;
     }
 
@@ -396,7 +396,7 @@ public class OldGameStateMutable {
      *
      * @param c the chessboard
      */
-    public void setChessboard(MutablePosition c) {
+    public void setChessboard(OldMutablePosition c) {
         if (c == null) {
             throw new NullPointerException("c can't be null!");
         }
@@ -418,13 +418,13 @@ public class OldGameStateMutable {
      */
     public void setRuleChecking(boolean flag) {
         if (flag == true) {
-            ruleChecker = new FIDERulesOld();
+            ruleChecker = new OldFIDERules();
         } else {
             ruleChecker = new NoRules();
         }
     }
 
-    private void switchOnMoveType(Move move, MoveTypeOld mt) {
+    private void switchOnMoveType(Move move, OldMoveType mt) {
         switch (mt) {
             case LEGAL_MATE:
                 checks.add(Boolean.valueOf("TRUE"));
@@ -818,7 +818,7 @@ public class OldGameStateMutable {
      * @param c the position of piece on the board
      * @return true if the position is legal, false otherwise
      */
-    private boolean isLegalPosition(MutablePosition c) {
+    private boolean isLegalPosition(OldMutablePosition c) {
         //NEUPLNA IMPLEMENTACE!!! DODELAT!!!
         return true;
     }
@@ -1200,7 +1200,7 @@ public class OldGameStateMutable {
      * be any setPreviousPosition position which occurred since the beginning of
      * the game).
      */
-    private MutablePosition currentlyFocusedPosition;
+    private OldMutablePosition currentlyFocusedPosition;
     /**
      * The number of half-move after which the position on the board is
      * displayed.
@@ -1221,7 +1221,7 @@ public class OldGameStateMutable {
     /**
      * Implementation of ruleChecker used to check the legality of moves.
      */
-    private RuleCheckerOld ruleChecker;
+    private OldRuleChecker ruleChecker;
     /**
      * Flag determining whether there is mate in the position (and therfore no
      * further moves are allowed).

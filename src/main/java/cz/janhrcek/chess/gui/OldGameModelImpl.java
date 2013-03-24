@@ -3,12 +3,12 @@ package cz.janhrcek.chess.gui;
 import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.impl.MutablePosition;
+import cz.janhrcek.chess.model.impl.OldMutablePosition;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.rules.FIDERulesOld;
-import cz.janhrcek.chess.rules.MoveTypeOld;
+import cz.janhrcek.chess.rules.OldFIDERules;
+import cz.janhrcek.chess.rules.OldMoveType;
 import cz.janhrcek.chess.rules.NoRules;
-import cz.janhrcek.chess.rules.RuleCheckerOld;
+import cz.janhrcek.chess.rules.OldRuleChecker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
     /**
      * Enables us to control the legality of the moves.
      */
-    private RuleCheckerOld ruleChecker;
+    private OldRuleChecker ruleChecker;
     /**
      * Listeners, which will be notified of the changes of the gamestate.
      */
@@ -48,7 +48,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
      */
     public OldGameModelImpl(OldGameStateMutable state) {
         this.gameState = state;
-        ruleChecker = new FIDERulesOld();
+        ruleChecker = new OldFIDERules();
     }
 
     /**
@@ -139,7 +139,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
      * @return the chessboard representing position of pieces on the board.
      */
     @Override
-    public MutablePosition getChessboard() {
+    public OldMutablePosition getChessboard() {
         return gameState.getChessboard();
     }
 
@@ -336,7 +336,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
      */
     public void setRuleChecking(boolean turnOn) {
         if (turnOn) {
-            ruleChecker = new FIDERulesOld();
+            ruleChecker = new OldFIDERules();
         } else {
             ruleChecker = new NoRules();
         }
@@ -352,7 +352,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
      * selected
      */
     private boolean handleIllegalMoves(Move m) {
-        MoveTypeOld legalityTestResult = ruleChecker.checkMove(gameState, m);
+        OldMoveType legalityTestResult = ruleChecker.checkMove(gameState, m);
         String errorMessage = "";
 
         switch (legalityTestResult) {

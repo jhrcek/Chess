@@ -9,6 +9,7 @@ import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
@@ -49,8 +50,7 @@ public class GameStateFactoryTest {
             //Asserts
             String tail = " in the initial state of game";
             //Check position
-            MutablePosition expected = new MutablePosition();
-            expected.setInitialPosition();
+            Position expected = Guice.createInjector(new MyModule()).getInstance(Position.class);
             assertEquals(state.getPosition(), expected, "The position should be equal to initial position");
             assertEquals(state.getPosition().getPiece(A1), WHITE_ROOK);
             assertEquals(state.getPosition().getPiece(B2), WHITE_PAWN);
@@ -80,9 +80,8 @@ public class GameStateFactoryTest {
             GameState stateAfterE4 = gameStateFactory.create(initialGameState, firstMove);
 
             //Check position
-            MutablePosition expected = new MutablePosition();
-            expected.setInitialPosition();
-            expected.makeMove(firstMove);
+            Position initial = injector.getInstance(Position.class);
+            Position expected = initial.createNewPositionUsing(firstMove);
 
             //Asserts
             String msgTail = " after e4 played from the initial state of game";

@@ -1,7 +1,6 @@
 package cz.janhrcek.chess.model.api;
 
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.impl.MutablePosition;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -27,8 +26,8 @@ public class GameChangedEvent {
         this.previous = previous;
         this.current = current;
 
-        MutablePosition previousPos = previous.getPosition();
-        MutablePosition currentPos = current.getPosition();
+        Position previousPos = previous.getPosition();
+        Position currentPos = current.getPosition();
         changedSquares = new ArrayList<>(64);
         for (Square square : Square.values()) {
             if (previousPos.getPiece(square) != currentPos.getPiece(square)) {

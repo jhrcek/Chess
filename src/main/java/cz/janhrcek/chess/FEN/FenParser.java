@@ -4,10 +4,13 @@ import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.impl.GameStateImpl;
-import cz.janhrcek.chess.model.impl.MutablePosition;
+import cz.janhrcek.chess.model.impl.PositionImpl;
 import static java.lang.String.format;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +53,7 @@ public class FenParser {
      * @return the string representing piece placement (1st component of FEN
      * record)
      */
-    public String positionToFen(MutablePosition position) {
+    public String positionToFen(Position position) {
         StringBuilder sb = new StringBuilder(64);
         int counter = 0;
         for (Square sq : Square.values()) {
@@ -153,26 +156,27 @@ public class FenParser {
 
     /**
      *
-     * @param piecePlacement The first field (piece placement) of Fen string
-     * @return MutablePosition with the same piece placement as the one described in
-     * the input fen piece placement field
+     * @param piecePlacementSubstring The first field (piece placement) of Fen
+     * string
+     * @return MutablePosition with the same piece placement as the one
+     * described in the input fen piece placement field
      * @throws InvalidFenException
      */
-    public MutablePosition fenToPosition(String piecePlacement) throws InvalidFenException {
-        String[] ranks = piecePlacement.split("/");
+    public Position fenToPosition(String piecePlacementSubstring) throws InvalidFenException {
+        String[] ranks = piecePlacementSubstring.split("/");
         //Check there are exactly 8 ranks, separated by "/"
         if (ranks.length != 8) {
             throw new InvalidFenException("piecePlacement field of FEN must have"
                     + " exactly 8 ranks, each of them separated by \"/\". But "
-                    + "this one (" + piecePlacement + ") had "
+                    + "this one (" + piecePlacementSubstring + ") had "
                     + ranks.length + "ranks");
         }
 
         //Check, that there are only correct characters (piece FEN names + digits 0-8 and slashes "/"
-        if (!piecePlacement.matches("^[pnbrqkPNBRQK1-8/]+$")) {
+        if (!piecePlacementSubstring.matches("^[pnbrqkPNBRQK1-8/]+$")) {
             throw new InvalidFenException("piecePlacement must only contain the"
                     + " following charasters: pnbrqkPNBRQK12345678 - but yours"
-                    + " contained something else: " + piecePlacement);
+                    + " contained something else: " + piecePlacementSubstring);
         }
 
         //Check, that each rank "sums up" to 8 (sum of all digits digits summed + 1 for each piece)
@@ -186,21 +190,22 @@ public class FenParser {
         }
 
         //Everything seems OK, initialize the position using the info from piece-placement substring
-        MutablePosition pos = new MutablePosition();
+        Map<Square, Piece> piecePlacement = new HashMap<>();
         for (int rankIdx = 7; rankIdx >= 0; rankIdx--) {
             int colIdx = 0;
             for (char c : ranks[7 - rankIdx].toCharArray()) {
                 if (Character.isLetter(c)) { //it is letter -> put corresponding piece on
                     //LOG.debug("Putting {} on {}", Piece.getPiece(c), Square.getSquare(colIdx, rankIdx));
-                    pos.putPiece(Piece.getPiece(c), Square.getSquare(colIdx, rankIdx));
+                    piecePlacement.put(Square.getSquare(colIdx, rankIdx), Piece.getPiece(c));
                     colIdx++;
                 } else { //it is number --> move 'c' columns to the right
                     colIdx += Character.getNumericValue(c);
                 }
             }
         }
-        LOG.debug("    1. Position \n{}", pos);
-        return pos;
+        Position newPos = new PositionImpl(piecePlacement);
+        LOG.debug("    1. Position \n{}", newPos);
+        return newPos;
     }
 
     /**
@@ -232,7 +237,7 @@ public class FenParser {
         fullmoveNumber = 0;
     }
     //fields for storing initialization values of currently parsed fen string
-    private MutablePosition position;
+    private Position position;
     private boolean whiteToMove;
     private EnumSet<Castling> castlings;
     private Square enPassantTargetSquare;

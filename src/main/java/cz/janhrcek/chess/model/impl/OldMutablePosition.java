@@ -18,7 +18,7 @@ import java.util.Arrays;
  *
  * @author Jan Hrcek
  */
-public class MutablePosition {
+public class OldMutablePosition {
 
     /**
      * Number of files on the chessboard.
@@ -45,8 +45,8 @@ public class MutablePosition {
      * @throws PieceNotPresentException if the piece described in the move is not on
      * given "from" square in given position
      */
-    public static MutablePosition createFrom(MutablePosition from, Move move) throws PieceNotPresentException {
-        MutablePosition newPosition = from.copy();
+    public static OldMutablePosition createFrom(OldMutablePosition from, Move move) throws PieceNotPresentException {
+        OldMutablePosition newPosition = from.copy();
         newPosition.makeMove(move);
         return newPosition;
     }
@@ -54,7 +54,7 @@ public class MutablePosition {
     /**
      * Creates new Instance of the chessboard.
      */
-    public MutablePosition() {
+    public OldMutablePosition() {
         board = new Piece[NUMBER_OF_FILES][NUMBER_OF_RANKS];
     }
 
@@ -258,11 +258,11 @@ public class MutablePosition {
             return true;
         }
 
-        if (!(other instanceof MutablePosition)) {
+        if (!(other instanceof OldMutablePosition)) {
             return false;
         }
 
-        MutablePosition that = (MutablePosition) other;
+        OldMutablePosition that = (OldMutablePosition) other;
         return Arrays.deepEquals(this.board, that.board);
     }
 
@@ -271,8 +271,8 @@ public class MutablePosition {
         return Arrays.deepHashCode(this.board);
     }
 
-    private MutablePosition copy() {
-        MutablePosition copy = new MutablePosition();
+    private OldMutablePosition copy() {
+        OldMutablePosition copy = new OldMutablePosition();
         for (Square s : Square.values()) {
             Piece p = getPiece(s);
             if (p != null) {

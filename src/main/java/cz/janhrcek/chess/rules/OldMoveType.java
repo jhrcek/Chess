@@ -1,12 +1,12 @@
 package cz.janhrcek.chess.rules;
 
 /**
- * Enumeration class MoveTypeOld - represents types of legality/illegality of the
+ * Enumeration class OldMoveType - represents types of legality/illegality of the
  * moves, that can be made on the chessboard.
  *
  * @author Jan Hrcek
   */
-public enum MoveTypeOld {
+public enum OldMoveType {
 
     /**
      * Legal move, that is not check, mate nor pawn promotion.
@@ -59,7 +59,7 @@ public enum MoveTypeOld {
      */
     ILLEGAL_EN_PASSANT(false);
     /**
-     * Represents information, which MoveTypeOld is legal(=true) and which is
+     * Represents information, which OldMoveType is legal(=true) and which is
      * illegal(=false).
      */
     private final boolean isLegal;
@@ -69,12 +69,12 @@ public enum MoveTypeOld {
      *
      * @param isLeg true if it represents legal move, false otherwise
      */
-    private MoveTypeOld(final boolean isLeg) {
+    private OldMoveType(final boolean isLeg) {
         this.isLegal = isLeg;
     }
 
     /**
-     * Returns information, whether given MoveTypeOld object represents legal move
+     * Returns information, whether given OldMoveType object represents legal move
      * or illegal move.
      *
      * @return true if given constant represents legal move<br> false otherwise

@@ -2,7 +2,7 @@ package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.impl.MutablePosition;
+import cz.janhrcek.chess.model.impl.OldMutablePosition;
 import java.util.LinkedList;
 
 /**
@@ -78,7 +78,7 @@ public interface OldGameModel {
      *
      * @return the chessboard representing position of pieces on the board.
      */
-    MutablePosition getChessboard();
+    OldMutablePosition getChessboard();
 
     /**
      * Returns true if it is white to move, false otherwise.

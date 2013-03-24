@@ -5,10 +5,15 @@ import com.google.inject.Injector;
 import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Position;
+import cz.janhrcek.chess.model.api.Promotion;
+import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
+import cz.janhrcek.chess.model.impl.PositionImpl;
 import cz.janhrcek.chess.rules.BitboardManager;
+import java.util.EnumMap;
+import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.BeforeClass;
@@ -120,5 +125,25 @@ public class PositionTest {
         assertEquals(newPos.getPiece(B7), BLACK_PAWN);
         assertEquals(newPos.getPiece(F2), WHITE_PAWN);
         assertEquals(newPos.getPiece(G1), WHITE_KNIGHT);
+        //Make sure the original position didn't change!
+        assertNull(initPosition.getPiece(E4));
+        assertNull(initPosition.getPiece(E5));
+        assertNull(initPosition.getPiece(C4));
+        assertEquals(initPosition.getPiece(E2), WHITE_PAWN);
+        assertEquals(initPosition.getPiece(D1), WHITE_QUEEN);
+        assertEquals(initPosition.getPiece(E7), BLACK_PAWN);
+    }
+
+    @Test
+    public void testCreateNewPositionWithPromotion() {
+        Map<Square, Piece> myPiecePlacement = new EnumMap<>(Square.class);
+        myPiecePlacement.put(A7, WHITE_PAWN);
+        Position beforePromotion = new PositionImpl(myPiecePlacement);
+        Position afterPromotion = beforePromotion.createNewPositionUsing(new Promotion(WHITE_PAWN, A7, A8, WHITE_QUEEN));
+
+        assertEquals(beforePromotion.getPiece(A7), WHITE_PAWN);
+        assertNull(beforePromotion.getPiece(A8));
+        assertEquals(afterPromotion.getPiece(A8), WHITE_QUEEN);
+        assertNull(afterPromotion.getPiece(A7));
     }
 }

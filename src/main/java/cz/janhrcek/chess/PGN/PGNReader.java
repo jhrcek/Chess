@@ -5,12 +5,12 @@ import cz.janhrcek.chess.model.impl.OldGameStateMutable.GameHeader;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
-import cz.janhrcek.chess.model.impl.MutablePosition;
+import cz.janhrcek.chess.model.impl.OldMutablePosition;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
-import cz.janhrcek.chess.rules.FIDERulesOld;
-import cz.janhrcek.chess.rules.RuleCheckerOld;
+import cz.janhrcek.chess.rules.OldFIDERules;
+import cz.janhrcek.chess.rules.OldRuleChecker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +43,7 @@ public class PGNReader {
     /**
      * We need rule checker to find ambiguous SAN moves.
      */
-    private static RuleCheckerOld ruleChecker = new FIDERulesOld();
+    private static OldRuleChecker ruleChecker = new OldFIDERules();
 
     /**
      * Given pgn file this method returns list of games contained in the file.
@@ -404,7 +404,7 @@ public class PGNReader {
         Square[] potentFromSquares = Square.getSquares(
                 BitboardManager.getReachableSquaresBB(piece, to));
 
-        MutablePosition currBoard = currentGame.getChessboard();
+        OldMutablePosition currBoard = currentGame.getChessboard();
 
         if (piece.equals(WHITE_PAWN) || piece.equals(BLACK_PAWN)) {
             int fileIdx = (int) sanMove.charAt(0) - 97;
