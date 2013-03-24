@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.model.impl;
 
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
 import java.util.Collections;

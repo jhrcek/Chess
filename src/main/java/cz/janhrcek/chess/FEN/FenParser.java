@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.impl.GameStateImpl;
-import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.impl.MutablePosition;
 import static java.lang.String.format;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
@@ -50,7 +50,7 @@ public class FenParser {
      * @return the string representing piece placement (1st component of FEN
      * record)
      */
-    public String positionToFen(Position position) {
+    public String positionToFen(MutablePosition position) {
         StringBuilder sb = new StringBuilder(64);
         int counter = 0;
         for (Square sq : Square.values()) {
@@ -154,11 +154,11 @@ public class FenParser {
     /**
      *
      * @param piecePlacement The first field (piece placement) of Fen string
-     * @return Position with the same piece placement as the one described in
+     * @return MutablePosition with the same piece placement as the one described in
      * the input fen piece placement field
      * @throws InvalidFenException
      */
-    public Position fenToPosition(String piecePlacement) throws InvalidFenException {
+    public MutablePosition fenToPosition(String piecePlacement) throws InvalidFenException {
         String[] ranks = piecePlacement.split("/");
         //Check there are exactly 8 ranks, separated by "/"
         if (ranks.length != 8) {
@@ -186,7 +186,7 @@ public class FenParser {
         }
 
         //Everything seems OK, initialize the position using the info from piece-placement substring
-        Position pos = new Position();
+        MutablePosition pos = new MutablePosition();
         for (int rankIdx = 7; rankIdx >= 0; rankIdx--) {
             int colIdx = 0;
             for (char c : ranks[7 - rankIdx].toCharArray()) {
@@ -232,7 +232,7 @@ public class FenParser {
         fullmoveNumber = 0;
     }
     //fields for storing initialization values of currently parsed fen string
-    private Position position;
+    private MutablePosition position;
     private boolean whiteToMove;
     private EnumSet<Castling> castlings;
     private Square enPassantTargetSquare;

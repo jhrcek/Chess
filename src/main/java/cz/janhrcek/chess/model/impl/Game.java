@@ -5,7 +5,7 @@ import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.guice.FenString;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class Game {
         }
     }
 
-    public void addMove(Move newMove) throws ChessboardException, IllegalMoveException {
+    public void addMove(Move newMove) throws PieceNotPresentException, IllegalMoveException {
         //if currently focused node already has a child preceded by move in the node, just move the gocus
         for (Node childNode : focusedNode.getChildren()) {
             if (childNode.getMove().equals(newMove)) {

@@ -1,15 +1,18 @@
 package cz.janhrcek.chess.model;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import cz.janhrcek.chess.guice.MyModule;
+import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.impl.Position;
-import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import cz.janhrcek.chess.rules.BitboardManager;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -18,114 +21,104 @@ import org.testng.annotations.Test;
  */
 public class PositionTest {
 
-    private Position board;
+    private Injector injector;
+    private Position initPosition;
 
     @BeforeClass
-    public void init() {
-        board = new Position();
+    public void setupClass() {
+        injector = Guice.createInjector(new MyModule());
+    }
+
+    @BeforeMethod
+    public void setupMethod() {
+        initPosition = injector.getInstance(Position.class);
     }
 
     @Test
     public void testInitialPosition() {
-        board.setInitialPosition();
         String msg = "There isn't a correct piece on the square in the initial position!";
-        assertEquals(board.getPiece(A1), WHITE_ROOK, msg);
-        assertEquals(board.getPiece(B1), WHITE_KNIGHT, msg);
-        assertEquals(board.getPiece(C1), WHITE_BISHOP, msg);
-        assertEquals(board.getPiece(D1), WHITE_QUEEN, msg);
-        assertEquals(board.getPiece(E1), WHITE_KING, msg);
-        assertEquals(board.getPiece(F1), WHITE_BISHOP, msg);
-        assertEquals(board.getPiece(G1), WHITE_KNIGHT, msg);
-        assertEquals(board.getPiece(H1), WHITE_ROOK, msg);
+        assertEquals(initPosition.getPiece(A1), WHITE_ROOK, msg);
+        assertEquals(initPosition.getPiece(B1), WHITE_KNIGHT, msg);
+        assertEquals(initPosition.getPiece(C1), WHITE_BISHOP, msg);
+        assertEquals(initPosition.getPiece(D1), WHITE_QUEEN, msg);
+        assertEquals(initPosition.getPiece(E1), WHITE_KING, msg);
+        assertEquals(initPosition.getPiece(F1), WHITE_BISHOP, msg);
+        assertEquals(initPosition.getPiece(G1), WHITE_KNIGHT, msg);
+        assertEquals(initPosition.getPiece(H1), WHITE_ROOK, msg);
 
-        assertEquals(board.getPiece(A2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(B2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(C2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(D2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(E2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(F2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(G2), WHITE_PAWN, msg);
-        assertEquals(board.getPiece(H2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(A2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(B2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(C2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(D2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(E2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(F2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(G2), WHITE_PAWN, msg);
+        assertEquals(initPosition.getPiece(H2), WHITE_PAWN, msg);
 
-        assertEquals(board.getPiece(A8), BLACK_ROOK, msg);
-        assertEquals(board.getPiece(B8), BLACK_KNIGHT, msg);
-        assertEquals(board.getPiece(C8), BLACK_BISHOP, msg);
-        assertEquals(board.getPiece(D8), BLACK_QUEEN, msg);
-        assertEquals(board.getPiece(E8), BLACK_KING, msg);
-        assertEquals(board.getPiece(F8), BLACK_BISHOP, msg);
-        assertEquals(board.getPiece(G8), BLACK_KNIGHT, msg);
-        assertEquals(board.getPiece(H8), BLACK_ROOK, msg);
+        assertEquals(initPosition.getPiece(A8), BLACK_ROOK, msg);
+        assertEquals(initPosition.getPiece(B8), BLACK_KNIGHT, msg);
+        assertEquals(initPosition.getPiece(C8), BLACK_BISHOP, msg);
+        assertEquals(initPosition.getPiece(D8), BLACK_QUEEN, msg);
+        assertEquals(initPosition.getPiece(E8), BLACK_KING, msg);
+        assertEquals(initPosition.getPiece(F8), BLACK_BISHOP, msg);
+        assertEquals(initPosition.getPiece(G8), BLACK_KNIGHT, msg);
+        assertEquals(initPosition.getPiece(H8), BLACK_ROOK, msg);
 
-        assertEquals(board.getPiece(A7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(B7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(C7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(D7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(E7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(F7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(G7), BLACK_PAWN, msg);
-        assertEquals(board.getPiece(H7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(A7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(B7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(C7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(D7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(E7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(F7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(G7), BLACK_PAWN, msg);
+        assertEquals(initPosition.getPiece(H7), BLACK_PAWN, msg);
 
         long fourRanksInMiddle =
                 BitboardManager.parseString("0000000000000000111111111111111111111111111111110000000000000000");
 
         for (Square sq : Square.getSquares(fourRanksInMiddle)) {
-            assertNull(board.getPiece(sq), "The square in the middle must be empty in the initial positions");
+            assertNull(initPosition.getPiece(sq), "The square in the middle must be empty in the initial positions");
         }
     }
 
     @Test
-    public void testPutAndGetPiece() {
-        board.setInitialPosition();
-
-        String msg = "The piece we put on the square is not the same we got from that square!";
-        board.putPiece(WHITE_PAWN, A8);
-        assertEquals(board.getPiece(A8), WHITE_PAWN, msg);
-
-        board.putPiece(WHITE_KING, F6);
-        assertEquals(board.getPiece(F6), WHITE_KING, msg);
-
-        board.putPiece(WHITE_KNIGHT, D1);
-        assertEquals(board.getPiece(D1), WHITE_KNIGHT, msg);
-
-        board.putPiece(BLACK_QUEEN, G8);
-        assertEquals(board.getPiece(G8), BLACK_QUEEN, msg);
-
-        board.putPiece(BLACK_BISHOP, B3);
-        assertEquals(board.getPiece(B3), BLACK_BISHOP, msg);
-
-        board.putPiece(BLACK_ROOK, C5);
-        assertEquals(board.getPiece(C5), BLACK_ROOK, msg);
-    }
-
-    @Test(dataProvider = "put-piece-parameters", expectedExceptions = NullPointerException.class)
-    public void testPutPieceWithNull(Piece p, Square s) {
-        board.putPiece(p, s);
-    }
-
-    @DataProvider(name = "put-piece-parameters")
-    private Object[][] putPieceParameterProvider() {
-        return new Object[][]{
-                    {null, A8},
-                    {WHITE_PAWN, null},
-                    {null, null}
-                };
+    public void testCreateNewPosition1() {
+        Position newPos = initPosition.createNewPositionUsing(new Move(WHITE_PAWN, E2, E4));
+        assertNull(newPos.getPiece(E2));
+        assertNull(newPos.getPiece(E3));
+        assertEquals(newPos.getPiece(E4), WHITE_PAWN);
+        assertEquals(newPos.getPiece(A8), BLACK_ROOK);
     }
 
     @Test
-    public void testRemovePiece() {
-        board.setInitialPosition();
-        board.removePiece(A1);
-        board.removePiece(B2);
-        board.removePiece(C3);
-        board.removePiece(D4);
-        board.putPiece(WHITE_KING, H8);
-        board.removePiece(H8);
-
-        String empty = "There must be null on squares from which we remove piece!";
-        assertNull(board.getPiece(A1), empty);
-        assertNull(board.getPiece(B2), empty);
-        assertNull(board.getPiece(C3), empty);
-        assertNull(board.getPiece(D4), empty);
-        assertNull(board.getPiece(H8), empty);
+    public void testCreateNewPosition2() {
+        Position newPos = initPosition
+                .createNewPositionUsing(new Move(WHITE_PAWN, E2, E4))
+                .createNewPositionUsing(new Move(BLACK_PAWN, E7, E5))
+                .createNewPositionUsing(new Move(WHITE_QUEEN, D1, H5))
+                .createNewPositionUsing(new Move(BLACK_KNIGHT, B8, C6))
+                .createNewPositionUsing(new Move(WHITE_BISHOP, F1, C4))
+                .createNewPositionUsing(new Move(BLACK_KNIGHT, G8, F6))
+                .createNewPositionUsing(new Move(WHITE_QUEEN, H5, F7));
+        assertNull(newPos.getPiece(D1));
+        assertNull(newPos.getPiece(E2));
+        assertNull(newPos.getPiece(F1));
+        assertNull(newPos.getPiece(B8));
+        assertNull(newPos.getPiece(E7));
+        assertNull(newPos.getPiece(G8));
+        assertNull(newPos.getPiece(B6));
+        assertNull(newPos.getPiece(F5));
+        assertNull(newPos.getPiece(A4));
+        assertNull(newPos.getPiece(H3));
+        assertEquals(newPos.getPiece(C4), WHITE_BISHOP);
+        assertEquals(newPos.getPiece(E4), WHITE_PAWN);
+        assertEquals(newPos.getPiece(E5), BLACK_PAWN);
+        assertEquals(newPos.getPiece(C6), BLACK_KNIGHT);
+        assertEquals(newPos.getPiece(F6), BLACK_KNIGHT);
+        assertEquals(newPos.getPiece(F7), WHITE_QUEEN);
+        assertEquals(newPos.getPiece(A8), BLACK_ROOK);
+        assertEquals(newPos.getPiece(B7), BLACK_PAWN);
+        assertEquals(newPos.getPiece(F2), WHITE_PAWN);
+        assertEquals(newPos.getPiece(G1), WHITE_KNIGHT);
     }
 }

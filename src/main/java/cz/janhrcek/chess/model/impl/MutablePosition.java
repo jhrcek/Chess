@@ -18,7 +18,7 @@ import java.util.Arrays;
  *
  * @author Jan Hrcek
  */
-public class Position {
+public class MutablePosition {
 
     /**
      * Number of files on the chessboard.
@@ -42,11 +42,11 @@ public class Position {
      * given move
      * @param move the move to make in the from position
      * @return the position which arises by making given move in given position
-     * @throws ChessboardException if the piece described in the move is not on
+     * @throws PieceNotPresentException if the piece described in the move is not on
      * given "from" square in given position
      */
-    public static Position createFrom(Position from, Move move) throws ChessboardException {
-        Position newPosition = from.copy();
+    public static MutablePosition createFrom(MutablePosition from, Move move) throws PieceNotPresentException {
+        MutablePosition newPosition = from.copy();
         newPosition.makeMove(move);
         return newPosition;
     }
@@ -54,7 +54,7 @@ public class Position {
     /**
      * Creates new Instance of the chessboard.
      */
-    public Position() {
+    public MutablePosition() {
         board = new Piece[NUMBER_OF_FILES][NUMBER_OF_RANKS];
     }
 
@@ -183,7 +183,7 @@ public class Position {
      * @throws PieceNotOnFromSquareException if the piece to move is not on the
      * square you want to move it from
      */
-    public Piece makeMove(Move move) throws ChessboardException {
+    public Piece makeMove(Move move) throws PieceNotPresentException {
         if (move == null) {
             throw new NullPointerException("move can't be null!");
         }
@@ -194,7 +194,7 @@ public class Position {
 
         //is piece from MoveInfo on the square from which I want to move it?
         if (!piece.equals(getPiece(from))) {
-            throw new ChessboardException("Trying to move the "
+            throw new PieceNotPresentException("Trying to move the "
                     + piece + " from " + from
                     + " but the piece wasn't on that square.");
         }
@@ -258,11 +258,11 @@ public class Position {
             return true;
         }
 
-        if (!(other instanceof Position)) {
+        if (!(other instanceof MutablePosition)) {
             return false;
         }
 
-        Position that = (Position) other;
+        MutablePosition that = (MutablePosition) other;
         return Arrays.deepEquals(this.board, that.board);
     }
 
@@ -271,8 +271,8 @@ public class Position {
         return Arrays.deepHashCode(this.board);
     }
 
-    private Position copy() {
-        Position copy = new Position();
+    private MutablePosition copy() {
+        MutablePosition copy = new MutablePosition();
         for (Square s : Square.values()) {
             Piece p = getPiece(s);
             if (p != null) {

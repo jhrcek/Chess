@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.impl.OldGameStateMutable;
-import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.impl.MutablePosition;
 
 /**
  * This implementation of Rule checker encapsulates the international standard
@@ -36,7 +36,7 @@ public class FIDERulesOld implements RuleCheckerOld {
             throw new NullPointerException("move can't be null!");
         }
 
-        Position position = state.getChessboard();
+        MutablePosition position = state.getChessboard();
         Piece piece = move.getPiece();
         Square from = move.getFrom();
         Square to = move.getTo();
@@ -122,7 +122,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @return true, if the path of movement of some piece is blocked on the
      * given position by some piece, false otherwise
      */
-    private static boolean isPathOfMoveBlocked(final Position position,
+    private static boolean isPathOfMoveBlocked(final MutablePosition position,
             final Square from,
             final Square to) {
         if (position == null) {
@@ -317,7 +317,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @param to the square to which we want to move the piece
      * @return MoveTypeOld object representing legality type of checked move
      */
-    private static MoveTypeOld canGeometricallyMove(final Position position,
+    private static MoveTypeOld canGeometricallyMove(final MutablePosition position,
             final Piece piece,
             final Square from,
             final Square to) {
@@ -386,7 +386,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * no such piece, this method returns null
      */
     private static Square findCheckingPiece(final boolean youMeanWhite,
-            final Position position) {
+            final MutablePosition position) {
         //nejprv si najdem krale
         Square kingsSquare = findKing(youMeanWhite, position);
         Piece tmpPiece = null;
@@ -476,7 +476,7 @@ public class FIDERulesOld implements RuleCheckerOld {
     private static boolean givesMate(final Move move,
             final OldGameStateMutable state) {
         state.makeUncheckedMove(move); //A:Zkusebne si ten tah udelame
-        Position position = state.getChessboard();
+        MutablePosition position = state.getChessboard();
 
         //najdeme krale, pro ktereho zjistujeme, jestli je v matu
         Piece king = //jde o cerneho nebo bileho?
@@ -587,7 +587,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * @return the square on which given king sits
      */
     private static Square findKing(final boolean youMeanWhite,
-            final Position position) {
+            final MutablePosition position) {
         Piece king = //jde o cerneho nebo bileho?
                 youMeanWhite ? WHITE_KING : BLACK_KING;
         Piece tmpPiece = null;
@@ -638,7 +638,7 @@ public class FIDERulesOld implements RuleCheckerOld {
         }
         //2. kral nesmi pri rosade prejit pres ohrozen pole
         //(nejdeme piece nepratelsy pis, ktery ohrozuje inkriminovane pole
-        Position position = state.getChessboard();
+        MutablePosition position = state.getChessboard();
         Piece tmpPiece;
         Square squareOnKingsCastlingPath =
                 getSquareOnKingsCastlingPath(kingsTargetSquare);
@@ -669,7 +669,7 @@ public class FIDERulesOld implements RuleCheckerOld {
      * the rook
      * @param kingsTargetSquare the square to which king castles
      */
-    private static void moveCastlingRook(Position board, Square kingsTargetSquare) {
+    private static void moveCastlingRook(MutablePosition board, Square kingsTargetSquare) {
         switch (kingsTargetSquare) {
             case C8:
                 board.removePiece(Square.A8);

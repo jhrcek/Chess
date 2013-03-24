@@ -15,7 +15,7 @@ import java.util.EnumSet;
  */
 public class GameStateImpl implements GameState {
 
-    private Position position;
+    private MutablePosition position;
     private boolean whiteToMove;
     private EnumSet<Castling> castlingAvailabilities;
     private Square enPassantTargetSquare;
@@ -31,7 +31,7 @@ public class GameStateImpl implements GameState {
      * GameStateFactory.
      */
     public GameStateImpl() {
-        position = new Position();
+        position = new MutablePosition();
         whiteToMove = true;
         castlingAvailabilities = EnumSet.allOf(Castling.class);
         enPassantTargetSquare = null;
@@ -47,7 +47,7 @@ public class GameStateImpl implements GameState {
      * The instances of this class are intended to be created by
      * GameStateFactory.
      */
-    public GameStateImpl(Position p, boolean wToMove, EnumSet<Castling> ca, Square ep, int halfmove, int fullmove) {
+    public GameStateImpl(MutablePosition p, boolean wToMove, EnumSet<Castling> ca, Square ep, int halfmove, int fullmove) {
         position = p;
         whiteToMove = wToMove;
         castlingAvailabilities = ca;
@@ -57,7 +57,7 @@ public class GameStateImpl implements GameState {
     }
 
     @Override
-    public Position getPosition() {
+    public MutablePosition getPosition() {
         return position;
     }
 

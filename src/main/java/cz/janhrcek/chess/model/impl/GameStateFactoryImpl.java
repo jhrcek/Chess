@@ -5,7 +5,7 @@ import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
 import cz.janhrcek.chess.model.api.enums.Castling;
@@ -40,10 +40,10 @@ public class GameStateFactoryImpl implements GameStateFactory {
     }
 
     @Override
-    public GameState create(GameState originState, Move move) throws ChessboardException, IllegalMoveException {
+    public GameState create(GameState originState, Move move) throws PieceNotPresentException, IllegalMoveException {
         LOG.info("Creating new GameState using {}", move);
         ruleChecker.checkLegality(move, originState);
-        Position p = Position.createFrom(originState.getPosition(), move);
+        MutablePosition p = MutablePosition.createFrom(originState.getPosition(), move);
         boolean wtm = !originState.isWhiteToMove(); //flip side to move
         EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move);
         Square ep = determineEnPassantTargetSquare(move);

@@ -6,7 +6,7 @@ import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
     }
 
     @Override
-    public void makeMove(Move move) throws ChessboardException, IllegalMoveException {
+    public void makeMove(Move move) throws PieceNotPresentException, IllegalMoveException {
         log.info("Trying to make move {}", move);
         gameTree.addMove(move);
     }
@@ -87,7 +87,7 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
             notifyListenersOfStateChange(previous, current);
         } catch (IllegalMoveException ex) {
             log.info("The move selected is illegal.", ex);
-        } catch (ChessboardException ex) {
+        } catch (PieceNotPresentException ex) {
             log.info("The move selected has problem.", ex);
         }
     }

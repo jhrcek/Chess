@@ -8,14 +8,14 @@ package cz.janhrcek.chess.model.impl;
  * @author Jan Hrcek
  * @version 6.3.2006
  */
-public class ChessboardException extends Exception {
+public class PieceNotPresentException extends Exception {
 
     /**
-     * Constructs a new ChessboardException with the specified detail message.
+     * Constructs a new PieceNotPresentException with the specified detail message.
      *
      * @param msg detailed message.
      */
-    public ChessboardException(final String msg) {
+    public PieceNotPresentException(final String msg) {
         super(msg);
     }
 }

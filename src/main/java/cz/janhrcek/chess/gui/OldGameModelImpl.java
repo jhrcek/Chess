@@ -3,7 +3,7 @@ package cz.janhrcek.chess.gui;
 import cz.janhrcek.chess.model.impl.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.impl.MutablePosition;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.FIDERulesOld;
 import cz.janhrcek.chess.rules.MoveTypeOld;
@@ -139,7 +139,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
      * @return the chessboard representing position of pieces on the board.
      */
     @Override
-    public Position getChessboard() {
+    public MutablePosition getChessboard() {
         return gameState.getChessboard();
     }
 

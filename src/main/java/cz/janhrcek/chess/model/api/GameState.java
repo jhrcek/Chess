@@ -2,7 +2,7 @@ package cz.janhrcek.chess.model.api;
 
 import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.impl.MutablePosition;
 import java.util.EnumSet;
 
 /**
@@ -14,7 +14,7 @@ import java.util.EnumSet;
  */
 public interface GameState {
 
-    public Position getPosition();
+    public MutablePosition getPosition();
 
     boolean isWhiteToMove();
 

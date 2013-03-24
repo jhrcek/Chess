@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.impl.OldGameStateMutable.GameHeader;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
-import cz.janhrcek.chess.model.impl.Position;
+import cz.janhrcek.chess.model.impl.MutablePosition;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
@@ -404,7 +404,7 @@ public class PGNReader {
         Square[] potentFromSquares = Square.getSquares(
                 BitboardManager.getReachableSquaresBB(piece, to));
 
-        Position currBoard = currentGame.getChessboard();
+        MutablePosition currBoard = currentGame.getChessboard();
 
         if (piece.equals(WHITE_PAWN) || piece.equals(BLACK_PAWN)) {
             int fileIdx = (int) sanMove.charAt(0) - 97;

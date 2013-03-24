@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
@@ -53,7 +53,7 @@ public class GameBrowserTest {
             assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
             assertEquals(state.getPosition().getPiece(E2), null);
             assertEquals(state.getEnPassantTarget(), E3);
-        } catch (ChessboardException | IllegalMoveException ex) {
+        } catch (PieceNotPresentException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
     }
@@ -72,7 +72,7 @@ public class GameBrowserTest {
             assertEquals(state.getEnPassantTarget(), null);
             assertEquals(state.getHalfmoveClock(), 1);
             assertEquals(state.getFullmoveNumber(), 2);
-        } catch (ChessboardException | IllegalMoveException ex) {
+        } catch (PieceNotPresentException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
     }
@@ -92,7 +92,7 @@ public class GameBrowserTest {
             assertEquals(state.getEnPassantTarget(), E3);
             assertEquals(state.getHalfmoveClock(), 0);
             assertEquals(state.getFullmoveNumber(), 1);
-        } catch (IllegalMoveException | ChessboardException ex) {
+        } catch (IllegalMoveException | PieceNotPresentException ex) {
             fail("Unexpected exception!", ex);
         }
     }
@@ -105,7 +105,7 @@ public class GameBrowserTest {
             gameBrowser.makeMove(MOVE_NF3);
             GameState state = gameBrowser.getFocusedState();
             System.out.println(gameBrowser.toString());
-        } catch (IllegalMoveException | ChessboardException ex) {
+        } catch (IllegalMoveException | PieceNotPresentException ex) {
             fail("Unexpected exception!", ex);
         }
     }

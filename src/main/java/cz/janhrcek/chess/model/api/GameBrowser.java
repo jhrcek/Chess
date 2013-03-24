@@ -1,6 +1,7 @@
 package cz.janhrcek.chess.model.api;
 
-import cz.janhrcek.chess.model.impl.ChessboardException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
+import cz.janhrcek.chess.model.impl.PieceNotPresentException;
 
 /**
  * Enables browsing of chess game. The key concept of this browser is, that it
@@ -19,7 +20,7 @@ public interface GameBrowser {
     public GameState getFocusedState();
 
     //The only way to change the underlying graph of game states
-    public void makeMove(Move m) throws ChessboardException, IllegalMoveException;
+    public void makeMove(Move m) throws PieceNotPresentException, IllegalMoveException;
 
     /**
      * User's of this class that want to be notified of changes should add

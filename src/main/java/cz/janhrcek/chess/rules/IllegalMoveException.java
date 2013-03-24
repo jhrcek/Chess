@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model.api;
+package cz.janhrcek.chess.rules;
 
 /**
  *

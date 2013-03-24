@@ -7,7 +7,7 @@ import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
-import cz.janhrcek.chess.model.api.IllegalMoveException;
+import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
@@ -49,7 +49,7 @@ public class GameStateFactoryTest {
             //Asserts
             String tail = " in the initial state of game";
             //Check position
-            Position expected = new Position();
+            MutablePosition expected = new MutablePosition();
             expected.setInitialPosition();
             assertEquals(state.getPosition(), expected, "The position should be equal to initial position");
             assertEquals(state.getPosition().getPiece(A1), WHITE_ROOK);
@@ -80,7 +80,7 @@ public class GameStateFactoryTest {
             GameState stateAfterE4 = gameStateFactory.create(initialGameState, firstMove);
 
             //Check position
-            Position expected = new Position();
+            MutablePosition expected = new MutablePosition();
             expected.setInitialPosition();
             expected.makeMove(firstMove);
 
@@ -96,7 +96,7 @@ public class GameStateFactoryTest {
             assertEquals(stateAfterE4.getEnPassantTarget(), E3, "En-passant target square should be E3" + msgTail);
             assertEquals(stateAfterE4.getHalfmoveClock(), 0, "Half-move clock should be 0" + msgTail);
             assertEquals(stateAfterE4.getFullmoveNumber(), 1, "Full-move number should be 1" + msgTail);
-        } catch (InvalidFenException | ChessboardException | IllegalMoveException ex) {
+        } catch (InvalidFenException | PieceNotPresentException | IllegalMoveException ex) {
             fail("Unexpected exception was thrown!", ex);
         }
     }

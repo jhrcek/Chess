@@ -34,10 +34,10 @@ public class OldGameStateMutable {
 
     /**
      * Creates new instance of OldGameStateMutable, whose initial GameState is 
-     * standard Initial Position of the chess game described by Fide Rules.
+     * standard Initial MutablePosition of the chess game described by Fide Rules.
      */
     public OldGameStateMutable() {
-        currentlyFocusedPosition = new Position();
+        currentlyFocusedPosition = new MutablePosition();
         currentlyFocusedPosition.setInitialPosition();
         currentlyViewedHalfmove = 0;
         movesPlayed = new LinkedList<>();
@@ -129,7 +129,7 @@ public class OldGameStateMutable {
                 moveCastlingRook(move.getTo()); //kings target square
             }
             currentlyViewedHalfmove++;
-        } catch (ChessboardException cbe) { //throwed if the moving piece was
+        } catch (PieceNotPresentException cbe) { //throwed if the moving piece was
             //not on the "from" square
             //we should get the "right" MoveInfo objects from gui
             cbe.printStackTrace();
@@ -164,7 +164,7 @@ public class OldGameStateMutable {
             checks.add(Boolean.valueOf("FALSE"));
             movesPlayed.add(move);
             changeSideToMove();
-        } catch (ChessboardException cbe) {
+        } catch (PieceNotPresentException cbe) {
             cbe.printStackTrace();
         }
     }
@@ -247,7 +247,7 @@ public class OldGameStateMutable {
      * @return instance of chessboard holding information about the positioning
      * of pieces
      */
-    public Position getChessboard() {
+    public MutablePosition getChessboard() {
         return currentlyFocusedPosition;
     }
 
@@ -396,7 +396,7 @@ public class OldGameStateMutable {
      *
      * @param c the chessboard
      */
-    public void setChessboard(Position c) {
+    public void setChessboard(MutablePosition c) {
         if (c == null) {
             throw new NullPointerException("c can't be null!");
         }
@@ -818,7 +818,7 @@ public class OldGameStateMutable {
      * @param c the position of piece on the board
      * @return true if the position is legal, false otherwise
      */
-    private boolean isLegalPosition(Position c) {
+    private boolean isLegalPosition(MutablePosition c) {
         //NEUPLNA IMPLEMENTACE!!! DODELAT!!!
         return true;
     }
@@ -888,7 +888,7 @@ public class OldGameStateMutable {
                     throw new IllegalStateException("King's dest. Square was"
                             + " not C8, G8, C1 or G1!");
             }
-        } catch (ChessboardException cbe) {
+        } catch (PieceNotPresentException cbe) {
             cbe.printStackTrace();
         }
     }
@@ -923,7 +923,7 @@ public class OldGameStateMutable {
                     throw new IllegalStateException("King's dest. Square was"
                             + " not C8, G8, C1 or G1!");
             }
-        } catch (ChessboardException cbe) {
+        } catch (PieceNotPresentException cbe) {
             cbe.printStackTrace();
         }
     }
@@ -1023,7 +1023,7 @@ public class OldGameStateMutable {
         for (int i = 0; i < halfmove; i++) {
             try {
                 currentlyFocusedPosition.makeMove(movesPlayed.get(i));
-            } catch (ChessboardException ex) {
+            } catch (PieceNotPresentException ex) {
                 ex.printStackTrace();
             }
 
@@ -1200,7 +1200,7 @@ public class OldGameStateMutable {
      * be any setPreviousPosition position which occurred since the beginning of
      * the game).
      */
-    private Position currentlyFocusedPosition;
+    private MutablePosition currentlyFocusedPosition;
     /**
      * The number of half-move after which the position on the board is
      * displayed.
