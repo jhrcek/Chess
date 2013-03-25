@@ -1,5 +1,7 @@
 package cz.janhrcek.chess.gui;
 
+import com.google.inject.Inject;
+import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.GameState;
@@ -15,21 +17,26 @@ import javax.swing.border.LineBorder;
  */
 public class GameStateDisplayer extends JTextArea implements GameListener {
 
-    public GameStateDisplayer() {
+    @Inject
+    public GameStateDisplayer(GameBrowser gameBrowser) {
         setLineWrap(true);
         setBorder(new LineBorder(Color.BLACK, 1));
+        displayState(gameBrowser.getFocusedState());
     }
 
     @Override
     public void gameChanged(GameChangedEvent event) {
-        GameState state = event.getCurrentState();
-        StringBuilder text = new StringBuilder();
+        displayState(event.getCurrentState());
+    }
+
+    private void displayState(GameState state) {
+        StringBuilder sb = new StringBuilder();
         Square ep = state.getEnPassantTarget();
-        text.append("Player to move: ").append(state.isWhiteToMove() ? "WHITE" : "BLACK")
-                .append("\nCaslings: ").append(Castling.toFenCastlingSubstring(state.getCastlings()))
-                .append("\nE-P target: ").append(ep == null ? "-" : ep)
-                .append("\nHalfmove: ").append(state.getHalfmoveClock())
-                .append("\nFullmove: ").append(state.getFullmoveNumber());
-        setText(text.toString());
+        sb.append(" Player to move: ").append(state.isWhiteToMove() ? "WHITE" : "BLACK")
+                .append("\n Caslings: ").append(Castling.toFenCastlingSubstring(state.getCastlings()))
+                .append("\n E-P target: ").append(ep == null ? "-" : ep)
+                .append("\n Halfmove: ").append(state.getHalfmoveClock())
+                .append("\n Fullmove: ").append(state.getFullmoveNumber());
+        setText(sb.toString());
     }
 }

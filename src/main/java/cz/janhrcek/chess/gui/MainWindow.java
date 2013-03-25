@@ -40,7 +40,7 @@ public class MainWindow {
         chessboardComponent = injector.getInstance(ChessboardComponent.class);
         adHocMoveDisplayer = injector.getInstance(AdHocMoveDisplayArea.class);
         adHocGameTreeDisplayer = injector.getInstance(GameTreeDisplayer.class);
-        adHocGameStateDisplayer = new GameStateDisplayer();
+        adHocGameStateDisplayer = injector.getInstance(GameStateDisplayer.class);
 
         JScrollPane scrollableMoveDisplay = new JScrollPane(adHocMoveDisplayer);
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);

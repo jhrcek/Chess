@@ -11,17 +11,18 @@ import javax.swing.JTextArea;
  * @author jhrcek
  */
 public class AdHocMoveDisplayArea extends JTextArea implements GameListener {
+
     private GameBrowser game;
 
     @Inject
     public AdHocMoveDisplayArea(GameBrowser game) {
         this.game = game;
         game.addGameListener(this);//listen to GameChangeEvents
+        setText(game.toString());
     }
-    
+
     @Override
     public void gameChanged(GameChangedEvent event) {
         setText(game.toString());
     }
-    
 }
