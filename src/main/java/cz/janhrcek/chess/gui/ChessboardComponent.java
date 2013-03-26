@@ -434,57 +434,36 @@ public final class ChessboardComponent extends JComponent implements GameListene
      * square to given square
      */
     private Move createSelectedMove(Piece piece, Square from, Square to) {
-        //If it is pawn promotion we must must make user choose to what piece the pawn should be promoted
+        //If it is pawn promotion we must must force user to choose to what piece the pawn should be promoted
         if ((piece.equals(WHITE_PAWN) && from.getRank() == 6 && to.getRank() == 7)
                 || (piece.equals(BLACK_PAWN) && from.getRank() == 1 && to.getRank() == 0)) {
-            ImageIcon[] options;
-            if (piece.isWhite()) {
-                options = new ImageIcon[]{
-                    squareImages.getSquareImage(WHITE_QUEEN, false),
-                    squareImages.getSquareImage(WHITE_ROOK, true),
-                    squareImages.getSquareImage(WHITE_BISHOP, false),
-                    squareImages.getSquareImage(WHITE_KNIGHT, true)};
-            } else {
-                options = new ImageIcon[]{
-                    squareImages.getSquareImage(BLACK_QUEEN, false),
-                    squareImages.getSquareImage(BLACK_ROOK, true),
-                    squareImages.getSquareImage(BLACK_BISHOP, false),
-                    squareImages.getSquareImage(BLACK_KNIGHT, true)};
+
+            Piece[] potentialPromoPieces = piece.isWhite()
+                    ? new Piece[]{WHITE_QUEEN, WHITE_ROOK, WHITE_BISHOP, WHITE_KNIGHT}
+                    : new Piece[]{BLACK_QUEEN, BLACK_ROOK, BLACK_BISHOP, BLACK_KNIGHT};
+
+            //Display options for user as icons in OptionDialog
+            ImageIcon[] optionImages = new ImageIcon[4];
+            boolean isBackgroundLight = true; //Determines colog or background on image icon
+            int i = 0;
+            for (Piece p : potentialPromoPieces) {
+                optionImages[i++] = squareImages.getSquareImage(p, isBackgroundLight);
+                isBackgroundLight = !isBackgroundLight;
             }
-            int toWhatPromote =
+
+            int chosenPiece = //Will be used as index to potentialPromoPieces
                     JOptionPane.showOptionDialog(getTopLevelAncestor(),
                     "What do you want to promote this pawn to?",
                     "Pawn promotion",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
-                    options,
-                    options[0]);
+                    optionImages,
+                    optionImages[0]);
 
-            Piece promoPiece;
-            switch (toWhatPromote) {
-                case 0:
-                    promoPiece = piece.isWhite() ? WHITE_QUEEN
-                            : BLACK_QUEEN;
-                    break;
-                case 1:
-                    promoPiece = piece.isWhite() ? WHITE_ROOK
-                            : BLACK_ROOK;
-                    break;
-                case 2:
-                    promoPiece = piece.isWhite() ? WHITE_BISHOP
-                            : BLACK_BISHOP;
-                    break;
-                case 3:
-                    promoPiece = piece.isWhite() ? WHITE_KNIGHT
-                            : BLACK_KNIGHT;
-                    break;
-                default:
-                    throw new IllegalStateException("toWhatPromote"
-                            + " wasn't 0, 1, 2 or 3");
-            }
+            Piece promoPiece = potentialPromoPieces[chosenPiece];
             return new Promotion(piece, from, to, promoPiece);
-        } else { //neni to pawn promotion
+        } else { //It is not pawn promotion
             return new Move(piece, from, to);
         }
     }
