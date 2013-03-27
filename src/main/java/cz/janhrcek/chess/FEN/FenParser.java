@@ -252,7 +252,7 @@ public class FenParser {
     private static final String COUNTERS_FILED_MSG = "The 5th and 6th fen fields must be valid decimal digits, but yours were: %d and %d";
     //Patterns for checking valid values for FEN string fields
     private static final Pattern DIGIT_PATTERN = Pattern.compile("^\\d+$");
-    private static final Pattern CASTLING_AVAILABILITY_PATTERN = Pattern.compile("^K?Q?k?q?$|^-$");
+    private static final Pattern CASTLING_AVAILABILITY_PATTERN = Pattern.compile("^KQ?k?q?$|^K?Qk?q?$|^K?Q?kq?$|^K?Q?k?q$|^-$"); //Means either one or more of the mentioned, or "-", NOT the empty string
     private static final Pattern EN_PASSANT_PATTERN = Pattern.compile("^[abcdefgh][36]$|^-$");
     //
     public static final String INITIAL_STATE_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
