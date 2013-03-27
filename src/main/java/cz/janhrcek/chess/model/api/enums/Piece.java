@@ -14,61 +14,66 @@ public enum Piece {
     /**
      * Represents White pawn.
      */
-    WHITE_PAWN(true, 'P'), //pawns have empty names in SAN
+    WHITE_PAWN(true, 'P', ""), //pawns have empty names in SAN
 
     /**
      * Represents Black pawn.
      */
-    BLACK_PAWN(false, 'p'),
+    BLACK_PAWN(false, 'p', ""),
     /**
      * Represents white knight.
      */
-    WHITE_KNIGHT(true, 'N'),
+    WHITE_KNIGHT(true, 'N', "N"),
     /**
      * Represents black knight.
      */
-    BLACK_KNIGHT(false, 'n'),
+    BLACK_KNIGHT(false, 'n', "N"),
     /**
      * Represents white bishop.
      */
-    WHITE_BISHOP(true, 'B'),
+    WHITE_BISHOP(true, 'B', "B"),
     /**
      * Represents black bishop.
      */
-    BLACK_BISHOP(false, 'b'),
+    BLACK_BISHOP(false, 'b', "B"),
     /**
      * Represents white rook.
      */
-    WHITE_ROOK(true, 'R'),
+    WHITE_ROOK(true, 'R', "R"),
     /**
      * Represents black rook.
      */
-    BLACK_ROOK(false, 'r'),
+    BLACK_ROOK(false, 'r', "R"),
     /**
      * Represents white queen.
      */
-    WHITE_QUEEN(true, 'Q'),
+    WHITE_QUEEN(true, 'Q', "Q"),
     /**
      * Represents black queen.
      */
-    BLACK_QUEEN(false, 'q'),
+    BLACK_QUEEN(false, 'q', "Q"),
     /**
      * Represents white king.
      */
-    WHITE_KING(true, 'K'),
+    WHITE_KING(true, 'K', "K"),
     /**
      * Represents black king.
      */
-    BLACK_KING(false, 'k');
+    BLACK_KING(false, 'k', "K");
     /**
      * Flag determining, whether the piece is white or black.
      */
     private final boolean isWhite;
     /**
-     * String representing the piece letter used for denoting the piece in SAN -
-     * Short Algebraic Notation
+     * Character representing the piece letter used for denoting the piece in
+     * FEN strings.
      */
     private final char fenLetter;
+    /**
+     * String representing the piece letter used for denoting the piece in SAN -
+     * Short Algebraic Notation.
+     */
+    private final String sanName;
 
     /**
      * Sets isWhite flag of the chess piece.
@@ -76,9 +81,10 @@ public enum Piece {
      * @param isWhite determines whether the piece is white.
      * @param fenLetter piece name in FEN - Forsythe Edwards Notation
      */
-    private Piece(final boolean isWhite, char fenLetter) {
+    private Piece(final boolean isWhite, char fenLetter, String sanName) {
         this.isWhite = isWhite;
         this.fenLetter = fenLetter;
+        this.sanName = sanName;
     }
 
     /**
@@ -106,10 +112,17 @@ public enum Piece {
     }
 
     /**
-     * @return string representing FEN name of the piece
+     * @return character representing FEN name of the piece
      */
     public char getFenLetter() {
         return fenLetter;
+    }
+
+    /**
+     * @return string representing SAN name of the piece
+     */
+    public String getSanName() {
+        return sanName;
     }
     private static final Map<Character, Piece> fen2Piece = new HashMap<>();
 

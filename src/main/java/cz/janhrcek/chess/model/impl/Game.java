@@ -103,11 +103,14 @@ public class Game {
 
 //--------------------------- PRIVATE IMPLEMENTATION ---------------------------
     private void histNodeToString(Node node, StringBuilder sb) { //TODO - fix order of displaying variations
-        String startTag = node.equals(focusedNode) ? "<a class=\"focus\" href=\"" : "<a href=\""; //We want to highlight the focused move
+        String startTag = node.equals(focusedNode) ? "&nbsp;<a class=\"focus\" href=\"" : "&nbsp;<a href=\""; //We want to highlight the focused move
         sb.append(startTag).append(node.getId());
 
         if (node.getMove() != null) {
-            sb.append("\">").append(node.getMove().toString()).append("</a><br/>");
+            sb.append("\">")
+                    .append(node.toLan())
+                    .append("</a>")
+                    .append(node.getGameState().isWhiteToMove() ? "<br/>" : ""); //line break after black's move
         } else { //Case for root node (= initial state of the game)- has no parent
             sb.append("\">Start</a><br/>");
         }
@@ -175,6 +178,33 @@ public class Game {
 
         public int getId() {
             return ID;
+        }
+
+        /**
+         * Takes the node and converts the move, that led to this node to Long
+         * Algebraic Notation (LAN).
+         *
+         * @return Long Algebraic Notation representation of the move
+         */
+        private String toLan() {
+            if (getParent() == null) {
+                throw new IllegalArgumentException("Cannot conver root to SAN!");
+            }
+
+            StringBuilder result = new StringBuilder();
+
+            String fullMoveNumber = getGameState().isWhiteToMove() ? "" : getGameState().getFullmoveNumber() + ".";
+            String pieceLetter = getMove().getPiece().getSanName();
+            String fromSquare = getMove().getFrom().toString().toLowerCase();
+            boolean wasCapture = getParent().getGameState().getPosition().getPiece(getMove().getTo()) != null;
+            String toSquare = getMove().getTo().toString().toLowerCase();
+
+            result.append(fullMoveNumber)
+                    .append(pieceLetter)
+                    .append(fromSquare)
+                    .append(wasCapture ? "x" : "-")
+                    .append(toSquare);
+            return result.toString();
         }
     }
 }
