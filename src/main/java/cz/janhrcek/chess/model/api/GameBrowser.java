@@ -38,4 +38,6 @@ public interface GameBrowser {
     public void focusPreviousState();
 
     public void focusLastState();
+
+    public void focusStateWithId(int id); //TODO -leaking implementation detail into API -remove somehow
 }

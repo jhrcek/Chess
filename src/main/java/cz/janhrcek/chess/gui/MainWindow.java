@@ -38,11 +38,10 @@ public class MainWindow {
         gameBrowser = injector.getInstance(GameBrowser.class);
         //GUI components
         chessboardComponent = injector.getInstance(ChessboardComponent.class);
-        adHocMoveDisplayer = injector.getInstance(AdHocMoveDisplayArea.class);
+
         adHocGameTreeDisplayer = injector.getInstance(GameTreeDisplayer.class);
         adHocGameStateDisplayer = injector.getInstance(GameStateDisplayer.class);
 
-        JScrollPane scrollableMoveDisplay = new JScrollPane(adHocMoveDisplayer);
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);
 
         gameBrowser.addGameListener(adHocGameStateDisplayer);
@@ -54,11 +53,10 @@ public class MainWindow {
         controlsPlusStateDisplayer.setDividerSize(0);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        mainPanel.setLayout(new GridLayout(2, 2, 5, 5));
         mainPanel.add(chessboardComponent);
-        mainPanel.add(scrollableMoveDisplay);
-        mainPanel.add(controlsPlusStateDisplayer);
         mainPanel.add(scrollableGameTreeDisplay);
+        mainPanel.add(controlsPlusStateDisplayer);
 
         frame.add(mainPanel);
         frame.setSize(650, 650);
@@ -118,7 +116,6 @@ public class MainWindow {
     private GameBrowser gameBrowser;
     //Gui providing view into model
     private ChessboardComponent chessboardComponent;
-    private AdHocMoveDisplayArea adHocMoveDisplayer;
     private GameTreeDisplayer adHocGameTreeDisplayer;
     private GameStateDisplayer adHocGameStateDisplayer;
     //

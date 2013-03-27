@@ -122,11 +122,12 @@ public final class ChessboardComponent extends JComponent implements GameListene
 
         //Finite state machine implementation that tries to constructs 
         //a move instance based on user clicks on the chessboard component
-        if (selectedFromSquare == null //"from" is not yet selected
-                && clickedSquare != null // AND user clicked on some square
-                && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) { // AND there is a some piece on the clicked square
-            log.info("  User chooses {} as \"from\" square", clickedSquare);
-            setAndHighlightFromSquare(clickedSquare);
+        if (selectedFromSquare == null) { //"from" is not yet selected
+            if (clickedSquare != null // AND user clicked on some square
+                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) { // AND there is a some piece on the clicked square
+                log.info("  User chooses {} as \"from\" square", clickedSquare);
+                setAndHighlightFromSquare(clickedSquare);
+            }
         } else { //"from" has been chosen previously
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
                 log.info("  User chooses {} as \"to\" square", clickedSquare);

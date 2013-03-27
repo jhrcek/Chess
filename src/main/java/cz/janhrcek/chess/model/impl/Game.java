@@ -8,7 +8,10 @@ import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +25,10 @@ public class Game {
     public Game(GameStateFactory gsf, @FenString String initialStateFen) throws InvalidFenException {
         this.stateFactory = gsf;
         GameState initialState = stateFactory.create(initialStateFen);
-        this.rootNode = new Node(null, null, initialState);
+        this.rootNode = new Node(null, null, initialState, NODE_ID_GENERATOR.getAndIncrement());
         this.focusedNode = rootNode;
+        this.id2Node = new HashMap<>();
+        id2Node.put(rootNode.getId(), rootNode);
     }
 
     public GameState getRootState() {
@@ -65,6 +70,11 @@ public class Game {
         }
     }
 
+    void focusNodeWithId(int id) {
+        log.info("Browsing tree: focusing node with id = {}", id);
+        focusedNode = id2Node.get(id);
+    }
+
     public void addMove(Move newMove) throws PieceNotPresentException, IllegalMoveException {
         //if currently focused node already has a child preceded by move in the node, just move the gocus
         for (Node childNode : focusedNode.getChildren()) {
@@ -76,7 +86,8 @@ public class Game {
         }
         log.debug("Adding new GameState using {}", newMove);
         GameState stateAfterMove = stateFactory.create(getFocusedState(), newMove);
-        Node newFocusedNode = new Node(focusedNode, newMove, stateAfterMove);
+        Node newFocusedNode = new Node(focusedNode, newMove, stateAfterMove, NODE_ID_GENERATOR.getAndIncrement());
+        id2Node.put(newFocusedNode.getId(), newFocusedNode);
         focusedNode.addChild(newFocusedNode);
         focusedNode = newFocusedNode;
     }
@@ -84,39 +95,41 @@ public class Game {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        histNodeToString(rootNode, result, "");
+        result.append("<html><body>");
+        histNodeToString(rootNode, result);
+        result.append("</body></html>");
         return result.toString();
     }
 
 //--------------------------- PRIVATE IMPLEMENTATION ---------------------------
-    private void histNodeToString(Node node, StringBuilder sb, String level) {
+    private void histNodeToString(Node node, StringBuilder sb) { //TODO - fix order of displaying variations
+        String startTag = node.equals(focusedNode) ? "<a class=\"focus\" href=\"" : "<a href=\""; //We want to highlight the focused move
+        sb.append(startTag).append(node.getId());
+
         if (node.getMove() != null) {
-            sb.append(level).append(node.getMove().toString()).append("\n");
-        } else {
-            sb.append(level).append("null move").append("\n");
+            sb.append("\">").append(node.getMove().toString()).append("</a><br/>");
+        } else { //Case for root node (= initial state of the game)- has no parent
+            sb.append("\">Start</a><br/>");
         }
-        switch (node.getChildren().size()) {
-            case 0:
-                break;
-            case 1:
-                histNodeToString(node.getChildren().get(0), sb, level);
-                break;
-            default:
-                sb.append(level).append("  ").append("(\n");
-                for (int i = 1; i < node.getChildren().size(); i++) {
-                    sb.append(level);
-                    histNodeToString(node.getChildren().get(i), sb, level + "  ");
-                    sb.append(level).append("  ").append(";\n");
-                }
-                sb.append(level).append("  ").append(")\n");
-                histNodeToString(node.getChildren().get(0), sb, level);
-                break;
+
+        if (node.getChildren().size() >= 1) {
+            histNodeToString(node.getChildren().get(0), sb);       //1) Main line
+        }
+        if (node.getChildren().size() > 1) {
+            sb.append("(");                                        //2) Variations
+            for (int i = 1; i < node.getChildren().size(); i++) {
+                histNodeToString(node.getChildren().get(i), sb);
+                sb.append(";");
+            }
+            sb.append(")");
         }
     }
     private static final Logger log = LoggerFactory.getLogger(Game.class);
     private final GameStateFactory stateFactory;
     private final Node rootNode;
     private Node focusedNode;
+    private final Map<Integer, Node> id2Node;
+    private final AtomicInteger NODE_ID_GENERATOR = new AtomicInteger(0);
 
     private static class Node {
 
@@ -128,12 +141,15 @@ public class Game {
         //Data
         private final Move move;
         private final GameState state;
+        private final int ID;
 
-        public Node(Node parent, Move move, GameState s) {
+        public Node(Node parent, Move move, GameState s, int id) {
             this.parent = parent;
             this.move = move;
             this.state = s;
-            children = new ArrayList<>();
+            this.ID = id;
+            this.children = new ArrayList<>();
+
         }
 
         public GameState getGameState() {
@@ -155,6 +171,10 @@ public class Game {
 
         public Node getParent() {
             return parent;
+        }
+
+        public int getId() {
+            return ID;
         }
     }
 }

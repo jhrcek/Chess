@@ -12,7 +12,7 @@
     <logger name="cz.janhrcek.chess.FEN.FenParser" level="WARN" />
     <!--<logger name="cz.janhrcek.chess.gui.ChessboardComponent" level="INFO" />-->
     <logger name="cz.janhrcek.chess.gui.SquareImageFactory" level="OFF" />
-    <root level="OFF"><!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF-->
+    <root level="INFO"><!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF-->
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

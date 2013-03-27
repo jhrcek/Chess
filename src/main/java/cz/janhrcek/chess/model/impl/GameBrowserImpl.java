@@ -78,6 +78,15 @@ public class GameBrowserImpl implements GameBrowser, MoveListener {
     }
 
     @Override
+    public void focusStateWithId(int id) {
+        log.info("Focusing state with id = {}", id);
+        GameState previous = getFocusedState();
+        gameTree.focusNodeWithId(id);
+        GameState current = getFocusedState();
+        notifyListenersOfStateChange(previous, current);
+    }
+
+    @Override
     public void moveSelected(Move move) {
         log.info("Got notification from GUI - move selected: {}", move);
         try {
