@@ -122,13 +122,11 @@ public final class ChessboardComponent extends JComponent implements GameListene
 
         //Finite state machine implementation that tries to constructs 
         //a move instance based on user clicks on the chessboard component
-        if (selectedFromSquare == null) {
-            //We will allow to choose "from" square ONLY IF there is a piece (of any collor)
-            if (clickedSquare != null
-                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) {
-                log.info("  User chooses {} as \"from\" square", clickedSquare);
-                highlightFromSquare(clickedSquare);
-            }
+        if (selectedFromSquare == null //"from" is not yet selected
+                && clickedSquare != null // AND user clicked on some square
+                && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) { // AND there is a some piece on the clicked square
+            log.info("  User chooses {} as \"from\" square", clickedSquare);
+            setAndHighlightFromSquare(clickedSquare);
         } else { //"from" has been chosen previously
             if (clickedSquare != null && clickedSquare != selectedFromSquare) {
                 log.info("  User chooses {} as \"to\" square", clickedSquare);
@@ -150,17 +148,16 @@ public final class ChessboardComponent extends JComponent implements GameListene
         }
     }
 
-    private void highlightFromSquare(Square s) {
-        //Cancel the red square around selected square 
-        //(because user either selected a "to" square and constructed the move,
-        // or he canceled a selection of "from" by clicking the "from" square
-        // again or clicking elsewhere on the chessboard component)
+    private void setAndHighlightFromSquare(Square s) {
         selectedFromSquare = s;
-        //Paint red square around selectedFromSquare to signify to user it has been chosen
         paintRedBorderAroundSquare(s);
     }
 
     private void unhighlightFromSquare() {
+        //Cancel the red square around selected square
+        //(because user either selected a "to" square and constructed the move,
+        // or he canceled a selection of "from" by clicking the "from" square
+        // again or clicking elsewhere on the chessboard component)
         Square tmpSq = selectedFromSquare;
         selectedFromSquare = null;
         repaintSquare(tmpSq);
