@@ -1,6 +1,6 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import zzz.to.delete.OldGameStateMutable;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 

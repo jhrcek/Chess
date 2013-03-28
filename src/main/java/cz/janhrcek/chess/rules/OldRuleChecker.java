@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.rules;
 
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import zzz.to.delete.OldGameStateMutable;
 
 /**
  * Provides methods, which allows user to control legality of moves in the given

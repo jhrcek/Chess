@@ -1,9 +1,11 @@
-package cz.janhrcek.chess.model.impl;
+package zzz.to.delete;
 
+import zzz.to.delete.OldMutablePosition;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.impl.PieceNotPresentException;
 import cz.janhrcek.chess.rules.BitboardManager;
 import cz.janhrcek.chess.rules.OldFIDERules;
 import cz.janhrcek.chess.rules.OldMoveType;

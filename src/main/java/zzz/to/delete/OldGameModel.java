@@ -1,8 +1,9 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
+import zzz.to.delete.OldGameModelListener;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.impl.OldMutablePosition;
+import zzz.to.delete.OldMutablePosition;
 import java.util.LinkedList;
 
 /**

@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
 import cz.janhrcek.chess.model.api.enums.Square;
 import java.util.EventObject;

@@ -1,10 +1,11 @@
-package cz.janhrcek.chess.model.impl;
+package zzz.to.delete;
 
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
+import cz.janhrcek.chess.model.impl.PieceNotPresentException;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import java.util.Arrays;
 

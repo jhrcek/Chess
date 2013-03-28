@@ -4,8 +4,8 @@ import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
-import cz.janhrcek.chess.model.impl.OldMutablePosition;
+import zzz.to.delete.OldGameStateMutable;
+import zzz.to.delete.OldMutablePosition;
 
 /**
  * This implementation of Rule checker encapsulates the international standard

@@ -1,5 +1,7 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
+import cz.janhrcek.chess.gui.MoveListener;
+import cz.janhrcek.chess.gui.SquareImageFactory;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Piece;

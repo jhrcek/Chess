@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
 /**
  * Enables other classes to be informed about the changes of the game state

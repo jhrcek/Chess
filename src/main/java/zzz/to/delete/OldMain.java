@@ -1,7 +1,9 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
+import zzz.to.delete.OldChessboardComponent;
 import cz.janhrcek.chess.PGN.PGNReader;
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import cz.janhrcek.chess.gui.PGNFileFilter;
+import zzz.to.delete.OldGameStateMutable;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

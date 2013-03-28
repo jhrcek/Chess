@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.rules;
 
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import zzz.to.delete.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 
 /**

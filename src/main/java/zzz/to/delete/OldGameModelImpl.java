@@ -1,9 +1,10 @@
-package cz.janhrcek.chess.gui;
+package zzz.to.delete;
 
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
+import cz.janhrcek.chess.gui.MoveListener;
+import zzz.to.delete.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
-import cz.janhrcek.chess.model.impl.OldMutablePosition;
+import zzz.to.delete.OldMutablePosition;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.OldFIDERules;
 import cz.janhrcek.chess.rules.OldMoveType;

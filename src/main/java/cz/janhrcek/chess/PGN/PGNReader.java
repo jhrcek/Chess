@@ -1,11 +1,11 @@
 package cz.janhrcek.chess.PGN;
 
-import cz.janhrcek.chess.model.impl.OldGameStateMutable;
-import cz.janhrcek.chess.model.impl.OldGameStateMutable.GameHeader;
+import zzz.to.delete.OldGameStateMutable;
+import zzz.to.delete.OldGameStateMutable.GameHeader;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
-import cz.janhrcek.chess.model.impl.OldMutablePosition;
+import zzz.to.delete.OldMutablePosition;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Square;
 import cz.janhrcek.chess.rules.BitboardManager;
