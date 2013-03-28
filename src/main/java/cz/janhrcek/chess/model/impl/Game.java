@@ -7,6 +7,7 @@ import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.api.Promotion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,7 +145,7 @@ public class Game {
         //Data
         private final Move move;
         private final GameState state;
-        private final int ID;
+        private final int ID; //Unique ID withing a game
 
         public Node(Node parent, Move move, GameState s, int id) {
             this.parent = parent;
@@ -188,22 +189,27 @@ public class Game {
          */
         private String toLan() {
             if (getParent() == null) {
-                throw new IllegalArgumentException("Cannot conver root to SAN!");
+                throw new IllegalArgumentException("Cannot convert root node to LAN!");
             }
 
             StringBuilder result = new StringBuilder();
 
             String fullMoveNumber = getGameState().isWhiteToMove() ? "" : getGameState().getFullmoveNumber() + ".";
-            String pieceLetter = getMove().getPiece().getSanName();
-            String fromSquare = getMove().getFrom().toString().toLowerCase();
-            boolean wasCapture = getParent().getGameState().getPosition().getPiece(getMove().getTo()) != null;
-            String toSquare = getMove().getTo().toString().toLowerCase();
+            Move move = getMove();
+
+            String pieceLetter = move.getPiece().getSanName();
+            String fromSquare = move.getFrom().toString().toLowerCase();
+            boolean wasCapture = getParent().getGameState().getPosition().getPiece(move.getTo()) != null;
+            String toSquare = move.getTo().toString().toLowerCase();
+            String promotion = (move instanceof Promotion) ? "=" + ((Promotion) move).getPromoPiece().getSanName() : "";
 
             result.append(fullMoveNumber)
                     .append(pieceLetter)
                     .append(fromSquare)
                     .append(wasCapture ? "x" : "-")
-                    .append(toSquare);
+                    .append(toSquare)
+                    .append(promotion);
+
             return result.toString();
         }
     }
