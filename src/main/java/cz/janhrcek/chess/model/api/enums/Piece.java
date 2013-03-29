@@ -1,5 +1,6 @@
 package cz.janhrcek.chess.model.api.enums;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,57 +10,57 @@ import java.util.Map;
  *
  * @author Jan Hrcek
  */
-public enum Piece {
+public enum Piece implements Comparable<Piece> {
 
     /**
      * Represents White pawn.
      */
-    WHITE_PAWN(true, 'P', ""), //pawns have empty names in SAN
+    WHITE_PAWN(true, 'P', "", 1), //pawns have empty names in SAN
 
     /**
      * Represents Black pawn.
      */
-    BLACK_PAWN(false, 'p', ""),
+    BLACK_PAWN(false, 'p', "", 1),
     /**
      * Represents white knight.
      */
-    WHITE_KNIGHT(true, 'N', "N"),
+    WHITE_KNIGHT(true, 'N', "N", 2),
     /**
      * Represents black knight.
      */
-    BLACK_KNIGHT(false, 'n', "N"),
+    BLACK_KNIGHT(false, 'n', "N", 2),
     /**
      * Represents white bishop.
      */
-    WHITE_BISHOP(true, 'B', "B"),
+    WHITE_BISHOP(true, 'B', "B", 3),
     /**
      * Represents black bishop.
      */
-    BLACK_BISHOP(false, 'b', "B"),
+    BLACK_BISHOP(false, 'b', "B", 3),
     /**
      * Represents white rook.
      */
-    WHITE_ROOK(true, 'R', "R"),
+    WHITE_ROOK(true, 'R', "R", 4),
     /**
      * Represents black rook.
      */
-    BLACK_ROOK(false, 'r', "R"),
+    BLACK_ROOK(false, 'r', "R", 4),
     /**
      * Represents white queen.
      */
-    WHITE_QUEEN(true, 'Q', "Q"),
+    WHITE_QUEEN(true, 'Q', "Q", 5),
     /**
      * Represents black queen.
      */
-    BLACK_QUEEN(false, 'q', "Q"),
+    BLACK_QUEEN(false, 'q', "Q", 5),
     /**
      * Represents white king.
      */
-    WHITE_KING(true, 'K', "K"),
+    WHITE_KING(true, 'K', "K", 6),
     /**
      * Represents black king.
      */
-    BLACK_KING(false, 'k', "K");
+    BLACK_KING(false, 'k', "K", 6);
     /**
      * Flag determining, whether the piece is white or black.
      */
@@ -74,6 +75,11 @@ public enum Piece {
      * Short Algebraic Notation.
      */
     private final String sanName;
+    /**
+     * The purpose of this number is to define order of pieces, regardless of
+     * their color.
+     */
+    private final int ordinal;
 
     /**
      * Sets isWhite flag of the chess piece.
@@ -81,10 +87,11 @@ public enum Piece {
      * @param isWhite determines whether the piece is white.
      * @param fenLetter piece name in FEN - Forsythe Edwards Notation
      */
-    private Piece(final boolean isWhite, char fenLetter, String sanName) {
+    private Piece(final boolean isWhite, char fenLetter, String sanName, int ordinal) {
         this.isWhite = isWhite;
         this.fenLetter = fenLetter;
         this.sanName = sanName;
+        this.ordinal = ordinal;
     }
 
     /**
@@ -124,6 +131,11 @@ public enum Piece {
     public String getSanName() {
         return sanName;
     }
+
+    public int getOrdinal() {
+        return ordinal;
+    }
+    //
     private static final Map<Character, Piece> fen2Piece = new HashMap<>();
 
     static {
@@ -131,4 +143,10 @@ public enum Piece {
             fen2Piece.put(p.fenLetter, p);
         }
     }
+    public static final Comparator<Piece> COMPARATOR = new Comparator<Piece>() {
+        @Override
+        public int compare(Piece o1, Piece o2) {
+            return o1.ordinal - o2.ordinal;
+        }
+    };
 }

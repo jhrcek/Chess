@@ -11,10 +11,10 @@ import static java.lang.String.format;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static java.util.Objects.requireNonNull;
 
 /**
  *
@@ -23,10 +23,8 @@ import org.slf4j.LoggerFactory;
 public class Fen {
 
     public Fen(String fenString) throws InvalidFenException {
-        Objects.requireNonNull(fenString, "Fen string must not be null!");
         log.info("Parsing: \"{}\"", fenString);
-
-        String[] fields = splitIntoFields(fenString);
+        String[] fields = splitIntoFields(requireNonNull(fenString, "Fen string must not be null!"));
 
         position = parsePiecePlacement(fields[0]);
         log.debug("    1. Position \n{}", position);
