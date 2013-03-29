@@ -1,9 +1,10 @@
 package cz.janhrcek.chess.model.impl;
-import cz.janhrcek.chess.model.api.Position;
-import cz.janhrcek.chess.FEN.FenParser;
+
+import cz.janhrcek.chess.model.api.Chessboard;
+import cz.janhrcek.chess.FEN.Fen;
 import cz.janhrcek.chess.FEN.InvalidFenException;
-import cz.janhrcek.chess.model.api.GameState;
-import cz.janhrcek.chess.model.api.GameStateFactory;
+import cz.janhrcek.chess.model.api.Position;
+import cz.janhrcek.chess.model.api.PositionFactory;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
@@ -21,34 +22,32 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhrcek
  */
-public class GameStateFactoryImpl implements GameStateFactory {
+public class PositionFactoryImpl implements PositionFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GameStateFactoryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PositionFactoryImpl.class);
     private RuleChecker ruleChecker;
-    private FenParser parser;
 
-    public GameStateFactoryImpl(RuleChecker rc) {
+    public PositionFactoryImpl(RuleChecker rc) {
         ruleChecker = rc;
-        parser = new FenParser();
     }
 
     @Override
-    public GameState create(String fen) throws InvalidFenException {
-        return parser.fenToGameState(fen);
+    public Position create(String fenStr) throws InvalidFenException {
+        return new Fen(fenStr).toPosition();
     }
 
     @Override
-    public GameState create(GameState originState, Move move) throws PieceNotPresentException, IllegalMoveException {
-        LOG.info("Creating new GameState using {}", move);
-        ruleChecker.checkLegality(move, originState);
-        Position p = originState.getPosition().createNewPositionUsing(move);
-        boolean wtm = !originState.isWhiteToMove(); //flip side to move
-        EnumSet<Castling> ca = determineCastlingAvailabilities(originState, move);
+    public Position create(Position originPosition, Move move) throws PieceNotPresentException, IllegalMoveException {
+        LOG.info("Creating new Position using {}", move);
+        ruleChecker.checkLegality(move, originPosition);
+        Chessboard p = originPosition.getChessboard().createNewPositionUsing(move);
+        boolean wtm = !originPosition.isWhiteToMove(); //flip side to move
+        EnumSet<Castling> ca = determineCastlingAvailabilities(originPosition, move);
         Square ep = determineEnPassantTargetSquare(move);
-        int halfmove = shouldResetHalfmoveClock(originState, move)
-                ? 0 : originState.getHalfmoveClock() + 1;
-        int fullmove = originState.getFullmoveNumber() + (wtm ? 1 : 0); //increment by one after black's move
-        return new GameStateImpl(p, wtm, ca, ep, halfmove, fullmove);
+        int halfmove = shouldResetHalfmoveClock(originPosition, move)
+                ? 0 : originPosition.getHalfmoveClock() + 1;
+        int fullmove = originPosition.getFullmoveNumber() + (wtm ? 1 : 0); //increment by one after black's move
+        return new PositionImpl(p, wtm, ca, ep, halfmove, fullmove);
     }
 
     @Override
@@ -86,14 +85,14 @@ public class GameStateFactoryImpl implements GameStateFactory {
     /**
      * Half-move clock must be reset to 0 after pawn move or after capture
      *
-     * @param state
+     * @param position
      * @param move
      * @return
      */
-    private boolean shouldResetHalfmoveClock(GameState state, Move move) {
+    private boolean shouldResetHalfmoveClock(Position position, Move move) {
         Square to = move.getTo();
         Piece movingPiece = move.getPiece();
-        Piece capturedPiece = state.getPosition().getPiece(to);
+        Piece capturedPiece = position.getChessboard().getPiece(to);
         if (capturedPiece != null || movingPiece.equals(WHITE_PAWN) || movingPiece.equals(BLACK_PAWN)) {
             return true;
         } else {
@@ -104,16 +103,16 @@ public class GameStateFactoryImpl implements GameStateFactory {
     /**
      * Determine changed castling availability;
      *
-     * @param originState
+     * @param origPosition
      * @param move
      * @return
      */
-    private EnumSet<Castling> determineCastlingAvailabilities(GameState originState, Move move) {
+    private EnumSet<Castling> determineCastlingAvailabilities(Position origPosition, Move move) {
         if (move == null) {
             throw new IllegalArgumentException("move can't be null!");
         }
 
-        EnumSet<Castling> oldCa = originState.getCastlings();
+        EnumSet<Castling> oldCa = origPosition.getCastlings();
         EnumSet<Castling> newCa = EnumSet.copyOf(oldCa);
 
         if (oldCa.isEmpty()) {

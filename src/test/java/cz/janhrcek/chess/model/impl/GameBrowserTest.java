@@ -1,10 +1,10 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.FEN.FenParser;
+import cz.janhrcek.chess.FEN.Fen;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameBrowser;
-import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
@@ -29,34 +29,34 @@ public class GameBrowserTest {
     @BeforeMethod
     public void initializeGame() {
         try {
-            game = new GameImpl(FenParser.INITIAL_STATE_FEN);
+            game = new GameImpl(Fen.INITIAL_POSITION);
         } catch (InvalidFenException ife) {
-            fail("Initial state not parsed correctly");
+            fail("Initial position not parsed correctly");
         }
         gameBrowser = game.getBrowser();
     }
 
     @Test
-    public void testGetInitialState() {
-        GameState initialState = gameBrowser.getInitialState();
-        assertEquals(initialState.getPosition().getPiece(A1), WHITE_ROOK);
-        assertEquals(initialState.getHalfmoveClock(), 0);
-        assertEquals(initialState.getFullmoveNumber(), 1);
-        assertEquals(initialState.getPosition().getPiece(E2), WHITE_PAWN);
-        assertEquals(initialState.getPosition().getPiece(E4), null);
-        assertEquals(initialState.getEnPassantTarget(), null);
+    public void testGetInitialPosition() {
+        Position initialPosition = gameBrowser.getInitialPosition();
+        assertEquals(initialPosition.getChessboard().getPiece(A1), WHITE_ROOK);
+        assertEquals(initialPosition.getHalfmoveClock(), 0);
+        assertEquals(initialPosition.getFullmoveNumber(), 1);
+        assertEquals(initialPosition.getChessboard().getPiece(E2), WHITE_PAWN);
+        assertEquals(initialPosition.getChessboard().getPiece(E4), null);
+        assertEquals(initialPosition.getEnPassantTarget(), null);
     }
 
     @Test
     public void testMakeMoveE4() {
         try {
             gameBrowser.makeMove(MOVE_E4);
-            GameState state = gameBrowser.getFocusedState();
-            assertEquals(state.getHalfmoveClock(), 0);
-            assertEquals(state.getFullmoveNumber(), 1);
-            assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
-            assertEquals(state.getPosition().getPiece(E2), null);
-            assertEquals(state.getEnPassantTarget(), E3);
+            Position position = gameBrowser.getFocusedPosition();
+            assertEquals(position.getHalfmoveClock(), 0);
+            assertEquals(position.getFullmoveNumber(), 1);
+            assertEquals(position.getChessboard().getPiece(E4), WHITE_PAWN);
+            assertEquals(position.getChessboard().getPiece(E2), null);
+            assertEquals(position.getEnPassantTarget(), E3);
         } catch (PieceNotPresentException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
@@ -67,35 +67,35 @@ public class GameBrowserTest {
         try {
             gameBrowser.makeMove(MOVE_E4);
             gameBrowser.makeMove(MOVE_NF6);
-            GameState state = gameBrowser.getFocusedState();
+            Position position = gameBrowser.getFocusedPosition();
 
-            assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
-            assertEquals(state.getPosition().getPiece(E2), null);
-            assertEquals(state.getPosition().getPiece(G8), null);
-            assertEquals(state.getPosition().getPiece(F6), BLACK_KNIGHT);
-            assertEquals(state.getEnPassantTarget(), null);
-            assertEquals(state.getHalfmoveClock(), 1);
-            assertEquals(state.getFullmoveNumber(), 2);
+            assertEquals(position.getChessboard().getPiece(E4), WHITE_PAWN);
+            assertEquals(position.getChessboard().getPiece(E2), null);
+            assertEquals(position.getChessboard().getPiece(G8), null);
+            assertEquals(position.getChessboard().getPiece(F6), BLACK_KNIGHT);
+            assertEquals(position.getEnPassantTarget(), null);
+            assertEquals(position.getHalfmoveClock(), 1);
+            assertEquals(position.getFullmoveNumber(), 2);
         } catch (PieceNotPresentException | IllegalMoveException ex) {
             fail("Unexpected exception!", ex);
         }
     }
 
     @Test
-    public void testFocusPreviousState() {
+    public void testFocusPreviousPosition() {
         try {
             gameBrowser.makeMove(MOVE_E4);
             gameBrowser.makeMove(MOVE_NF6);
-            gameBrowser.focusPreviousState();
-            GameState state = gameBrowser.getFocusedState();
+            gameBrowser.focusPreviousPosition();
+            Position position = gameBrowser.getFocusedPosition();
 
-            assertEquals(state.getPosition().getPiece(E4), WHITE_PAWN);
-            assertEquals(state.getPosition().getPiece(E2), null);
-            assertEquals(state.getPosition().getPiece(G8), BLACK_KNIGHT); //knight is back!
-            assertEquals(state.getPosition().getPiece(F6), null); //F6 is empty again!
-            assertEquals(state.getEnPassantTarget(), E3);
-            assertEquals(state.getHalfmoveClock(), 0);
-            assertEquals(state.getFullmoveNumber(), 1);
+            assertEquals(position.getChessboard().getPiece(E4), WHITE_PAWN);
+            assertEquals(position.getChessboard().getPiece(E2), null);
+            assertEquals(position.getChessboard().getPiece(G8), BLACK_KNIGHT); //knight is back!
+            assertEquals(position.getChessboard().getPiece(F6), null); //F6 is empty again!
+            assertEquals(position.getEnPassantTarget(), E3);
+            assertEquals(position.getHalfmoveClock(), 0);
+            assertEquals(position.getFullmoveNumber(), 1);
         } catch (IllegalMoveException | PieceNotPresentException ex) {
             fail("Unexpected exception!", ex);
         }
@@ -107,7 +107,7 @@ public class GameBrowserTest {
             gameBrowser.makeMove(MOVE_E4);
             gameBrowser.makeMove(MOVE_NF6);
             gameBrowser.makeMove(MOVE_NF3);
-            GameState state = gameBrowser.getFocusedState();
+            Position position = gameBrowser.getFocusedPosition();
             System.out.println(gameBrowser.toString());
         } catch (IllegalMoveException | PieceNotPresentException ex) {
             fail("Unexpected exception!", ex);

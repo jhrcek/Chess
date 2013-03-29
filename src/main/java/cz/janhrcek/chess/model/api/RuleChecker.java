@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface RuleChecker {
 
-    public boolean checkLegality(Move m, GameState state) throws IllegalMoveException;
+    public boolean checkLegality(Move m, Position position) throws IllegalMoveException;
 
-    public List<Move> generateLegal(GameState state);
+    public List<Move> generateLegal(Position position);
 }

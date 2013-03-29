@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.api.enums.Square;
 
 /**
  * Carries information about the move in chess, i.e. the information necessary
- * for transition from one state of the game to another. It consists of
+ * for transition from one Position to another. It consists of
  * following items: <ul> <li>which piece moved</li> <li>from which square it
  * moved</li> <li>to which square it moved</li> </ul> There is also a special
  * kind of move called {@link Promotion} that also carries information about the

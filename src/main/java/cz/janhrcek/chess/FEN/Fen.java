@@ -1,16 +1,17 @@
 package cz.janhrcek.chess.FEN;
 
-import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.enums.Castling;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.model.api.Position;
-import cz.janhrcek.chess.model.impl.GameStateImpl;
+import cz.janhrcek.chess.model.api.Chessboard;
 import cz.janhrcek.chess.model.impl.PositionImpl;
+import cz.janhrcek.chess.model.impl.ChessboardImpl;
 import static java.lang.String.format;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,31 +20,80 @@ import org.slf4j.LoggerFactory;
  *
  * @author jhrcek
  */
-public class FenParser {
+public class Fen {
 
-    public FenParser() {
-        resetParserState();
+    public Fen(String fenString) throws InvalidFenException {
+        Objects.requireNonNull(fenString, "Fen string must not be null!");
+
+        LOG.info("Parsing: \"{}\"", fenString);
+
+        //0. It must have 6 fields separated by spaces
+        String[] fields = fenString.split(" ");
+        if (fields.length != 6) {
+            throw new InvalidFenException(format(SIX_FIELD_MSG, fenString, fields.length));
+        }
+
+        //1. Process placement string
+        this.position = fenToPosition(fields[0]);
+        //2. Check active color - only 1 letter w or b
+        if (!"w".equals(fields[1]) && !"b".equals(fields[1])) {
+            throw new InvalidFenException(format(PLAYER_FIELD_MSG, fields[1]));
+        } else {
+            this.whiteToMove = "w".equals(fields[1]) ? true : false;
+            LOG.debug("    2. It's {} to move", this.whiteToMove ? "WHITE" : "BLACK");
+        }
+
+        //3. check castling availability string
+        if (!CASTLING_AVAILABILITY_PATTERN.matcher(fields[2]).matches()) {
+            throw new InvalidFenException(format(CA_FIELD_MSG, fields[2]));
+        } else {
+            this.castlings = Castling.parseFenCastlingSubstring(fields[2]);
+            LOG.debug("    3. Castling availabilities: {}", this.castlings);
+        }
+
+        //4. Check en-passant target square
+        if (!EN_PASSANT_PATTERN.matcher(fields[3]).matches()) {
+            throw new InvalidFenException(format(EP_FIELD_MSG, fields[3]));
+        } else {
+            if (!"-".equals(fields[3])) {
+                this.enPassantTargetSquare = Square.valueOf(fields[3].toUpperCase());
+            } else {
+                enPassantTargetSquare = null;
+            }
+            LOG.debug("    4. En-passant target square: {}", this.enPassantTargetSquare);
+        }
+
+        //check halfmove clock & fullmove number
+        if (!DIGIT_PATTERN.matcher(fields[4]).matches()
+                || !DIGIT_PATTERN.matcher(fields[5]).matches()) {
+            throw new InvalidFenException(format(COUNTERS_FILED_MSG, fields[4], fields[5]));
+        } else {
+            this.halfmoveClock = Integer.valueOf(fields[4]);
+            LOG.debug("    5. Half-move clock: {}", this.halfmoveClock);
+            this.fullmoveNumber = Integer.valueOf(fields[5]);
+            LOG.debug("    6. Full-move number: {}", this.fullmoveNumber);
+        }
     }
 
     /**
-     * Converts given Game state to equivalent FEN string.
+     * Converts given Position to equivalent FEN string.
      *
-     * @param state the game state to convert
-     * @return the FEN string representing information stored in the game state
+     * @param position the position to convert
+     * @return the FEN string representation of position
      */
-    public String gameStateToFen(GameState state) {
-        LOG.info("Converting game state to FEN");
+    public static String positionToFen(Position position) {
+        LOG.info("Converting position to FEN");
         StringBuilder sb = new StringBuilder(50);
-        Square ep = state.getEnPassantTarget();
-        sb.append(positionToFen(state.getPosition()))
-                .append(state.isWhiteToMove() ? " w " : " b ")
-                .append(Castling.toFenCastlingSubstring(state.getCastlings()))
+        Square ep = position.getEnPassantTarget();
+        sb.append(positionToFen(position.getChessboard()))
+                .append(position.isWhiteToMove() ? " w " : " b ")
+                .append(Castling.toFenCastlingSubstring(position.getCastlings()))
                 .append(" ")
                 .append(ep == null ? "-" : ep.toString().toLowerCase())
                 .append(" ")
-                .append(state.getHalfmoveClock())
+                .append(position.getHalfmoveClock())
                 .append(" ")
-                .append(state.getFullmoveNumber());
+                .append(position.getFullmoveNumber());
         return sb.toString();
     }
 
@@ -53,7 +103,7 @@ public class FenParser {
      * @return the string representing piece placement (1st component of FEN
      * record)
      */
-    public String positionToFen(Position position) {
+    public static String positionToFen(Chessboard position) {
         StringBuilder sb = new StringBuilder(64);
         int counter = 0;
         for (Square sq : Square.values()) {
@@ -81,7 +131,7 @@ public class FenParser {
     }
 
     /**
-     * Parses given string, populating GameState object. If the parameter is
+     * Parses given string, populating Position object. If the parameter is
      * invalid fen string, an {@link InvalidFenException} is thrown. Valid fen
      * string has the following properties: <ul> <li>It is not null</li>
      * <li>Must contain exactly 6 fields separated by space</li><ul> <li>1st
@@ -98,60 +148,12 @@ public class FenParser {
      * half-move clock</li> <li>6th field: represents full-move number</li>
      * </ul></ul>
      */
-    public GameState fenToGameState(String fenString) throws InvalidFenException {
-        if (fenString == null) {
-            throw new NullPointerException("fenString must not be null!");
-        }
-        resetParserState();
-        LOG.info("Parsing: \"{}\"", fenString);
+    public Position toPosition() {
+        return new PositionImpl(position, whiteToMove, castlings, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+    }
 
-        //0. It must have 6 fields separated by spaces
-        String[] fields = fenString.split(" ");
-        if (fields.length != 6) {
-            throw new InvalidFenException(format(SIX_FIELD_MSG, fenString, fields.length));
-        }
-
-        //1. Process placement string
-        this.position = fenToPosition(fields[0]);
-
-        //2. Check active color - only 1 letter w or b
-        if (!"w".equals(fields[1]) && !"b".equals(fields[1])) {
-            throw new InvalidFenException(format(PLAYER_FIELD_MSG, fields[1]));
-        } else {
-            this.whiteToMove = "w".equals(fields[1]) ? true : false;
-            LOG.debug("    2. It's {} to move", this.whiteToMove ? "WHITE" : "BLACK");
-        }
-
-        //3. check castling availability string
-        if (!CASTLING_AVAILABILITY_PATTERN.matcher(fields[2]).matches()) {
-            throw new InvalidFenException(format(CA_FIELD_MSG, fields[2]));
-        } else {
-            this.castlings = Castling.parseFenCastlingSubstring(fields[2]);
-            LOG.debug("    3. Castling availabilities: {}", this.castlings);
-        }
-
-        //4. Check en-passant target square
-        if (!EN_PASSANT_PATTERN.matcher(fields[3]).matches()) {
-            throw new InvalidFenException(format(EP_FIELD_MSG, fields[3]));
-        } else {
-            if (!"-".equals(fields[3])) {
-                this.enPassantTargetSquare = Square.valueOf(fields[3].toUpperCase());
-            } //else it remains null
-            LOG.debug("    4. En-passant target square: {}", this.enPassantTargetSquare);
-        }
-
-        //check halfmove clock & fullmove number
-        if (!DIGIT_PATTERN.matcher(fields[4]).matches()
-                || !DIGIT_PATTERN.matcher(fields[5]).matches()) {
-            throw new InvalidFenException(format(COUNTERS_FILED_MSG, fields[4], fields[5]));
-        } else {
-            this.halfmoveClock = Integer.valueOf(fields[4]);
-            LOG.debug("    5. Half-move clock: {}", this.halfmoveClock);
-            this.fullmoveNumber = Integer.valueOf(fields[5]);
-            LOG.debug("    6. Full-move number: {}", this.fullmoveNumber);
-        }
-
-        return new GameStateImpl(position, whiteToMove, castlings, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+    public Chessboard toChessboard() {
+        return position;
     }
 
     /**
@@ -162,7 +164,7 @@ public class FenParser {
      * described in the input fen piece placement field
      * @throws InvalidFenException
      */
-    public Position fenToPosition(String piecePlacementSubstring) throws InvalidFenException {
+    public static Chessboard fenToPosition(String piecePlacementSubstring) throws InvalidFenException {
         String[] ranks = piecePlacementSubstring.split("/");
         //Check there are exactly 8 ranks, separated by "/"
         if (ranks.length != 8) {
@@ -203,7 +205,7 @@ public class FenParser {
                 }
             }
         }
-        Position newPos = new PositionImpl(piecePlacement);
+        Chessboard newPos = new ChessboardImpl(piecePlacement);
         LOG.debug("    1. Position \n{}", newPos);
         return newPos;
     }
@@ -217,34 +219,22 @@ public class FenParser {
      * @param fenStringOfRank
      * @return
      */
-    private int sumRank(String fenStringOfRank) {
+    private static int sumRank(String fenStringOfRank) {
         int sum = 0;
         for (char c : fenStringOfRank.toCharArray()) {
             sum += Character.isDigit(c) ? Character.getNumericValue(c) : 1;
         }
         return sum;
     }
-
-    /**
-     * Used to reset inner state of parser to "clear" state.
-     */
-    private void resetParserState() {
-        position = null;
-        whiteToMove = false;
-        castlings = EnumSet.noneOf(Castling.class);
-        enPassantTargetSquare = null;
-        halfmoveClock = 0;
-        fullmoveNumber = 0;
-    }
     //fields for storing initialization values of currently parsed fen string
-    private Position position;
-    private boolean whiteToMove;
-    private EnumSet<Castling> castlings;
-    private Square enPassantTargetSquare;
-    private int halfmoveClock;
-    private int fullmoveNumber;
+    private final Chessboard position;
+    private final boolean whiteToMove;
+    private final EnumSet<Castling> castlings;
+    private final Square enPassantTargetSquare;
+    private final int halfmoveClock;
+    private final int fullmoveNumber;
     //loggind and exception messages
-    private static final Logger LOG = LoggerFactory.getLogger(FenParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Fen.class);
     private static final String SIX_FIELD_MSG = "Fen string must have exactly 6 fields separated by spaces, but this one (%s) had %d";
     private static final String PLAYER_FIELD_MSG = "The 2nd field of FEN must be either letter w or b, but yours was: %s";
     private static final String CA_FIELD_MSG = "The 3rd field of FEN must consist of (some of the) letters KQkq in that order or be -, but yours was: %s";
@@ -255,5 +245,5 @@ public class FenParser {
     private static final Pattern CASTLING_AVAILABILITY_PATTERN = Pattern.compile("^KQ?k?q?$|^K?Qk?q?$|^K?Q?kq?$|^K?Q?k?q$|^-$"); //Means either one or more of the mentioned, or "-", NOT the empty string
     private static final Pattern EN_PASSANT_PATTERN = Pattern.compile("^[abcdefgh][36]$|^-$");
     //
-    public static final String INITIAL_STATE_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public static final String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 }

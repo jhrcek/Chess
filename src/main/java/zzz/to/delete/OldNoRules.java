@@ -1,6 +1,5 @@
-package cz.janhrcek.chess.rules;
+package zzz.to.delete;
 
-import zzz.to.delete.OldGameStateMutable;
 import cz.janhrcek.chess.model.api.Move;
 
 /**
@@ -9,7 +8,7 @@ import cz.janhrcek.chess.model.api.Move;
  *
  * @author Jan Hrcek
  */
-public class NoRules implements OldRuleChecker {
+public class OldNoRules implements OldRuleChecker {
 
     /**
      * Since no control of legality is made, this implementation always returns

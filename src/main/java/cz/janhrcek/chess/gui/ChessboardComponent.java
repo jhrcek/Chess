@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.api.GameBrowser;
-import cz.janhrcek.chess.model.api.GameChangedEvent;
+import cz.janhrcek.chess.model.api.GameBrowserChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Promotion;
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * GUI component that displays visible part of currently focused state of
+ * GUI component that displays visible part of currently focused position of
  * underlying GameBrowser - as a chessboard with pieces. This component is
  * resizeable (resizing it will cause change of the size of the chessboard).
  * This component enables user to select moves by clicking on it.
@@ -37,10 +37,9 @@ public final class ChessboardComponent extends JComponent implements GameListene
     /**
      * Creates new instance of ChessboardComponent. The Component will use
      * provided GameBrowser as its model, from which it gets currently focused
-     * GameState and displays it.
+     * Position and displays it.
      *
-     * @param gameBrowser the model which represents state of the game, which
-     * this component displays
+     * @param gameBrowser Browser that provides a window into underlying game
      */
     public ChessboardComponent(GameBrowser gameBrowser) {
         if (gameBrowser == null) {
@@ -122,7 +121,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
         //a move instance based on user clicks on the chessboard component
         if (selectedFromSquare == null) { //"from" is not yet selected
             if (clickedSquare != null // AND user clicked on some square
-                    && gameBrowser.getFocusedState().getPosition().getPiece(clickedSquare) != null) { // AND there is a some piece on the clicked square
+                    && gameBrowser.getFocusedPosition().getChessboard().getPiece(clickedSquare) != null) { // AND there is a some piece on the clicked square
                 log.info("  User chooses {} as \"from\" square", clickedSquare);
                 setAndHighlightFromSquare(clickedSquare);
             }
@@ -131,7 +130,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
                 log.info("  User chooses {} as \"to\" square", clickedSquare);
                 //Both "from" and "to" are selected -> Create Move instance and notify all MoveListeners
                 Piece movingPiece =
-                        gameBrowser.getFocusedState().getPosition().getPiece(selectedFromSquare);
+                        gameBrowser.getFocusedPosition().getChessboard().getPiece(selectedFromSquare);
                 Move selectedMove =
                         createSelectedMove(movingPiece,
                         selectedFromSquare, //from
@@ -206,13 +205,13 @@ public final class ChessboardComponent extends JComponent implements GameListene
     }
 
     @Override
-    public void gameChanged(GameChangedEvent event) {
+    public void gameChanged(GameBrowserChangedEvent event) {
         log.info("ChessboardComponent caught GameChangedEvent, updating state...");
 
         for (Square changedSquare : event.getChangedSquares()) {
             repaintSquare(changedSquare);
         }
-        if (selectedFromSquare != null) { //if game state is changed by other means (e.g. by going to the initial state of game using some button, we need to cancel selected from Square
+        if (selectedFromSquare != null) { //if position is changed by other means (e.g. by going to the initial position using some button, we need to cancel selected from Square
             unhighlightFromSquare();
         }
     }
@@ -254,7 +253,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
             new HashSet<>();
     private SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
-     * Instance of GameModel, from which we can get all information (displayable
+     * Instance of GameBrowser, from which we can get all information (displayable
      * on chessboard) about the state of the game.
      */
     private GameBrowser gameBrowser;
@@ -274,7 +273,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
         log.debug("  Calling paintSquares()");
         for (Square sq : Square.values()) {
             //Piece pieceOnSqare = model.getChessboard().getPiece(sq);
-            Piece pieceOnSqare = gameBrowser.getFocusedState().getPosition().getPiece(sq);
+            Piece pieceOnSqare = gameBrowser.getFocusedPosition().getChessboard().getPiece(sq);
             squareImages.getSquareImage(pieceOnSqare, sq.isLight()).paintIcon(this, g,
                     deltaX + sq.getFile() * cellSize,
                     deltaY + (7 - sq.getRank()) * cellSize);
@@ -345,7 +344,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
     private void repaintSquare(Square s) {
         log.debug("Repaint square {}", s);
         Graphics g = getGraphics();
-        Piece pieceOnSq = gameBrowser.getFocusedState().getPosition().getPiece(s);
+        Piece pieceOnSq = gameBrowser.getFocusedPosition().getChessboard().getPiece(s);
 
         squareImages.getSquareImage(pieceOnSq, s.isLight()).paintIcon(this, g,
                 deltaX + s.getFile() * sizeOfSquare,

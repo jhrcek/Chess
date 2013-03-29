@@ -8,11 +8,11 @@ import cz.janhrcek.chess.model.impl.PieceNotPresentException;
  *
  * @author jhrcek
  */
-public interface GameStateFactory {
+public interface PositionFactory {
 
-    public GameState create(String fen) throws InvalidFenException;
+    public Position create(String fen) throws InvalidFenException;
 
-    public GameState create(GameState from, Move move) throws PieceNotPresentException, IllegalMoveException;
+    public Position create(Position from, Move move) throws PieceNotPresentException, IllegalMoveException;
 
     public void setRuleChecker(RuleChecker rc);
 }

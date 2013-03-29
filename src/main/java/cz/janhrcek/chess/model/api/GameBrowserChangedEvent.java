@@ -7,30 +7,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This event represents change in the state of the game.
+ * This event represents change of the browser state (either focus change or
+ * addition of Position (via making of move) to the game).
  *
  * @author jhrcek
  */
-public class GameChangedEvent {
+public class GameBrowserChangedEvent {
 
     /**
      * The list of squares in the position, whose contents changed (either
      * pieces were put on them or removed from them).
      */
     private final List<Square> changedSquares;
-    private final GameState previous;
-    private final GameState current;
-    private static final Logger log = LoggerFactory.getLogger(GameChangedEvent.class);
+    private final Position previous;
+    private final Position current;
+    private static final Logger log = LoggerFactory.getLogger(GameBrowserChangedEvent.class);
 
-    public GameChangedEvent(GameState previous, GameState current) {
+    public GameBrowserChangedEvent(Position previous, Position current) {
         this.previous = previous;
         this.current = current;
 
-        Position previousPos = previous.getPosition();
-        Position currentPos = current.getPosition();
+        Chessboard oreviousBoard = previous.getChessboard();
+        Chessboard currentBoard = current.getChessboard();
         changedSquares = new ArrayList<>(64);
         for (Square square : Square.values()) {
-            if (previousPos.getPiece(square) != currentPos.getPiece(square)) {
+            if (oreviousBoard.getPiece(square) != currentBoard.getPiece(square)) {
                 changedSquares.add(square);
             }
         }
@@ -47,11 +48,11 @@ public class GameChangedEvent {
         return changedSquares;
     }
 
-    public GameState getPreviousState() {
+    public Position getPreviousPosition() {
         return previous;
     }
 
-    public GameState getCurrentState() {
+    public Position getCurrentPosition() {
         return current;
     }
 }

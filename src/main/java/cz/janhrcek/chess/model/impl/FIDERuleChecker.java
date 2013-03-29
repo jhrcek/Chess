@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.model.impl;
 
-import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.RuleChecker;
@@ -17,12 +17,12 @@ public class FIDERuleChecker implements RuleChecker {
     }
 
     @Override
-    public boolean checkLegality(Move m, GameState state) throws IllegalMoveException {
+    public boolean checkLegality(Move m, Position position) throws IllegalMoveException {
         return true;
     }
 
     @Override
-    public List<Move> generateLegal(GameState state) {
+    public List<Move> generateLegal(Position position) {
         return Collections.emptyList();
     }
 }

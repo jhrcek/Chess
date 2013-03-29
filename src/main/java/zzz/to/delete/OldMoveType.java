@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.rules;
+package zzz.to.delete;
 
 /**
  * Enumeration class OldMoveType - represents types of legality/illegality of the

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.FEN;
 
-import cz.janhrcek.chess.model.api.GameState;
+import cz.janhrcek.chess.model.api.Position;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 import org.testng.annotations.BeforeClass;
@@ -13,17 +13,10 @@ import org.testng.annotations.Test;
  */
 public class FenParserTest {
 
-    private FenParser parser;
-
-    @BeforeClass
-    public void setupParser() {
-        parser = new FenParser();
-    }
-
     @Test
     public void testParsingCorrectFens() {
         String[] fens = new String[]{
-            FenParser.INITIAL_STATE_FEN,
+            Fen.INITIAL_POSITION,
             "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
             "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
             "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
@@ -36,8 +29,8 @@ public class FenParserTest {
             "7K/8/k1P5/7p/8/8/8/8 w - - 0 1",};
         try {
             for (String s : fens) {
-                GameState gs = parser.fenToGameState(s); //String -> GameState
-                String fen = parser.gameStateToFen(gs); //GameState ->String
+                Position pos = new Fen(s).toPosition(); //String -> Position
+                String fen = Fen.positionToFen(pos); //Position -> String
                 assertEquals(fen, s, "The parser-unparsed fen string is not the same as the original string");
             }
         } catch (InvalidFenException ife) {
@@ -46,8 +39,8 @@ public class FenParserTest {
     }
 
     @Test(dataProvider = "invalid-fens", expectedExceptions = InvalidFenException.class)
-    public void testParsingInvalidFens(String fen) throws InvalidFenException {
-        parser.fenToGameState(fen);
+    public void testParsingInvalidFens(String fenString) throws InvalidFenException {
+        new Fen(fenString);
     }
 
     @DataProvider(name = "invalid-fens")

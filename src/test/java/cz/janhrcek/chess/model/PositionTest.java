@@ -1,13 +1,13 @@
 package cz.janhrcek.chess.model;
 
 import cz.janhrcek.chess.model.api.Move;
-import cz.janhrcek.chess.model.api.Position;
+import cz.janhrcek.chess.model.api.Chessboard;
 import cz.janhrcek.chess.model.api.Promotion;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import cz.janhrcek.chess.model.api.enums.Square;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
-import cz.janhrcek.chess.model.impl.PositionImpl;
+import cz.janhrcek.chess.model.impl.ChessboardImpl;
 import cz.janhrcek.chess.rules.BitboardManager;
 import java.util.EnumMap;
 import java.util.Map;
@@ -22,11 +22,11 @@ import org.testng.annotations.Test;
  */
 public class PositionTest {
 
-    private Position initPosition;
+    private Chessboard initPosition;
 
     @BeforeMethod
     public void setupMethod() {
-        initPosition = new PositionImpl();
+        initPosition = new ChessboardImpl();
     }
 
     @Test
@@ -78,7 +78,7 @@ public class PositionTest {
 
     @Test
     public void testCreateNewPosition1() {
-        Position newPos = initPosition.createNewPositionUsing(new Move(WHITE_PAWN, E2, E4));
+        Chessboard newPos = initPosition.createNewPositionUsing(new Move(WHITE_PAWN, E2, E4));
         assertNull(newPos.getPiece(E2));
         assertNull(newPos.getPiece(E3));
         assertEquals(newPos.getPiece(E4), WHITE_PAWN);
@@ -87,7 +87,7 @@ public class PositionTest {
 
     @Test
     public void testCreateNewPosition2() {
-        Position newPos = initPosition
+        Chessboard newPos = initPosition
                 .createNewPositionUsing(new Move(WHITE_PAWN, E2, E4))
                 .createNewPositionUsing(new Move(BLACK_PAWN, E7, E5))
                 .createNewPositionUsing(new Move(WHITE_QUEEN, D1, H5))
@@ -128,8 +128,8 @@ public class PositionTest {
     public void testCreateNewPositionWithPromotion() {
         Map<Square, Piece> myPiecePlacement = new EnumMap<>(Square.class);
         myPiecePlacement.put(A7, WHITE_PAWN);
-        Position beforePromotion = new PositionImpl(myPiecePlacement);
-        Position afterPromotion = beforePromotion.createNewPositionUsing(new Promotion(WHITE_PAWN, A7, A8, WHITE_QUEEN));
+        Chessboard beforePromotion = new ChessboardImpl(myPiecePlacement);
+        Chessboard afterPromotion = beforePromotion.createNewPositionUsing(new Promotion(WHITE_PAWN, A7, A8, WHITE_QUEEN));
 
         assertEquals(beforePromotion.getPiece(A7), WHITE_PAWN);
         assertNull(beforePromotion.getPiece(A8));

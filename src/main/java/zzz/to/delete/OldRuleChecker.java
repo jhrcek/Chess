@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.rules;
+package zzz.to.delete;
 
 import cz.janhrcek.chess.model.api.Move;
 import zzz.to.delete.OldGameStateMutable;

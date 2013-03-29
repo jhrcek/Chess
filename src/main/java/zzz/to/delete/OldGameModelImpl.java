@@ -6,10 +6,6 @@ import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.enums.Piece;
 import zzz.to.delete.OldMutablePosition;
 import cz.janhrcek.chess.model.api.enums.Square;
-import cz.janhrcek.chess.rules.OldFIDERules;
-import cz.janhrcek.chess.rules.OldMoveType;
-import cz.janhrcek.chess.rules.NoRules;
-import cz.janhrcek.chess.rules.OldRuleChecker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -339,7 +335,7 @@ public class OldGameModelImpl implements OldGameModel, MoveListener {
         if (turnOn) {
             ruleChecker = new OldFIDERules();
         } else {
-            ruleChecker = new NoRules();
+            ruleChecker = new OldNoRules();
         }
     }
 

@@ -1,6 +1,6 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.FEN.FenParser;
+import cz.janhrcek.chess.FEN.Fen;
 import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameBrowser;
@@ -37,32 +37,32 @@ public class MainWindow {
 
         //Model
         try {
-            currentGame = new GameImpl(FenParser.INITIAL_STATE_FEN);
+            currentGame = new GameImpl(Fen.INITIAL_POSITION);
         } catch (InvalidFenException ife) {
-            throw new AssertionError("Initial state fen not parsed correctly");
+            throw new AssertionError("Initial position fen not parsed correctly");
         }
         gameBrowser = currentGame.getBrowser();
         //GUI components
         chessboardComponent = new ChessboardComponent(gameBrowser);
 
         adHocGameTreeDisplayer = new GameTreeDisplayer(gameBrowser);
-        adHocGameStateDisplayer = new GameStateDisplayer(gameBrowser);
+        adHocPositionInfoDisplayer = new PositionInfoDisplayer(gameBrowser);
 
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);
 
-        gameBrowser.addGameListener(adHocGameStateDisplayer);
+        gameBrowser.addGameListener(adHocPositionInfoDisplayer);
         gameBrowser.addGameListener(adHocGameTreeDisplayer);
 
         JPanel gameBrowseControls = createPanelWithButtons();
-        JSplitPane controlsPlusStateDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, adHocGameStateDisplayer);
-        controlsPlusStateDisplayer.setDividerLocation(30);
-        controlsPlusStateDisplayer.setDividerSize(0);
+        JSplitPane controlsPlusPositionInfoDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, adHocPositionInfoDisplayer);
+        controlsPlusPositionInfoDisplayer.setDividerLocation(30);
+        controlsPlusPositionInfoDisplayer.setDividerSize(0);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 2, 5, 5));
         mainPanel.add(chessboardComponent);
         mainPanel.add(scrollableGameTreeDisplay);
-        mainPanel.add(controlsPlusStateDisplayer);
+        mainPanel.add(controlsPlusPositionInfoDisplayer);
 
         frame.add(mainPanel);
         frame.setSize(650, 650);
@@ -84,7 +84,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.info("User clicks \"{}\" button", previousButton.getText());
-                gameBrowser.focusPreviousState();
+                gameBrowser.focusPreviousPosition();
             }
         });
 
@@ -92,7 +92,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.info("User clicks \"{}\" button", nextButton.getText());
-                gameBrowser.focusNextState();
+                gameBrowser.focusNextPosition();
             }
         });
 
@@ -100,7 +100,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.info("User clicks \"{}\" button", firstButton.getText());
-                gameBrowser.focusInitialState();
+                gameBrowser.focusInitialPosition();
             }
         });
 
@@ -108,7 +108,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.info("User clicks \"{}\" button", lastButton.getText());
-                gameBrowser.focusLastState();
+                gameBrowser.focusLastPosition();
             }
         });
         panelWithButtons.setLayout(new FlowLayout());
@@ -124,7 +124,7 @@ public class MainWindow {
     //Gui providing view into model
     private ChessboardComponent chessboardComponent;
     private GameTreeDisplayer adHocGameTreeDisplayer;
-    private GameStateDisplayer adHocGameStateDisplayer;
+    private PositionInfoDisplayer adHocPositionInfoDisplayer;
     //
     private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 }

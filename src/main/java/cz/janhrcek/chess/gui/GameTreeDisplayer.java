@@ -1,7 +1,7 @@
 package cz.janhrcek.chess.gui;
 
 import cz.janhrcek.chess.model.api.GameBrowser;
-import cz.janhrcek.chess.model.api.GameChangedEvent;
+import cz.janhrcek.chess.model.api.GameBrowserChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
 import java.util.Enumeration;
 import javax.swing.JEditorPane;
@@ -44,14 +44,14 @@ public class GameTreeDisplayer extends JEditorPane implements GameListener {
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     log.info("User clicked link with id = {}", e.getDescription());
-                    gameBrowser.focusStateWithId(Integer.valueOf(e.getDescription()));
+                    gameBrowser.focusPositionWithId(Integer.valueOf(e.getDescription()));
                 }
             }
         });
     }
 
     @Override
-    public void gameChanged(GameChangedEvent event) {
+    public void gameChanged(GameBrowserChangedEvent event) {
         setText(gameBrowser.toString());
     }
 }
