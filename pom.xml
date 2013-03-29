@@ -56,11 +56,6 @@
             <groupId>batik</groupId> <!-- Used for transforming SVG chessboard images to PNG-->
             <artifactId>batik-transcoder</artifactId>
             <version>1.6-1</version>
-        </dependency>        
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>3.0</version>
-        </dependency>            
+        </dependency>                  
     </dependencies>
 </project>

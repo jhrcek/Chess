@@ -1,8 +1,5 @@
 package cz.janhrcek.chess.model;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.Promotion;
@@ -16,7 +13,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -26,17 +22,11 @@ import org.testng.annotations.Test;
  */
 public class PositionTest {
 
-    private Injector injector;
     private Position initPosition;
-
-    @BeforeClass
-    public void setupClass() {
-        injector = Guice.createInjector(new MyModule());
-    }
 
     @BeforeMethod
     public void setupMethod() {
-        initPosition = injector.getInstance(Position.class);
+        initPosition = new PositionImpl();
     }
 
     @Test

@@ -1,6 +1,5 @@
 package cz.janhrcek.chess.gui;
 
-import com.google.inject.Inject;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
@@ -43,7 +42,6 @@ public final class ChessboardComponent extends JComponent implements GameListene
      * @param gameBrowser the model which represents state of the game, which
      * this component displays
      */
-    @Inject
     public ChessboardComponent(GameBrowser gameBrowser) {
         if (gameBrowser == null) {
             throw new NullPointerException("model can't be null!");

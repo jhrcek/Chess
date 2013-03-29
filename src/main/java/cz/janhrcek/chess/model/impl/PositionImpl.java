@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
  * @author jhrcek
  */
 public class PositionImpl implements Position {
-//TODO implement toString, hashCode and Equals for Position
 
     public PositionImpl() {
         piecePlacement = new EnumMap<>(INIT_PIECE_PLACEMENT);

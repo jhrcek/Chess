@@ -1,9 +1,10 @@
 package cz.janhrcek.chess.gui;
 
-import cz.janhrcek.chess.guice.MyModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import cz.janhrcek.chess.FEN.FenParser;
+import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameBrowser;
+import cz.janhrcek.chess.model.impl.GameImpl;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -32,15 +33,20 @@ public class MainWindow {
     }
 
     private void createAndShowGui() {
-        Injector injector = Guice.createInjector(new MyModule());
+
 
         //Model
-        gameBrowser = injector.getInstance(GameBrowser.class);
+        try {
+            currentGame = new GameImpl(FenParser.INITIAL_STATE_FEN);
+        } catch (InvalidFenException ife) {
+            throw new AssertionError("Initial state fen not parsed correctly");
+        }
+        gameBrowser = currentGame.getBrowser();
         //GUI components
-        chessboardComponent = injector.getInstance(ChessboardComponent.class);
+        chessboardComponent = new ChessboardComponent(gameBrowser);
 
-        adHocGameTreeDisplayer = injector.getInstance(GameTreeDisplayer.class);
-        adHocGameStateDisplayer = injector.getInstance(GameStateDisplayer.class);
+        adHocGameTreeDisplayer = new GameTreeDisplayer(gameBrowser);
+        adHocGameStateDisplayer = new GameStateDisplayer(gameBrowser);
 
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);
 
@@ -113,6 +119,7 @@ public class MainWindow {
         return panelWithButtons;
     }
     //Model (Browser providing view on chess game)
+    private Game currentGame;
     private GameBrowser gameBrowser;
     //Gui providing view into model
     private ChessboardComponent chessboardComponent;

@@ -1,10 +1,7 @@
 package cz.janhrcek.chess.model.impl;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import cz.janhrcek.chess.FEN.FenParser;
 import cz.janhrcek.chess.FEN.InvalidFenException;
-import cz.janhrcek.chess.guice.MyModule;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.GameStateFactory;
 import cz.janhrcek.chess.rules.IllegalMoveException;
@@ -19,7 +16,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,17 +25,13 @@ import org.testng.annotations.Test;
  */
 public class GameStateFactoryTest {
 
-    private Injector injector;
     private GameStateFactory gameStateFactory;
 
-    @BeforeClass
-    public void setupClass() {
-        injector = Guice.createInjector(new MyModule());
-    }
+
 
     @BeforeMethod
     public void setupMethod() {
-        gameStateFactory = injector.getInstance(GameStateFactory.class);
+        gameStateFactory = new GameStateFactoryImpl(new FIDERuleChecker());
     }
 
     @Test
@@ -50,7 +42,7 @@ public class GameStateFactoryTest {
             //Asserts
             String tail = " in the initial state of game";
             //Check position
-            Position expected = Guice.createInjector(new MyModule()).getInstance(Position.class);
+            Position expected = new PositionImpl();
             assertEquals(state.getPosition(), expected, "The position should be equal to initial position");
             assertEquals(state.getPosition().getPiece(A1), WHITE_ROOK);
             assertEquals(state.getPosition().getPiece(B2), WHITE_PAWN);
@@ -80,7 +72,7 @@ public class GameStateFactoryTest {
             GameState stateAfterE4 = gameStateFactory.create(initialGameState, firstMove);
 
             //Check position
-            Position initial = injector.getInstance(Position.class);
+            Position initial = new PositionImpl();
             Position expected = initial.createNewPositionUsing(firstMove);
 
             //Asserts

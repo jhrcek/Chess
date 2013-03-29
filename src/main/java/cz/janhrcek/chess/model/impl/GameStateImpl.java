@@ -1,8 +1,7 @@
 package cz.janhrcek.chess.model.impl;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import cz.janhrcek.chess.guice.MyModule;
+import cz.janhrcek.chess.FEN.FenParser;
+import cz.janhrcek.chess.FEN.InvalidFenException;
 import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.model.api.enums.Castling;
@@ -18,8 +17,6 @@ import java.util.EnumSet;
  * @author jhrcek
  */
 public class GameStateImpl implements GameState {
-
-    private static final Injector injector = Guice.createInjector(new MyModule());
     private Position position;
     private boolean whiteToMove;
     private EnumSet<Castling> castlingAvailabilities;
@@ -36,7 +33,11 @@ public class GameStateImpl implements GameState {
      * GameStateFactory.
      */
     public GameStateImpl() {
-        position = injector.getInstance(Position.class);
+        try {
+            position = new FenParser().fenToPosition(FenParser.INITIAL_STATE_FEN);
+        } catch (InvalidFenException ife) {
+            assert false;
+        }
         whiteToMove = true;
         castlingAvailabilities = EnumSet.allOf(Castling.class);
         enPassantTargetSquare = null;

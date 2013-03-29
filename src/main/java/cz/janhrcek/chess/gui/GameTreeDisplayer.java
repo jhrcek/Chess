@@ -1,6 +1,5 @@
 package cz.janhrcek.chess.gui;
 
-import com.google.inject.Inject;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
@@ -22,7 +21,6 @@ public class GameTreeDisplayer extends JEditorPane implements GameListener {
     private static final Logger log = LoggerFactory.getLogger(GameTreeDisplayer.class);
     private GameBrowser gameBrowser;
 
-    @Inject
     public GameTreeDisplayer(final GameBrowser gameBrowser) {
         this.gameBrowser = gameBrowser;
         setContentType("text/html");

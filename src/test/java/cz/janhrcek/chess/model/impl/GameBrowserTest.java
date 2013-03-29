@@ -1,8 +1,8 @@
 package cz.janhrcek.chess.model.impl;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import cz.janhrcek.chess.guice.MyModule;
+import cz.janhrcek.chess.FEN.FenParser;
+import cz.janhrcek.chess.FEN.InvalidFenException;
+import cz.janhrcek.chess.model.api.Game;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameState;
 import cz.janhrcek.chess.rules.IllegalMoveException;
@@ -23,13 +23,17 @@ public class GameBrowserTest {
     private static final Move MOVE_E4 = new Move(WHITE_PAWN, E2, E4);
     private static final Move MOVE_NF6 = new Move(BLACK_KNIGHT, G8, F6);
     private static final Move MOVE_NF3 = new Move(WHITE_KNIGHT, G1, F3);
-    private Injector injector;
+    private Game game;
     private GameBrowser gameBrowser;
 
     @BeforeMethod
     public void initializeGame() {
-        injector = Guice.createInjector(new MyModule());
-        gameBrowser = injector.getInstance(GameBrowser.class);
+        try {
+            game = new GameImpl(FenParser.INITIAL_STATE_FEN);
+        } catch (InvalidFenException ife) {
+            fail("Initial state not parsed correctly");
+        }
+        gameBrowser = game.getBrowser();
     }
 
     @Test

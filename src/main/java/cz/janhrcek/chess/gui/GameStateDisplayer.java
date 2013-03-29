@@ -1,6 +1,5 @@
 package cz.janhrcek.chess.gui;
 
-import com.google.inject.Inject;
 import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.GameChangedEvent;
 import cz.janhrcek.chess.model.api.GameListener;
@@ -17,7 +16,6 @@ import javax.swing.border.LineBorder;
  */
 public class GameStateDisplayer extends JTextArea implements GameListener {
 
-    @Inject
     public GameStateDisplayer(GameBrowser gameBrowser) {
         setLineWrap(true);
         setBorder(new LineBorder(Color.BLACK, 1));
