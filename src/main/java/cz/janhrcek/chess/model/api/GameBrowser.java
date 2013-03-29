@@ -7,15 +7,13 @@ import cz.janhrcek.chess.model.impl.PieceNotPresentException;
  * Enables browsing of chess game. The key concept of this browser is, that it
  * focuses on a single Position of a game (retrievable by
  * {@link getFocusedPosition()}). It also provides methods to change focus by
- * using 4 focus methods starting (this is read-only, without
- * changing the underlying game) and to add new Positions to the underlying
- * Game using {@link makeMove()} method.
+ * using 4 focus methods starting (this is read-only, without changing the
+ * underlying game) and to add new Positions to the underlying Game using
+ * {@link makeMove()} method.
  *
  * @author jhrcek
  */
 public interface GameBrowser {
-
-    public Position getInitialPosition();
 
     public Position getFocusedPosition();
 

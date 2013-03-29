@@ -28,9 +28,9 @@ public class GameImpl implements Game {
 
     public GameImpl(String initialPositionfen) throws InvalidFenException {
         Position initialPosition = new Fen(initialPositionfen).toPosition();
-        this.rootNode = new Node(null, null, initialPosition, NODE_ID_GENERATOR.getAndIncrement());
-        this.browser = new GameBrowserImpl(new PositionFactoryImpl(new FIDERuleChecker()));
-        this.id2Node = new HashMap<>();
+        rootNode = new Node(null, null, initialPosition, NODE_ID_GENERATOR.getAndIncrement());
+        browser = new GameBrowserImpl(new PositionFactoryImpl(new FIDERuleChecker()));
+        id2Node = new HashMap<>();
         id2Node.put(rootNode.getId(), rootNode);
     }
 
@@ -38,7 +38,7 @@ public class GameImpl implements Game {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("<html><body>");
-        histNodeToString(rootNode, result);
+        nodeToString(rootNode, result);
         result.append("</body></html>");
         return result.toString();
     }
@@ -49,7 +49,7 @@ public class GameImpl implements Game {
     }
 
 //--------------------------- PRIVATE IMPLEMENTATION ---------------------------
-    private void histNodeToString(Node node, StringBuilder sb) { //TODO - fix order of displaying variations
+    private void nodeToString(Node node, StringBuilder sb) { //TODO - fix order of displaying variations
         String startTag = node.equals(browser.getFocusedNode()) ? "&nbsp;<a class=\"focus\" href=\"" : "&nbsp;<a href=\""; //We want to highlight the focused move
         sb.append(startTag).append(node.getId());
 
@@ -63,12 +63,12 @@ public class GameImpl implements Game {
         }
 
         if (node.getChildren().size() >= 1) {
-            histNodeToString(node.getChildren().get(0), sb);       //1) Main line
+            nodeToString(node.getChildren().get(0), sb);       //1) Main line
         }
         if (node.getChildren().size() > 1) {
             sb.append("(");                                        //2) Variations
             for (int i = 1; i < node.getChildren().size(); i++) {
-                histNodeToString(node.getChildren().get(i), sb);
+                nodeToString(node.getChildren().get(i), sb);
                 sb.append(";");
             }
             sb.append(")");
@@ -98,7 +98,7 @@ public class GameImpl implements Game {
         public void moveSelected(Move move) {
             log.info("Got notification from GUI - move selected: {}", move);
             try {
-                Position previous = getFocusedPosition();
+                Node previous = focusedNode;
                 makeMove(move);
                 notifyListenersOfPositionChange(previous);
             } catch (IllegalMoveException ex) {
@@ -106,11 +106,6 @@ public class GameImpl implements Game {
             } catch (PieceNotPresentException ex) {
                 log.info("The move selected has problem.", ex);
             }
-        }
-
-        @Override
-        public Position getInitialPosition() {
-            return rootNode.getPosition();
         }
 
         @Override
@@ -141,38 +136,38 @@ public class GameImpl implements Game {
         @Override
         public void focusInitialPosition() {
             log.info("Browsing game: Focusing initial position");
-            Position previousPosition = focusedNode.getPosition();
+            Node previous = focusedNode;
             focusedNode = rootNode;
-            notifyListenersOfPositionChange(previousPosition);
+            notifyListenersOfPositionChange(previous);
         }
 
         @Override
         public void focusNextPosition() {
-            Position previous = focusedNode.getPosition();
             if (focusedNode.children.size() > 0) {
                 log.info("Browsing game: focusing focusing next position on current main line");
+                Node previous = focusedNode;
                 focusedNode = focusedNode.getChildren().get(0);
+                notifyListenersOfPositionChange(previous);
             } else {
                 log.info("Browsing game: can't focus child, we are already at the end of current line!");
             }
-            notifyListenersOfPositionChange(previous);
         }
 
         @Override
         public void focusPreviousPosition() {
-            Position previous = getFocusedPosition();
             if (focusedNode.parent != null) { //we're currently not at root
                 log.info("Browsing game: focusing previous position");
+                Node previous = focusedNode;
                 focusedNode = focusedNode.parent;
+                notifyListenersOfPositionChange(previous);
             } else {
                 log.info("Browsing game: can't focus previous position, we are already at the initial position!");
             }
-            notifyListenersOfPositionChange(previous);
         }
 
         @Override
         public void focusLastPosition() {
-            Position previous = getFocusedPosition();
+            Node previous = focusedNode;
             log.info("Browsing tree: moving to the end of the current line");
             while (focusedNode.children.size() > 0) {
                 focusedNode = focusedNode.getChildren().get(0);
@@ -183,7 +178,7 @@ public class GameImpl implements Game {
         @Override
         public void focusPositionWithId(int id) {
             log.info("Browsing tree: focusing node with id = {}", id);
-            Position previous = getFocusedPosition();
+            Node previous = focusedNode;
             focusedNode = id2Node.get(id);
             notifyListenersOfPositionChange(previous);
         }
@@ -204,11 +199,16 @@ public class GameImpl implements Game {
         }
 
         //----------------------- PRIVATE IMPLEMENTATION ---------------------------
-        private void notifyListenersOfPositionChange(Position previouslyFocusedPosition) {
-            log.info("Focused Position has changed - notifying {} GameListener(s)", gameListeners.size());
-            GameBrowserChangedEvent change = new GameBrowserChangedEvent(previouslyFocusedPosition, getFocusedPosition());
-            for (GameListener gameListener : gameListeners) {
-                gameListener.gameChanged(change);
+        private void notifyListenersOfPositionChange(Node previouslyFocusedNode) {
+            if (!focusedNode.equals(previouslyFocusedNode)) {
+                log.info("Focused Position has changed - notifying {} GameListener(s)", gameListeners.size());
+                GameBrowserChangedEvent change = new GameBrowserChangedEvent(previouslyFocusedNode.getPosition(), getFocusedPosition());
+
+                for (GameListener gameListener : gameListeners) {
+                    gameListener.gameChanged(change);
+                }
+            } else {
+                log.info("Focused position has not changed.");
             }
         }
         //

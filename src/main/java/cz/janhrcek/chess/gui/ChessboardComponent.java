@@ -206,7 +206,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
 
     @Override
     public void gameChanged(GameBrowserChangedEvent event) {
-        log.info("ChessboardComponent caught GameChangedEvent, updating state...");
+        log.info("ChessboardComponent caught {}, updating state...", event.getClass());
 
         for (Square changedSquare : event.getChangedSquares()) {
             repaintSquare(changedSquare);
@@ -253,8 +253,8 @@ public final class ChessboardComponent extends JComponent implements GameListene
             new HashSet<>();
     private SquareImageFactory squareImages = new SquareImageFactory(10);
     /**
-     * Instance of GameBrowser, from which we can get all information (displayable
-     * on chessboard) about the state of the game.
+     * Instance of GameBrowser, from which we can get all information
+     * (displayable on chessboard) about the state of the game.
      */
     private GameBrowser gameBrowser;
 

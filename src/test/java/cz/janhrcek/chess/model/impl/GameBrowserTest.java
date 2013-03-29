@@ -38,7 +38,7 @@ public class GameBrowserTest {
 
     @Test
     public void testGetInitialPosition() {
-        Position initialPosition = gameBrowser.getInitialPosition();
+        Position initialPosition = gameBrowser.getFocusedPosition();
         assertEquals(initialPosition.getChessboard().getPiece(A1), WHITE_ROOK);
         assertEquals(initialPosition.getHalfmoveClock(), 0);
         assertEquals(initialPosition.getFullmoveNumber(), 1);
