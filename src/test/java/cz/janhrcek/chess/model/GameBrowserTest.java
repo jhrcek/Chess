@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model.impl;
+package cz.janhrcek.chess.model;
 
 import cz.janhrcek.chess.FEN.Fen;
 import cz.janhrcek.chess.FEN.InvalidFenException;
@@ -7,6 +7,8 @@ import cz.janhrcek.chess.model.api.GameBrowser;
 import cz.janhrcek.chess.model.api.Position;
 import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
+import cz.janhrcek.chess.model.impl.GameImpl;
+import cz.janhrcek.chess.model.impl.PieceNotPresentException;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import static org.testng.Assert.assertEquals;

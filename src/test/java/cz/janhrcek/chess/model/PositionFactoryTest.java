@@ -1,4 +1,4 @@
-package cz.janhrcek.chess.model.impl;
+package cz.janhrcek.chess.model;
 
 import cz.janhrcek.chess.FEN.Fen;
 import cz.janhrcek.chess.FEN.InvalidFenException;
@@ -8,6 +8,10 @@ import cz.janhrcek.chess.rules.IllegalMoveException;
 import cz.janhrcek.chess.model.api.Move;
 import cz.janhrcek.chess.model.api.Chessboard;
 import cz.janhrcek.chess.model.api.enums.Castling;
+import cz.janhrcek.chess.model.impl.ChessboardImpl;
+import cz.janhrcek.chess.model.impl.FIDERuleChecker;
+import cz.janhrcek.chess.model.impl.PieceNotPresentException;
+import cz.janhrcek.chess.model.impl.PositionFactoryImpl;
 import static cz.janhrcek.chess.model.api.enums.Piece.*;
 import static cz.janhrcek.chess.model.api.enums.Square.*;
 import java.util.EnumSet;
