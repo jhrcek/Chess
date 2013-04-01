@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 
@@ -19,12 +20,22 @@ import javax.swing.border.LineBorder;
  *
  * @author jhrcek
  */
-public class PositionInfoDisplayer extends JTextArea implements GameListener {
+public final class PositionInfoDisplayer extends JTextArea implements GameListener {
+
+    private GameBrowser gameBrowser;
 
     public PositionInfoDisplayer(GameBrowser gameBrowser) {
         setLineWrap(true);
         setBorder(new LineBorder(Color.BLACK, 1));
-        displayPosition(gameBrowser.getFocusedPosition());
+        setGameBrowser(gameBrowser);
+    }
+
+    //TODO - remove dependency on GameBrowser, because we can get all the info we need from GameBrowserChangedEvent!
+    //question remains - how to register this component as a gameListener - here, or outside?
+    void setGameBrowser(GameBrowser gameBrowser) {
+        this.gameBrowser = Objects.requireNonNull(gameBrowser, "gameBrowser must not be null!");
+        this.gameBrowser.addGameListener(this);
+        displayPosition(this.gameBrowser.getFocusedPosition());
     }
 
     @Override

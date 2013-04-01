@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -42,15 +43,15 @@ public final class ChessboardComponent extends JComponent implements GameListene
      * @param gameBrowser Browser that provides a window into underlying game
      */
     public ChessboardComponent(GameBrowser gameBrowser) {
-        if (gameBrowser == null) {
-            throw new NullPointerException("model can't be null!");
-        }
-        this.gameBrowser = gameBrowser;
-
         enableEvents(AWTEvent.MOUSE_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
         setBorder(new LineBorder(Color.BLACK, 1));
-        this.addMoveSelectedListener((MoveListener) gameBrowser);
-        gameBrowser.addGameListener(this);
+        setGameBrowser(gameBrowser);
+    }
+
+    public void setGameBrowser(GameBrowser gameBrowser) {
+        this.gameBrowser = Objects.requireNonNull(gameBrowser, "gameBrowser must not be null!");
+        gameBrowser.addGameListener(this); //To make ChessboardComponent listen to GameBrowserChanged events
+        addMoveSelectedListener((MoveListener) gameBrowser); //To make GameBrowser listen to MoveSelected events
     }
 
     /**
@@ -64,6 +65,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
+        listeners.clear(); //remove all previous listeners
         listeners.add(listener);
     }
 

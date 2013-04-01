@@ -10,8 +10,12 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -33,28 +37,23 @@ public class MainWindow {
     }
 
     private void createAndShowGui() {
-
-
         //Model
-        try {
-            currentGame = new GameImpl(Fen.INITIAL_POSITION);
-        } catch (InvalidFenException ife) {
-            throw new AssertionError("Initial position fen not parsed correctly");
-        }
+        currentGame = createNewGameModel();
+
         gameBrowser = currentGame.getBrowser();
+//TODO - untangle the way model objects and components are intertwined - to enable set new game, when new instance of game (browser) will be injected into the components
         //GUI components
         chessboardComponent = new ChessboardComponent(gameBrowser);
+        gameTreeDisplayer = new GameTreeDisplayer(gameBrowser);
+        positionInfoDisplayer = new PositionInfoDisplayer(gameBrowser);
 
-        adHocGameTreeDisplayer = new GameTreeDisplayer(gameBrowser);
-        adHocPositionInfoDisplayer = new PositionInfoDisplayer(gameBrowser);
+        JScrollPane scrollableGameTreeDisplay = new JScrollPane(gameTreeDisplayer);
 
-        JScrollPane scrollableGameTreeDisplay = new JScrollPane(adHocGameTreeDisplayer);
-
-        gameBrowser.addGameListener(adHocPositionInfoDisplayer);
-        gameBrowser.addGameListener(adHocGameTreeDisplayer);
+        gameBrowser.addGameListener(positionInfoDisplayer);
+        gameBrowser.addGameListener(gameTreeDisplayer);
 
         JPanel gameBrowseControls = createPanelWithButtons();
-        JSplitPane controlsPlusPositionInfoDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, adHocPositionInfoDisplayer);
+        JSplitPane controlsPlusPositionInfoDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, positionInfoDisplayer);
         controlsPlusPositionInfoDisplayer.setDividerLocation(30);
         controlsPlusPositionInfoDisplayer.setDividerSize(0);
 
@@ -64,8 +63,11 @@ public class MainWindow {
         mainPanel.add(scrollableGameTreeDisplay);
         mainPanel.add(controlsPlusPositionInfoDisplayer);
 
+        JMenuBar menuBar = createMenu();
+
+        frame.setJMenuBar(menuBar);
         frame.add(mainPanel);
-        frame.setSize(650, 650);
+        frame.setSize(700, 700);
         frame.setVisible(true);
     }
 
@@ -118,13 +120,58 @@ public class MainWindow {
         panelWithButtons.add(lastButton);
         return panelWithButtons;
     }
+
+    private JMenuBar createMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu gameMenu = new JMenu("Game");
+        JMenuItem newGameItem = new JMenuItem(new NewGameAction("New Game"));
+        JMenuItem newGameItem2 = new JMenuItem("New Game with Custom Initial Position");
+        gameMenu.add(newGameItem);
+        gameMenu.add(newGameItem2);
+        menuBar.add(gameMenu);
+        return menuBar;
+    }
     //Model (Browser providing view on chess game)
     private Game currentGame;
     private GameBrowser gameBrowser;
     //Gui providing view into model
     private ChessboardComponent chessboardComponent;
-    private GameTreeDisplayer adHocGameTreeDisplayer;
-    private PositionInfoDisplayer adHocPositionInfoDisplayer;
+    private GameTreeDisplayer gameTreeDisplayer;
+    private PositionInfoDisplayer positionInfoDisplayer;
     //
     private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
+
+    private Game createNewGameModel() {
+        return createNewGameModel(Fen.INITIAL_POSITION);
+    }
+
+    private Game createNewGameModel(String fen) {
+        try {
+            return new GameImpl(fen);
+        } catch (InvalidFenException ex) {
+            log.error("Unable to create new game using FEN string \"{}\"", fen);
+            throw new IllegalArgumentException("Unable to create new game using FEN string " + fen);
+        }
+    }
+
+    private void injectNewGameIntoGuiComponents(Game game) {
+        gameBrowser = game.getBrowser();
+        chessboardComponent.setGameBrowser(gameBrowser);
+        gameTreeDisplayer.setGameBrowser(gameBrowser);
+        positionInfoDisplayer.setGameBrowser(gameBrowser);
+    }
+
+    //TODO - move to outer level
+    public class NewGameAction extends AbstractAction {
+
+        public NewGameAction(String name) {
+            super(name);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            currentGame = createNewGameModel();
+            injectNewGameIntoGuiComponents(currentGame);
+        }
+    }
 }

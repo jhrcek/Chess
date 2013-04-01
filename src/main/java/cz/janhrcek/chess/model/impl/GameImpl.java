@@ -110,7 +110,7 @@ public class GameImpl implements Game {
 
         @Override
         public void makeMove(Move newMove) throws PieceNotPresentException, IllegalMoveException {
-            log.info("Trying to make move {}", newMove);
+            log.info("Trying to add {} to the game", newMove);
 
             //if currently focused node already has a child preceded by move in the node, just move the gocus     
             for (Node childNode : focusedNode.getChildren()) {
