@@ -5,7 +5,7 @@ import cz.janhrcek.chess.model.api.enums.Square;
 
 /**
  * Represents placement of pieces on the chessboard. Instances of this class
- * must be immutable.
+ * are supposed to be be immutable.
  *
  * @author jhrcek
  */

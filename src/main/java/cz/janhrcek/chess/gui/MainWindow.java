@@ -155,6 +155,8 @@ public class MainWindow {
     }
 
     private void injectNewGameIntoGuiComponents(Game game) {
+        chessboardComponent.removeMoveSelectedEventListener((MoveListener) gameBrowser); //first remove the association ChessboardComponent->gameBrowser
+        //get new GB and inject it into components
         gameBrowser = game.getBrowser();
         chessboardComponent.setGameBrowser(gameBrowser);
         gameTreeDisplayer.setGameBrowser(gameBrowser);

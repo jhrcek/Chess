@@ -65,7 +65,6 @@ public final class ChessboardComponent extends JComponent implements GameListene
         if (listener == null) {
             throw new NullPointerException("listener can't be null!");
         }
-        listeners.clear(); //remove all previous listeners
         listeners.add(listener);
     }
 
