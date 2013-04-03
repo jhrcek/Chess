@@ -104,15 +104,16 @@ public class GameBrowserTest {
     }
 
     @Test
-    public void testSomeMoves() { //TODO add some asserts
+    public void testBrowsingGameFromCustomInitialPosition() { //TODO add some asserts
         try {
-            gameBrowser.makeMove(MOVE_E4);
-            gameBrowser.makeMove(MOVE_NF6);
-            gameBrowser.makeMove(MOVE_NF3);
-            Position position = gameBrowser.getFocusedPosition();
-            System.out.println(gameBrowser.toString());
-        } catch (IllegalMoveException | PieceNotPresentException ex) {
+            Game game = new GameImpl("5B2/6P1/1p6/8/1N6/kP6/2K5/8 w - - 0 1");
+            gameBrowser = game.getBrowser();
+            
+            gameBrowser.makeMove(new Move(BLACK_KING, A3, B4));
+            gameBrowser.focusPositionWithId(0);
+        } catch (InvalidFenException | IllegalMoveException | PieceNotPresentException ex) {
             fail("Unexpected exception!", ex);
-        }
+        } 
     }
 }
+    

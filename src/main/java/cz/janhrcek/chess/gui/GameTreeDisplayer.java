@@ -22,6 +22,11 @@ public final class GameTreeDisplayer extends JEditorPane implements GameListener
     private static final Logger log = LoggerFactory.getLogger(GameTreeDisplayer.class);
     private GameBrowser gameBrowser;
 
+    //The purpose of this getter is to provide up-to-date reference to HyperLinkListener in case that gameBrowser changes
+    private GameBrowser getGameBrowser() {
+        return gameBrowser;
+    }
+
     public GameTreeDisplayer(final GameBrowser gameBrowser) {
         setGameBrowser(gameBrowser); //Make this listen to GameBrowserChangedEvents
         setContentType("text/html");
@@ -32,7 +37,7 @@ public final class GameTreeDisplayer extends JEditorPane implements GameListener
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     log.info("User clicked link with id = {}", e.getDescription());
-                    gameBrowser.focusPositionWithId(Integer.valueOf(e.getDescription()));
+                    getGameBrowser().focusPositionWithId(Integer.valueOf(e.getDescription()));
                 }
             }
         });

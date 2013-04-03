@@ -1,5 +1,7 @@
 package cz.janhrcek.chess.gui;
 
+import cz.janhrcek.chess.FEN.InvalidFenException;
+
 /**
  *
  * @author jhrcek
@@ -10,7 +12,11 @@ public class Main {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                MainWindow window = new MainWindow();
+                try {
+                    MainWindow window = new MainWindow();
+                } catch (InvalidFenException ex) {
+                    throw new AssertionError("The exception should never be propagated here!", ex);
+                }
             }
         });
     }

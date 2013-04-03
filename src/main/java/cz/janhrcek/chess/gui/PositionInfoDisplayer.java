@@ -62,7 +62,7 @@ public final class PositionInfoDisplayer extends JTextArea implements GameListen
         List<Piece> blackPieces = new ArrayList<>();
         Chessboard board = position.getChessboard();
         Piece p;
-        for (Square sq : Square.values()) {
+        for (Square sq : Square.values()) {//TODO extract method, the list of white/black pieces should probably be obtainable by chessboard
             if ((p = board.getPiece(sq)) != null) {
                 if (p.isWhite()) {
                     whitePieces.add(p);

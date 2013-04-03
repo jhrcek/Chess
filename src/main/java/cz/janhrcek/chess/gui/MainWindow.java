@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,13 +30,13 @@ import org.slf4j.LoggerFactory;
  */
 public class MainWindow {
 
-    public MainWindow() throws HeadlessException {
+    public MainWindow() throws HeadlessException, InvalidFenException {
         frame = new JFrame("Chess");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         createAndShowGui();
     }
 
-    private void createAndShowGui() {
+    private void createAndShowGui() throws InvalidFenException {
         //Model
         currentGame = createNewGameModel();
 
@@ -139,17 +140,12 @@ public class MainWindow {
     //
     private static final Logger log = LoggerFactory.getLogger(MainWindow.class);
 
-    private Game createNewGameModel() {
+    private Game createNewGameModel() throws InvalidFenException {
         return createNewGameModel(Fen.INITIAL_POSITION);
     }
 
-    private Game createNewGameModel(String fen) {
-        try {
-            return new GameImpl(fen);
-        } catch (InvalidFenException ex) {
-            log.error("Unable to create new game using FEN string \"{}\"", fen);
-            throw new IllegalArgumentException("Unable to create new game using FEN string " + fen);
-        }
+    private Game createNewGameModel(String fen) throws InvalidFenException {
+        return new GameImpl(fen);
     }
 
     private void injectNewGameIntoGuiComponents(Game game) {
@@ -170,7 +166,12 @@ public class MainWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            currentGame = createNewGameModel();
+            try {
+                currentGame = createNewGameModel();
+            } catch (InvalidFenException ex) {
+                throw new RuntimeException(ex);
+            }
+
             injectNewGameIntoGuiComponents(currentGame);
         }
     }
@@ -183,9 +184,18 @@ public class MainWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String validatedFenString = JOptionPane.showInputDialog(frame, "Please enter starting position in FEN");
-            currentGame = createNewGameModel(validatedFenString);
-            injectNewGameIntoGuiComponents(currentGame);
+            String fenString = null;
+            boolean fenInvalid = true;
+            while (fenInvalid) {
+                try {
+                    fenString = JOptionPane.showInputDialog(frame, "Please enter starting position in FEN", "Choose initial position", JOptionPane.PLAIN_MESSAGE);
+                    currentGame = createNewGameModel(fenString);
+                    injectNewGameIntoGuiComponents(currentGame);
+                    fenInvalid = false;
+                } catch (InvalidFenException ex) {
+                    JOptionPane.showMessageDialog(frame, "The string you entered is not valid FEN string:\n" + fenString + "\n" + ex.getMessage(), "Invalid FEN String", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 }
