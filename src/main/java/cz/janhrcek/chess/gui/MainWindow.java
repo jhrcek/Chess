@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -27,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author jhrcek
  */
 public class MainWindow {
-
-    private JFrame frame;
 
     public MainWindow() throws HeadlessException {
         frame = new JFrame("Chess");
@@ -48,9 +47,6 @@ public class MainWindow {
         positionInfoDisplayer = new PositionInfoDisplayer(gameBrowser);
 
         JScrollPane scrollableGameTreeDisplay = new JScrollPane(gameTreeDisplayer);
-
-        gameBrowser.addGameListener(positionInfoDisplayer);
-        gameBrowser.addGameListener(gameTreeDisplayer);
 
         JPanel gameBrowseControls = createPanelWithButtons();
         JSplitPane controlsPlusPositionInfoDisplayer = new JSplitPane(JSplitPane.VERTICAL_SPLIT, gameBrowseControls, positionInfoDisplayer);
@@ -125,12 +121,14 @@ public class MainWindow {
         JMenuBar menuBar = new JMenuBar();
         JMenu gameMenu = new JMenu("Game");
         JMenuItem newGameItem = new JMenuItem(new NewGameAction("New Game"));
-        JMenuItem newGameItem2 = new JMenuItem("New Game with Custom Initial Position");
+        JMenuItem newGameItem2 = new JMenuItem(new NewGameWithCustomStart("New Game (Custom Initial Position)"));
         gameMenu.add(newGameItem);
         gameMenu.add(newGameItem2);
         menuBar.add(gameMenu);
         return menuBar;
     }
+    //Main window
+    private JFrame frame;
     //Model (Browser providing view on chess game)
     private Game currentGame;
     private GameBrowser gameBrowser;
@@ -173,6 +171,20 @@ public class MainWindow {
         @Override
         public void actionPerformed(ActionEvent e) {
             currentGame = createNewGameModel();
+            injectNewGameIntoGuiComponents(currentGame);
+        }
+    }
+
+    public class NewGameWithCustomStart extends AbstractAction {
+
+        public NewGameWithCustomStart(String name) {
+            super(name);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String validatedFenString = JOptionPane.showInputDialog(frame, "Please enter starting position in FEN");
+            currentGame = createNewGameModel(validatedFenString);
             injectNewGameIntoGuiComponents(currentGame);
         }
     }

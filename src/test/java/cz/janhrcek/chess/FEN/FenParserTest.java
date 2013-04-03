@@ -3,7 +3,6 @@ package cz.janhrcek.chess.FEN;
 import cz.janhrcek.chess.model.api.Position;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

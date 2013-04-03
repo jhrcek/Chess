@@ -28,6 +28,7 @@ public class GameImpl implements Game {
 
     public GameImpl(String initialPositionfen) throws InvalidFenException {
         Position initialPosition = new Fen(initialPositionfen).toPosition();
+        log.info("Creating new instance of Game using initial position \"{}\"", initialPositionfen);
         rootNode = new Node(null, null, initialPosition, NODE_ID_GENERATOR.getAndIncrement());
         browser = new GameBrowserImpl(new PositionFactoryImpl(new FIDERuleChecker()));
         id2Node = new HashMap<>();
@@ -200,6 +201,7 @@ public class GameImpl implements Game {
 
         //----------------------- PRIVATE IMPLEMENTATION ---------------------------
         private void notifyListenersOfPositionChange(Node previouslyFocusedNode) {
+            //TODO -focused node is null here, when new game is initialized with 
             if (!focusedNode.equals(previouslyFocusedNode)) {
                 log.info("Focused Position has changed - notifying {} GameListener(s)", gameListeners.size());
                 GameBrowserChangedEvent change = new GameBrowserChangedEvent(previouslyFocusedNode.getPosition(), getFocusedPosition());

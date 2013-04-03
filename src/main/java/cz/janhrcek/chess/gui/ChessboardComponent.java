@@ -52,6 +52,7 @@ public final class ChessboardComponent extends JComponent implements GameListene
         this.gameBrowser = Objects.requireNonNull(gameBrowser, "gameBrowser must not be null!");
         gameBrowser.addGameListener(this); //To make ChessboardComponent listen to GameBrowserChanged events
         addMoveSelectedListener((MoveListener) gameBrowser); //To make GameBrowser listen to MoveSelected events
+        repaint();
     }
 
     /**
